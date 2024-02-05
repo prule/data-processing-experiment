@@ -15,18 +15,24 @@ dependencies {
     api("com.fasterxml.jackson.core:jackson-core:2.15.2")
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
     implementation("ch.qos.logback:logback-classic:1.4.7")
-    implementation("com.vamonossoftware.dataprocessing:dataprocessing-tables:1.0-SNAPSHOT")
     implementation("io.github.xn32:json5k:0.3.0")
-    testImplementation(kotlin("test"))
-    testImplementation("org.assertj:assertj-core:3.24.2")
+
+
+    // Use the Kotlin JUnit 5 integration.
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+
+    // Use the JUnit 5 integration.
+    testImplementation(libs.junit.jupiter.engine)
+
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
 }
 
 kotlin {
     jvmToolchain(17)
 }
 
-tasks.test {
+tasks.named<Test>("test") {
     useJUnitPlatform()
 
     val sparkJava17CompatibleJvmArgs = listOf(

@@ -3,13 +3,14 @@
  */
 package com.example.dataprocessingexperiment.app
 
+import com.example.dataprocessingexperiment.spark.Spike1
+
 class App {
-    val greeting: String
-        get() {
-            return "Hello World!"
-        }
+
 }
 
 fun main() {
-    println(App().greeting)
+    println("Starting...")
+    Spike1().run()
+    println("Finished...")
 }
