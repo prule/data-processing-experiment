@@ -1,4 +1,4 @@
-date,account,description,amount
-2020-03-01, 1, burger, 15.47
-2020-03-03, 1, tennis, 35.03
-2020-03-04, 2, petrol, 150.47
+date,account,description,amount,comment
+2020-03-01, 1, burger, 15.47,
+2020-03-03, 1, tennis, 35.03,
+2020-03-04, 2, petrol, 150.47,

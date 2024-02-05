@@ -1,5 +1,5 @@
-date,account,description,amount
-2020-01-01, 1, burger, 15.45
-2020-01-02, 1, movie, 20.00
-2020-01-03, 1, tennis, 35.00
-2020-01-04, 2, petrol, 150.45
+date,account,description,amount,comment
+2020-01-01, 1, burger, 15.45,
+2020-01-02, 1, movie, 20.00,
+2020-01-03, 1, tennis, 35.00,
+2020-01-04, 2, petrol, 150.45,
