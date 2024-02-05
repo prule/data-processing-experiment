@@ -1,0 +1,115 @@
+7:04:51 pm: Executing 'run --stacktrace'...
+
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :spark:checkKotlinGradlePluginConfigurationErrors
+> Task :spark:compileKotlin UP-TO-DATE
+> Task :spark:compileJava NO-SOURCE
+> Task :spark:processResources NO-SOURCE
+> Task :spark:classes UP-TO-DATE
+> Task :spark:jar UP-TO-DATE
+> Task :app:compileKotlin UP-TO-DATE
+> Task :app:compileJava NO-SOURCE
+> Task :app:processResources UP-TO-DATE
+> Task :app:classes UP-TO-DATE
+
+> Task :app:run
+Starting...
+19:04:52.071 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+SLF4J: Class path contains multiple SLF4J providers.
+SLF4J: Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@776b83cc]
+SLF4J: Found provider [org.apache.logging.slf4j.SLF4JServiceProvider@37858383]
+SLF4J: See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual provider is of type [ch.qos.logback.classic.spi.LogbackServiceProvider@776b83cc]
+Statements data frame
++------------+-------+------------+-------+--------------------+
+|        date|account| description| amount|             comment|
++------------+-------+------------+-------+--------------------+
+|  2020-13-01|      1|      burger|   0.01|        invalid date|
+|invalid date|      1|      petrol|   0.02|        invalid date|
+|        NULL|      1|      tennis|   0.03|             no date|
+|  2020-12-01|       |      tennis|   0.04|          no account|
+|  2020-12-01|      1|      petrol|      x| invalid number f...|
+|  2020-02-01|      1|      burger|  15.46|                NULL|
+|  2020-02-02|      1|       movie|  20.01|                NULL|
+|  2020-02-03|      1|      tennis|  35.01|                NULL|
+|  2020-02-04|      2|      petrol| 150.46|                NULL|
+|  2020-02-04|      2| electricity| 300.47|                NULL|
+|  2020-01-01|      1|      burger|  15.45|                NULL|
+|  2020-01-02|      1|       movie|  20.00|                NULL|
+|  2020-01-03|      1|      tennis|  35.00|                NULL|
+|  2020-01-04|      2|      petrol| 150.45|                NULL|
+|  2020-03-01|      1|      burger|  15.47|                NULL|
+|  2020-03-03|      1|      tennis|  35.03|                NULL|
+|  2020-03-04|      2|      petrol| 150.47|                NULL|
++------------+-------+------------+-------+--------------------+
+
+root
+ |-- date: string (nullable = true)
+ |-- account: string (nullable = true)
+ |-- description: string (nullable = true)
+ |-- amount: string (nullable = true)
+ |-- comment: string (nullable = true)
+
+Selected data frame
++------------+-------+------------+-------+
+|        date|account| description| amount|
++------------+-------+------------+-------+
+|  2020-13-01|      1|      burger|   0.01|
+|invalid date|      1|      petrol|   0.02|
+|        NULL|      1|      tennis|   0.03|
+|  2020-12-01|       |      tennis|   0.04|
+|  2020-12-01|      1|      petrol|      x|
+|  2020-02-01|      1|      burger|  15.46|
+|  2020-02-02|      1|       movie|  20.01|
+|  2020-02-03|      1|      tennis|  35.01|
+|  2020-02-04|      2|      petrol| 150.46|
+|  2020-02-04|      2| electricity| 300.47|
+|  2020-01-01|      1|      burger|  15.45|
+|  2020-01-02|      1|       movie|  20.00|
+|  2020-01-03|      1|      tennis|  35.00|
+|  2020-01-04|      2|      petrol| 150.45|
+|  2020-03-01|      1|      burger|  15.47|
+|  2020-03-03|      1|      tennis|  35.03|
+|  2020-03-04|      2|      petrol| 150.47|
++------------+-------+------------+-------+
+
+root
+ |-- date: string (nullable = true)
+ |-- account: string (nullable = true)
+ |-- description: string (nullable = true)
+ |-- amount: string (nullable = true)
+
+Typed data frame
++----------+-------+------------+------+
+|    amount|account| description|amount|
++----------+-------+------------+------+
+|      NULL|      1|      burger|  0.01|
+|      NULL|      1|      petrol|  0.02|
+|      NULL|      1|      tennis|  0.03|
+|2020-12-01|       |      tennis|  0.04|
+|2020-12-01|      1|      petrol|  NULL|
+|2020-02-01|      1|      burger| 15.46|
+|2020-02-02|      1|       movie| 20.01|
+|2020-02-03|      1|      tennis| 35.01|
+|2020-02-04|      2|      petrol|150.46|
+|2020-02-04|      2| electricity|300.47|
+|2020-01-01|      1|      burger| 15.45|
+|2020-01-02|      1|       movie|  20.0|
+|2020-01-03|      1|      tennis|  35.0|
+|2020-01-04|      2|      petrol|150.45|
+|2020-03-01|      1|      burger| 15.47|
+|2020-03-03|      1|      tennis| 35.03|
+|2020-03-04|      2|      petrol|150.47|
++----------+-------+------------+------+
+
+root
+ |-- amount: date (nullable = true)
+ |-- account: string (nullable = true)
+ |-- description: string (nullable = true)
+ |-- amount: double (nullable = true)
+
+Finished...
+
+BUILD SUCCESSFUL in 3s
+7 actionable tasks: 3 executed, 4 up-to-date
+7:04:54 pm: Execution finished 'run --stacktrace'.
