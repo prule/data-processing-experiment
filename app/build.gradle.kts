@@ -19,6 +19,9 @@ repositories {
 }
 
 dependencies {
+
+    implementation(project(":spark"))
+
     // Use the Kotlin JUnit 5 integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 
@@ -40,7 +43,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "com.example.dataprocessingexperiment.AppKt"
+    mainClass = "com.example.dataprocessingexperiment.app.AppKt"
 }
 
 tasks.named<Test>("test") {
