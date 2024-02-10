@@ -23,10 +23,6 @@ class Spike1 {
 
     fun run() {
 
-        // clean up the output directory
-        val outputPath = "./build/output/AppTest1"
-        File(outputPath).deleteRecursively()
-
         // spark setup
         val config = SparkConf().setAppName("spike").setMaster("local")
         val sparkSession = SparkSession.builder().config(config).orCreate
