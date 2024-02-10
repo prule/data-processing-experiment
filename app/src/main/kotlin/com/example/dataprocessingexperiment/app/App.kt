@@ -3,6 +3,8 @@
  */
 package com.example.dataprocessingexperiment.app
 
+import com.example.dataprocessingexperiment.spark.Spark
+
 class App {
     val greeting: String
         get() {
@@ -12,4 +14,5 @@ class App {
 
 fun main() {
     println(App().greeting)
+    Spark()
 }
