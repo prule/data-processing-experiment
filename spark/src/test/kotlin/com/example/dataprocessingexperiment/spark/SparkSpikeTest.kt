@@ -1,27 +1,23 @@
 package com.example.dataprocessingexperiment.spark
 
+import io.kotest.matchers.longs.shouldBeGreaterThan
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
-import java.io.File
 import org.apache.spark.sql.functions
+import org.junit.jupiter.api.Test
 
 /**
  * A basic class that sets the pattern for Spark SQL processing.
  *  - reads a dataframe from a folder containing CSVs
  *  - selects the required columns
  *  - converts the columns to the desired types
- *
- * I don't like this however, because everything is hardcoded and nothing can be reused/leveraged.
- *  - file location and type
- *  - column names
- *  - column types
- *  - date format
- *
- *  Let's start addressing that in part-3.
  */
-class Spike1 {
+class SparkSpikeTest {
 
-    fun run() {
+    @Test
+    fun `spark sql should work`() {
 
         // spark setup
         val config = SparkConf().setAppName("spike").setMaster("local")
@@ -61,6 +57,8 @@ class Spike1 {
         println("Typed data frame")
         typedDataFrame.show(20)
         typedDataFrame.printSchema()
+
+        typedDataFrame.count() shouldBeGreaterThan 0
 
     }
 
