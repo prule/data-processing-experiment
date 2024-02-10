@@ -35,7 +35,7 @@ class Spike1 {
             .alias("statements")
 
         println("Statements data frame")
-        statementsDataFrame.show()
+        statementsDataFrame.show(20)
         statementsDataFrame.printSchema()
 
         // only select the columns needed so we can exclude data we don't need here
@@ -47,7 +47,7 @@ class Spike1 {
         )
 
         println("Selected data frame")
-        selectedDataFrame.show()
+        selectedDataFrame.show(20)
         selectedDataFrame.printSchema()
 
         // convert to typed columns
@@ -59,7 +59,7 @@ class Spike1 {
         )
 
         println("Typed data frame")
-        typedDataFrame.show()
+        typedDataFrame.show(20)
         typedDataFrame.printSchema()
 
     }
