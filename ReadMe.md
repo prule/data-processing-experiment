@@ -32,7 +32,7 @@ And there we have it - a basic runnable spark sql capability.
 
 Running the application we can see the output from each stage:
 
-https://github.com/prule/data-processing-experiment/blob/8770c3265268f568645d4f230e09dcb5ef29f73f/app/part-2-sample-console-output.txt
+https://github.com/prule/data-processing-experiment/blob/367140b78882922a68129400b2f16da45c7dfae1/app/part-2-sample-console-output.txt#L15-L113
 
 You should see in the output dataframes that invalid values (those that couldn't be converted to types) come through as NULL.
 
