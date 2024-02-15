@@ -3,14 +3,47 @@
  */
 package com.example.dataprocessingexperiment.app
 
-import com.example.dataprocessingexperiment.spark.Spike1
+import com.example.dataprocessingexperiment.spark.DataFrameBuilder
+import com.example.dataprocessingexperiment.spark.types.DateType
+import com.example.dataprocessingexperiment.spark.types.DecimalType
+import com.example.dataprocessingexperiment.spark.types.Types
+import com.example.dataprocessingexperiment.tables.FileSource
+import io.github.xn32.json5k.Json5
+import io.github.xn32.json5k.decodeFromStream
+import org.apache.spark.SparkConf
+import org.apache.spark.sql.SparkSession
+
 
 class App {
 
+    fun go() {
+        val fileSource = Json5.decodeFromStream<FileSource>(
+            this::class.java.getResourceAsStream("/sample1.statements.json5")!!
+        )
+
+        // spark setup
+        val config = SparkConf().setAppName("spike").setMaster("local")
+        val sparkSession = SparkSession.builder().config(config).orCreate
+
+        //
+        val dataFrameBuilder = DataFrameBuilder(
+            sparkSession,
+            fileSource,
+            Types.all(),
+            "../data/"
+        )
+
+        val typedDataset = dataFrameBuilder.typed()
+        typedDataset.printSchema()
+        typedDataset.show(20)
+
+    }
 }
 
 fun main() {
     println("Starting...")
-    Spike1().run()
+
+    App().go()
+
     println("Finished...")
 }

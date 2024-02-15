@@ -1,12 +1,9 @@
-Externalising the table configuration
-====
-
-When data is coming from external sources, I think it would be useful to be able to externalise the configuration so it can be easily changed. It will also let many datasets be read without having to write lots of boiler plate code. 
-
-I want to be able to use a configuration that represents a CSV like the following and have code interpret it and build a spark dataframe containing these columns, typed appropriately:
-
-```
 {
+  name: "sample 1",
+  description: "sample 1 description",
+  path: "sample1/statements/",
+  type: "csv",
+  table: {
     name: "transactions",
     description: "account transactions",
     columns: [
@@ -39,5 +36,4 @@ I want to be able to use a configuration that represents a CSV like the followin
       }
     ]
   }
-```
-
+}

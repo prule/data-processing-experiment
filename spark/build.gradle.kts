@@ -9,9 +9,12 @@ repositories {
 }
 
 dependencies {
+    api(project(":tables"))
 
     api("org.scala-lang:scala-library:2.13.12")
     api("org.apache.spark:spark-sql_2.13:3.5.0")
+    api("org.jetbrains.kotlinx.spark:kotlin-spark-api_3.3.2_2.13:1.2.4")
+//    api("org.jetbrains.kotlinx.spark:kotlin-spark-api_3.3.2_2.13:3.5.0")
     api("com.fasterxml.jackson.core:jackson-core:2.15.2")
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
     implementation("ch.qos.logback:logback-classic:1.4.7")
@@ -29,10 +32,6 @@ dependencies {
     testImplementation ("io.kotest:kotest-runner-junit5:5.8.0")
     testImplementation ("io.kotest:kotest-assertions-core:5.8.0")
 
-}
-
-kotlin {
-    jvmToolchain(17)
 }
 
 tasks.named<Test>("test") {

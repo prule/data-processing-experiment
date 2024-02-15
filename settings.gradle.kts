@@ -11,4 +11,4 @@ plugins {
 }
 
 rootProject.name = "data-processing-experiment"
-include("app", "spark")
+include("app", "spark", "tables")
