@@ -7,7 +7,7 @@ import org.apache.spark.sql.functions
 /**
  * Converts to a Date, choosing the first non-null value resulting from the parsing of each provided format.
  *
- * The following configuration specifies 2 date formats to use when trying to parse the date.
+ * The following column definition specifies 2 date formats to use when trying to parse the date.
  * ```
  *       {
  *         name: "date",

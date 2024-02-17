@@ -73,5 +73,10 @@ case "$1" in
 
     echo "$(tput setaf 3)    build                                      $(tput sgr0)      Build application"
     echo "$(tput setaf 3)    clean                                      $(tput sgr0)      Delete generated and temporary files"
+    echo "$(tput setaf 3)    run                                        $(tput sgr0)      Run the application"
+    echo "$(tput setaf 3)    test                                       $(tput sgr0)      Run tests"
+    echo "$(tput setaf 3)    doc                                        $(tput sgr0)      Generate Dokka documentation and open in browser"
+    echo "$(tput setaf 3)    grade:upgrade <version>                    $(tput sgr0)      Upgrade gradle"
+    echo "$(tput setaf 3)    report:test:open                           $(tput sgr0)      Open junit test reports for all modules"
 
 esac

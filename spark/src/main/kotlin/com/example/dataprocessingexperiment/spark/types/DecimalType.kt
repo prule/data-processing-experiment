@@ -7,7 +7,7 @@ import org.apache.spark.sql.functions
 /**
  * Converts to a decimal.
  *
- * The following configuration specifies a decimal with precision=10 and scale=2
+ * The following column definition specifies a decimal with precision=10 and scale=2
  *
  * ```
  *       {

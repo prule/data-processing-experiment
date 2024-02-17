@@ -1,5 +1,7 @@
 package com.example.dataprocessingexperiment.spark.types
 
+import mu.KotlinLogging
+
 /**
  * A convenience class to define what types are available.
  *
@@ -7,6 +9,7 @@ package com.example.dataprocessingexperiment.spark.types
  * using custom types create an instance of `Types` add use `add()` to populate.
  */
 class Types {
+    private val logger = KotlinLogging.logger {}
     private val map: MutableMap<String, Typer> = mutableMapOf()
 
     fun add(typer: Typer) {
@@ -14,6 +17,9 @@ class Types {
     }
 
     fun get(type: String): Typer {
+        if (!map.containsKey(type)) {
+            logger.warn { "Type $type is not defined and will be defaulted to String" }
+        }
         return map.getOrDefault(type, noop)
     }
 

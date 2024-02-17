@@ -23,13 +23,9 @@ class DataFrameBuilder(private val sparkSession: SparkSession, private val fileS
     // - Only the columns specified and with their associated types (integer, date, boolean etc)
     // - Those values that couldn't be converted to a type will be null.
     fun typed(): Dataset<Row> {
-        val typedColumns: List<Column> = fileSource.table.columns.map { column -> typeColumn(column.name, column.type, column.formats) }
+        val typedColumns: List<Column> = fileSource.table.columns.map { column -> types.get(column.type).process(column.name, column.formats) }
         // call var args function https://stackoverflow.com/a/65520425
         return raw.select(*typedColumns.map { it }.toTypedArray())
-    }
-
-    private fun typeColumn(name: String, type: String, formats: List<String>?): Column {
-        return types.get(type).process(name, formats)
     }
 
 }

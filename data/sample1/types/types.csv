@@ -1,0 +1,2 @@
+boolean,date,decimal,integer,string,unknown
+true,2020-12-31,100.123,6,any value,unknown

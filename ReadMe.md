@@ -62,7 +62,6 @@ val typedDataset = dataFrameBuilder.typed()
 ```
 DataFrameBuilder reads the RAW dataset and uses the FileSource configuration to produce a TYPED dataset. The typed dataset will only contain the columns specified in the configuration and uses the Types to do the conversion.
 
-
 Previously everything was [hardcoded](https://github.com/prule/data-processing-experiment/blob/part-2/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/Spike1.kt):
 
 ```kotlin
@@ -90,17 +89,78 @@ val typedDataFrame = selectedDataFrame.select(
 )
 ```
 
-Now with the configuration externalised we can make changes without having to update and deploy code - while this may not seem like much at the moment, notice how the code to achieve this is very small, simple, and easy to work with. Also note that this configuration could be sourced from anywhere - like from a database (a web application could be used to store, edit, version configurations). The configuration also acts as easy to read documentation about what data you are using and how the values are typed.
+The key points here are:
 
-It's important to acknowledge that using the external configuration (json5) isn't mandatory. You can still get some benefits from a hardcoded version (where the configuration would be created by code instead of deserializing json) - reuse of functionality, consistent code patterns, and future functionality I'll be introducing soon. External configuration is in addition to these benefits.
+- FileSource contains information about where the data is along with metadata to help make the configuration self documenting. [DataFrameBuilder.raw](https://github.com/prule/data-processing-experiment/blob/part-3/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/DataFrameBuilder.kt) will use this to load the table using Spark.
+```json5
+{
+  name: "sample 1",
+  description: "sample 1 description",
+  path: "sample1/statements/",
+  type: "csv",
+  table: {
+    name: "transactions",
+    description: "account transactions",
+    columns: [
+      ...
+    ]
+  }
+```
+
+- Column definitions identify the name of the column - which must match the column header in the CSV - and the data type
+```json5
+{
+  name: "date",
+  description: "date of transaction",
+  type: "date",
+  formats: [
+    "yyyy-MM-dd",
+    "dd-MM-yyyy"
+  ]
+}
+```
+
+- DataFrameBuilder.typed() uses Spark to select these columns and convert to the appropriate type by looking up the type definition which return a spark column - for some situations this can be a simple CAST, but for richer functionality much more can be implemented here. See [DateType](https://github.com/prule/data-processing-experiment/blob/part-3/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/types/DateType.kt) for an example.
+```kotlin
+fun typed(): Dataset<Row> {
+    val typedColumns: List<Column> = fileSource.table.columns.map { column -> types.get(column.type).process(column.name, column.formats) }
+    return raw.select(*typedColumns.map { it }.toTypedArray())
+}
+```
+
+
+----
+
+Now with the configuration externalised we can make changes without having to update and deploy code - while this may not seem like much at the moment, notice how the code to achieve this is very small, simple, and easy to work with. Also note that this configuration could be sourced from anywhere - like from a database (a web application could be used to store, edit, version configurations). The configuration also acts as easy to read documentation about what data you are using and how the values are typed. You might be able to image a system where this information could be easily accessible/published, so it can be easily referenced.
+
+It's important to acknowledge that using the external configuration (json5) isn't mandatory. You can still get some benefits from a hardcoded version - See [DataFrameBuilderTest](https://github.com/prule/data-processing-experiment/blob/c9df1629f8bdac3153c4993adbe0efbdedb140ad/spark/src/test/kotlin/com/example/dataprocessingexperiment/spark/DataFrameBuilderTest.kt#L22) - (where the configuration would be created by code instead of deserializing json) - reuse of functionality, consistent code patterns, and future functionality I'll be introducing soon. External configuration is in addition to these benefits.
 
 From now on, any data that I need to read in can be accessed in this way - reusing this functionality and pattern. You may have noticed how the DateType allows multiple formats - useful for when your data is not consistent - and now I get this functionality (and the rest) for free in the future.
 
-Leveraging patterns and functionality like this is one way to get faster and more efficient value out of your projects. 
+Leveraging patterns and functionality like this is one way to get faster and more efficient value out of your projects. By creating a capability (easily create dataframes) we can leverage this again and again - and process data in a consistent manner.
 
+From here the code can be progressed to provide more functionality which I'll address in the next couple of parts...
+
+- Now that we have table definitions, I can imagine creating more capabilities to:
+    - generate data in this format
+    - produce documentation explaining how data is used
+    - produce reports detailing insights about the data
+        - in both raw and typed states
+    - filter out invalid data
+
+So let's do a sanity check at this point:
+
+- Complexity = VERY LOW
+- Value = SMALL, LIMITED
+- Potential = MEDIUM
+
+Granted this is a subjective assessment, but lets see how it shapes up after further progression.
+
+
+----
 Running the application via gradle (configured with the required --add-exports values) we get:
 
-```bash
+```text
 % ./gradlew app:run
 
 > Task :app:run
@@ -179,5 +239,3 @@ Finished...
 BUILD SUCCESSFUL in 3s
 10 actionable tasks: 5 executed, 5 up-to-date
 ```
-
-From here the code can be progressed to provide more functionality which I'll address in the next couple of parts...
