@@ -34,7 +34,8 @@ I want to be able to use a configuration that represents a CSV like the followin
         description: "amount can be a positive (credit) or negative (debit) number representing dollars and cents",
         type: "decimal",
         formats: [
-          "10,2"
+          "10",
+          "2"
         ]
       }
     ]
@@ -59,6 +60,8 @@ val dataFrameBuilder = DataFrameBuilder(
 // get the typed version of the dataset, with columns and types specified in config
 val typedDataset = dataFrameBuilder.typed()
 ```
+DataFrameBuilder reads the RAW dataset and uses the FileSource configuration to produce a TYPED dataset. The typed dataset will only contain the columns specified in the configuration and uses the Types to do the conversion.
+
 
 Previously everything was [hardcoded](https://github.com/prule/data-processing-experiment/blob/part-2/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/Spike1.kt):
 

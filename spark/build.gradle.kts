@@ -1,6 +1,10 @@
+import org.jetbrains.dokka.gradle.DokkaTask
+import java.net.URL
+
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     alias(libs.plugins.jvm)
+    id("org.jetbrains.dokka") version "1.9.10"
 }
 
 repositories {
@@ -9,6 +13,7 @@ repositories {
 }
 
 dependencies {
+
     api(project(":tables"))
 
     api("org.scala-lang:scala-library:2.13.12")
@@ -54,4 +59,27 @@ tasks.named<Test>("test") {
         "--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED",
     )
     jvmArgs = sparkJava17CompatibleJvmArgs
+}
+
+tasks.withType<DokkaTask>().configureEach {
+    dokkaSourceSets {
+        named("main") {
+            // used as project name in the header
+            // needs to match the module name in the first line of Module.md
+            moduleName.set("Data Processing Experiment - Spark")
+
+            // contains descriptions for the module and the packages
+            includes.from("Module.md")
+
+            // adds source links that lead to this repository, allowing readers
+            // to easily find source code for inspected declarations
+            sourceLink {
+                localDirectory.set(file("src/main/kotlin"))
+                remoteUrl.set(URL(
+                    "https://github.com/prule/data-processing-experiment/tree/part-3/spark/src/main/kotlin"
+                ))
+                remoteLineSuffix.set("#L")
+            }
+        }
+    }
 }

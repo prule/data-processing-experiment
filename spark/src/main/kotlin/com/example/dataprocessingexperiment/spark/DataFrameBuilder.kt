@@ -4,6 +4,10 @@ import com.example.dataprocessingexperiment.spark.types.Types
 import com.example.dataprocessingexperiment.tables.FileSource
 import org.apache.spark.sql.*
 
+/**
+ * DataFrameBuilder reads the RAW dataset and uses the FileSource configuration to produce a TYPED dataset. The typed dataset
+ * will only contain the columns specified in the configuration and uses the Types to do the conversion.
+ */
 class DataFrameBuilder(private val sparkSession: SparkSession, private val fileSource: FileSource, private val types: Types, private val rootPath: String = "") {
 
     // The raw dataset - all columns

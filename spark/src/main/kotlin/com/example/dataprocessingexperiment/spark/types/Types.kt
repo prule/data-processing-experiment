@@ -1,5 +1,11 @@
 package com.example.dataprocessingexperiment.spark.types
 
+/**
+ * A convenience class to define what types are available.
+ *
+ * Use `Types.all()` if you only need to use the provided types, or if you are
+ * using custom types create an instance of `Types` add use `add()` to populate.
+ */
 class Types {
     private val map: MutableMap<String, Typer> = mutableMapOf()
 

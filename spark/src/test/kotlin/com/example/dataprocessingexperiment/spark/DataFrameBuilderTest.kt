@@ -39,7 +39,7 @@ class DataFrameBuilderTest {
                 "test csv file",
                 listOf(
                     Column("account", "account", "string"),
-                    Column("amount", "amount", "decimal", listOf("10,2")),
+                    Column("amount", "amount", "decimal", listOf("10","2")),
                     Column("date", "date", "date", listOf("d/M/yyyy", "yyyy-MM-dd")),
                     Column("description", "description", "string"),
                 )
@@ -58,12 +58,6 @@ class DataFrameBuilderTest {
         val rawDataset = dataFrameBuilder.raw
         logger.debug {"Raw dataset"}
 
-//        StructType(
-//            listOf(
-//            StructField("date", StringType::class, true, null)
-//            )
-//        )
-
         rawDataset.printSchema()
         rawDataset.show(20)
 
@@ -77,23 +71,6 @@ class DataFrameBuilderTest {
 
         typedDataset.count() shouldBeGreaterThan 10
 
-        println ( consoleCapture.capturedOutput.out() )
-    }
-
-    companion object {
-        val consoleCapture = ConsoleCapture()
-
-        @JvmStatic
-        @BeforeAll
-        fun before(): Unit {
-//            consoleCapture.setup()
-        }
-
-        @JvmStatic
-        @AfterAll
-        fun after(): Unit {
-//            consoleCapture.teardown()
-        }
     }
 
 }

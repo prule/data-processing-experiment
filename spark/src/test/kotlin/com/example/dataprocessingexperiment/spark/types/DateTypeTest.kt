@@ -57,6 +57,7 @@ class DateTypeTest {
         val data = listOf(
             GenericRow(arrayOf("100-01-2000")),
             GenericRow(arrayOf("01-01-2000")),
+            GenericRow(arrayOf("Jan-2000")),
         )
 
         val dataframe = asDataFrame(data)
@@ -68,6 +69,7 @@ class DateTypeTest {
 
         // verify
         result shouldContainExactlyInAnyOrder (listOf(
+            null,
             null,
             null,
         ))

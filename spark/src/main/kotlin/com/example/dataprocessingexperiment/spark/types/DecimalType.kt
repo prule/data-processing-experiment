@@ -1,9 +1,31 @@
 package com.example.dataprocessingexperiment.spark.types
 
+import mu.KotlinLogging
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions
 
+/**
+ * Converts to a decimal.
+ *
+ * The following configuration specifies a decimal with precision=10 and scale=2
+ *
+ * ```
+ *       {
+ *         name: "amount",
+ *         description: "amount can be a positive (credit) or negative (debit) number representing dollars and cents",
+ *         type: "decimal",
+ *         formats: [
+ *           "10",
+ *           "2"
+ *         ]
+ *       }
+ * ```
+ *
+ * @link https://spark.apache.org/docs/3.5.0/api/java/org/apache/spark/sql/types/DecimalType.html
+ */
 class DecimalType : Typer {
+    private val logger = KotlinLogging.logger {}
+
     override fun key(): String {
         return "decimal"
     }
@@ -12,7 +34,16 @@ class DecimalType : Typer {
         var typeCast = "decimal"
         if (formats != null) {
             if (formats.isNotEmpty()) {
-                typeCast = "decimal(${formats[0]})"
+                val precision = formats[0].toIntOrNull()
+                val scale = if (formats.size > 1) formats[1].toIntOrNull() else null
+                if (precision != null && scale != null) {
+                    typeCast = "decimal(${precision},${scale})"
+                    logger.info { "Using $typeCast for column $name" }
+                } else {
+                    logger.info { "Invalid formats provided so using default $typeCast for column $name" }
+                }
+            } else {
+                logger.info { "No formats provided so using default $typeCast for column $name" }
             }
         }
         return functions.col(name).cast(typeCast).alias(name)

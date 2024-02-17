@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+case "$1" in
+
+  'build')
+    echo ""
+    echo "Building"
+    echo ""
+    ./gradlew build
+    ;;
+
+  'clean')
+    echo ""
+    echo "Cleaning"
+    echo ""
+    ./gradlew clean
+    ;;
+
+  'run')
+    echo ""
+    echo "Running application"
+    echo ""
+    ./gradlew app:run
+    ;;
+
+  'test')
+    echo ""
+    echo "Running tests"
+    echo ""
+    ./gradlew test
+    ;;
+
+  'doc')
+    echo ""
+    echo "Generating docs"
+    echo ""
+    ./gradlew spark:dokkaHtml
+    open spark/build/dokka/html/index.html
+    ;;
+
+
+  'gradle:upgrade')
+    echo ""
+    echo "Upgrading gradle."
+    echo ""
+    if [ -z "$2" ]; then
+      echo "Version not specified!"
+    else
+      ./gradlew wrapper --gradle-version $2 --distribution-type=all
+    fi
+    echo ""
+    ;;
+
+  'report:test:open')
+    echo ""
+    echo "Opening Junit test report."
+    echo ""
+    open ./app/build/reports/tests/test/index.html
+    open ./spark/build/reports/tests/test/index.html
+    open ./tables/build/reports/tests/test/index.html
+    echo ""
+    ;;
+
+
+  *)
+    echo -e ""
+    echo "Usage:"
+    echo ""
+    echo "$(tput setaf 5)    $me$(tput sgr0) $(tput setaf 3)<command>$(tput sgr0)"
+    echo ""
+    echo "Commands:"
+    echo ""
+
+    echo "$(tput setaf 3)    build                                      $(tput sgr0)      Build application"
+    echo "$(tput setaf 3)    clean                                      $(tput sgr0)      Delete generated and temporary files"
+
+esac

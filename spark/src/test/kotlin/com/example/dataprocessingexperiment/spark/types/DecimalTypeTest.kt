@@ -23,6 +23,8 @@ import java.time.ZoneId
 // see the following link for examples
 // https://github.com/Kotlin/kotlin-spark-api/blob/release/examples/src/main/kotlin/org/jetbrains/kotlinx/spark/examples/UdtRegistration.kt
 
+// todo refactor this to be data driven
+
 class DecimalTypeTest {
     private val columnName = "value"
 
@@ -38,7 +40,7 @@ class DecimalTypeTest {
 
         val dataframe = asDataFrame(data)
 
-        val column = DecimalType().process(columnName, listOf("10,3"))
+        val column = DecimalType().process(columnName, listOf("10","3"))
 
         // perform
         val result = dataframe.select(column).collectAsList().map { it.getDecimal(0).stripTrailingZeros() }
@@ -60,7 +62,7 @@ class DecimalTypeTest {
 
         val dataframe = asDataFrame(data)
 
-        val column = DecimalType().process(columnName, listOf("10,3"))
+        val column = DecimalType().process(columnName, listOf("10","3"))
 
         // perform
         val result = dataframe.select(column).collectAsList().map { it.getDecimal(0) }
@@ -69,6 +71,72 @@ class DecimalTypeTest {
         result shouldContainExactlyInAnyOrder (listOf(
             null,
             null
+        ))
+    }
+
+    @Test
+    fun `should default when format doesn't contain scale`() {
+
+        // prepare
+
+        val data = listOf(
+            GenericRow(arrayOf("12.123")),
+        )
+
+        val dataframe = asDataFrame(data)
+
+        val column = DecimalType().process(columnName, listOf("10"))
+
+        // perform
+        val result = dataframe.select(column).collectAsList().map { it.getDecimal(0) }
+
+        // verify
+        result shouldContainExactlyInAnyOrder (listOf(
+            BigDecimal.valueOf(12),
+        ))
+    }
+
+    @Test
+    fun `should default when scale is invalid`() {
+
+        // prepare
+
+        val data = listOf(
+            GenericRow(arrayOf("12.123")),
+        )
+
+        val dataframe = asDataFrame(data)
+
+        val column = DecimalType().process(columnName, listOf("10", "x"))
+
+        // perform
+        val result = dataframe.select(column).collectAsList().map { it.getDecimal(0) }
+
+        // verify
+        result shouldContainExactlyInAnyOrder (listOf(
+            BigDecimal.valueOf(12),
+        ))
+    }
+
+    @Test
+    fun `should default when precision is invalid`() {
+
+        // prepare
+
+        val data = listOf(
+            GenericRow(arrayOf("12.123")),
+        )
+
+        val dataframe = asDataFrame(data)
+
+        val column = DecimalType().process(columnName, listOf("x", "2"))
+
+        // perform
+        val result = dataframe.select(column).collectAsList().map { it.getDecimal(0) }
+
+        // verify
+        result shouldContainExactlyInAnyOrder (listOf(
+            BigDecimal.valueOf(12),
         ))
     }
 
