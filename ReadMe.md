@@ -89,7 +89,7 @@ val typedDataFrame = selectedDataFrame.select(
 
 Now with the configuration externalised we can make changes without having to update and deploy code - while this may not seem like much at the moment, notice how the code to achieve this is very small, simple, and easy to work with. Also note that this configuration could be sourced from anywhere - like from a database (a web application could be used to store, edit, version configurations). The configuration also acts as easy to read documentation about what data you are using and how the values are typed.
 
-It's important to acknowledge that using the external configuration (json5) isn't mandatory. You can still get some benefits from the hardcoded version - reuse of functionality, consistent code patterns etc. External configuration is in addition to these benefits.
+It's important to acknowledge that using the external configuration (json5) isn't mandatory. You can still get some benefits from a hardcoded version (where the configuration would be created by code instead of deserializing json) - reuse of functionality, consistent code patterns, and future functionality I'll be introducing soon. External configuration is in addition to these benefits.
 
 From now on, any data that I need to read in can be accessed in this way - reusing this functionality and pattern. You may have noticed how the DateType allows multiple formats - useful for when your data is not consistent - and now I get this functionality (and the rest) for free in the future.
 
