@@ -8,7 +8,7 @@ class NoOpType: Typer {
         return "noop"
     }
 
-    override fun process(name: String, type: String, formats: List<String>?): Column {
+    override fun process(name: String, formats: List<String>?): Column {
         return col(name)
     }
 }

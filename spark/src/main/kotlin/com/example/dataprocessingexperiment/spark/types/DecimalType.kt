@@ -8,7 +8,7 @@ class DecimalType : Typer {
         return "decimal"
     }
 
-    override fun process(name: String, type: String, formats: List<String>?): Column {
+    override fun process(name: String, formats: List<String>?): Column {
         var typeCast = "decimal"
         if (formats != null) {
             if (formats.isNotEmpty()) {

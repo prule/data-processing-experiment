@@ -2,7 +2,8 @@ package com.example.dataprocessingexperiment.spark.types
 
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
-import mu.KotlinLogging
+import io.kotest.matchers.ints.shouldBeExactly
+import org.apache.spark.SparkConf
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.SparkSession
@@ -12,7 +13,9 @@ import org.apache.spark.sql.types.Metadata
 import org.apache.spark.sql.types.StructField
 import org.apache.spark.sql.types.StructType
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 import java.sql.Date
 import java.time.LocalDate
 import java.time.ZoneId
@@ -20,58 +23,57 @@ import java.time.ZoneId
 // see the following link for examples
 // https://github.com/Kotlin/kotlin-spark-api/blob/release/examples/src/main/kotlin/org/jetbrains/kotlinx/spark/examples/UdtRegistration.kt
 
-class DateTypeTest {
-    private val logger = KotlinLogging.logger {}
-    private val columnName = "date"
+class BooleanTypeTest {
+    private val columnName = "value"
 
     @Test
-    fun `should convert valid dates`() {
+    fun `should convert valid booleans`() {
 
         // prepare
 
         val data = listOf(
-            GenericRow(arrayOf("01-01-2020")),
-            GenericRow(arrayOf("2020-01-02")),
+            GenericRow(arrayOf("1")),
+            GenericRow(arrayOf("true")),
+            GenericRow(arrayOf("t")),
         )
 
         val dataframe = asDataFrame(data)
 
-        val column = DateType().process(columnName, listOf("yyyy-MM-dd", "dd-MM-yyyy"))
+        val column = BooleanType().process(columnName, listOf())
 
         // perform
-        val result = dataframe.select(column).collectAsList().map { it.getDate(0) }
+        val result = dataframe.select(column).collectAsList().map { it.get(0) }
 
         // verify
         result shouldContainExactlyInAnyOrder (listOf(
-            asDate(2020, 1, 1),
-            asDate(2020, 1, 2)
+            true,
+            true,
+            true,
         ))
     }
 
     @Test
-    fun `invalid dates should be null`() {
+    fun `should convert invalid booleans to false`() {
 
         // prepare
 
-        // these dates don't match the format we specify
         val data = listOf(
-            GenericRow(arrayOf("100-01-2000")),
-            GenericRow(arrayOf("01-01-2000")),
+            GenericRow(arrayOf("")),
+            GenericRow(arrayOf("x")),
         )
 
         val dataframe = asDataFrame(data)
 
-        val column = DateType().process(columnName, listOf("yyyy-MM-dd"))
+        val column = BooleanType().process(columnName, listOf())
 
         // perform
-        val result = dataframe.select(column).collectAsList().map { it.getDate(0) }
+        val result = dataframe.select(column).collectAsList().map { it.get(0) }
 
         // verify
         result shouldContainExactlyInAnyOrder (listOf(
             null,
             null,
         ))
-
     }
 
     private fun asDataFrame(data: List<GenericRow>): Dataset<Row> {
@@ -83,12 +85,6 @@ class DateTypeTest {
                     )
                 )
             )
-        )
-    }
-
-    private fun asDate(year: Int, month: Int, dayOfMonth: Int): Date {
-        return Date(
-            LocalDate.of(year, month, dayOfMonth).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
         )
     }
 

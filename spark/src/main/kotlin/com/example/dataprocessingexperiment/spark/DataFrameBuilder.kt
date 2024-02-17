@@ -25,7 +25,7 @@ class DataFrameBuilder(private val sparkSession: SparkSession, private val fileS
     }
 
     private fun typeColumn(name: String, type: String, formats: List<String>?): Column {
-        return types.get(type).process(name, type, formats)
+        return types.get(type).process(name, formats)
     }
 
 }

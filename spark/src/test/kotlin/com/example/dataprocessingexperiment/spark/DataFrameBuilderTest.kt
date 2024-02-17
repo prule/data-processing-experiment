@@ -4,17 +4,25 @@ import com.example.dataprocessingexperiment.spark.types.*
 import com.example.dataprocessingexperiment.tables.Column
 import com.example.dataprocessingexperiment.tables.FileSource
 import com.example.dataprocessingexperiment.tables.Table
-import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.longs.shouldBeGreaterThan
+import mu.KotlinLogging
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.types.StringType
+import org.apache.spark.sql.types.StructField
+import org.apache.spark.sql.types.StructType
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
 class DataFrameBuilderTest {
+    private val logger = KotlinLogging.logger {}
 
     @Test
     fun `data frame should build from code`() {
 
+        logger.warn("Starting")
         // spark setup
         val config = SparkConf().setAppName("spike").setMaster("local")
         val sparkSession = SparkSession.builder().config(config).orCreate
@@ -48,7 +56,14 @@ class DataFrameBuilderTest {
 
         // raw dataset, no typing, all columns
         val rawDataset = dataFrameBuilder.raw
-        println("Raw dataset")
+        logger.debug {"Raw dataset"}
+
+//        StructType(
+//            listOf(
+//            StructField("date", StringType::class, true, null)
+//            )
+//        )
+
         rawDataset.printSchema()
         rawDataset.show(20)
 
@@ -56,10 +71,29 @@ class DataFrameBuilderTest {
 
         // typed dataset, only columns specified
         val typedDataset = dataFrameBuilder.typed()
-        println("Typed dataset")
+        logger.debug {"Typed dataset"}
         typedDataset.printSchema()
         typedDataset.show(20)
 
         typedDataset.count() shouldBeGreaterThan 10
+
+        println ( consoleCapture.capturedOutput.out() )
     }
+
+    companion object {
+        val consoleCapture = ConsoleCapture()
+
+        @JvmStatic
+        @BeforeAll
+        fun before(): Unit {
+//            consoleCapture.setup()
+        }
+
+        @JvmStatic
+        @AfterAll
+        fun after(): Unit {
+//            consoleCapture.teardown()
+        }
+    }
+
 }

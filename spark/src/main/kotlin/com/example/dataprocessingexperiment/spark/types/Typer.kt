@@ -4,5 +4,5 @@ import org.apache.spark.sql.Column
 
 interface Typer {
     fun key(): String
-    fun process(name: String, type: String, formats: List<String>?): Column
+    fun process(name: String, formats: List<String>?): Column
 }

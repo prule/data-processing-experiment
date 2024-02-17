@@ -2,7 +2,6 @@ package com.example.dataprocessingexperiment.spark.types
 
 class Types {
     private val map: MutableMap<String, Typer> = mutableMapOf()
-    private val noop = NoOpType()
 
     fun add(typer: Typer) {
         map[typer.key()] = typer
@@ -13,13 +12,14 @@ class Types {
     }
 
     companion object {
+        private val noop = NoOpType()
         fun all(): Types {
             val types = Types()
             types.add(DateType()) // this supports multiple configurable date formats
             types.add(DecimalType())
             types.add(BooleanType())
             types.add(IntegerType())
-            types.add(NoOpType())
+            types.add(noop)
             return types
         }
 
