@@ -18,6 +18,6 @@ I'm going to split the work into "parts" - simple progressions, each one buildin
 * [Part 1](https://github.com/prule/data-processing-experiment/tree/part-1) - Setting up the project (a git repository with a gradle project)
 * [Part 2](https://github.com/prule/data-processing-experiment/tree/part-2) - Some basic spark sql code, so we see how Spark SQL works and what's involved
   * At this point I'll need some data to work with so I'll create something super simple
-* Part 3 - The code in part 2 established some patterns, but it's not flexible or reusable, so I'll refactor it
+* [Part 3](https://github.com/prule/data-processing-experiment/tree/part-3) - The code in part 2 established some patterns, but it's not flexible or reusable, so I'll refactor it
 * Part 4 - Now I've got more generic code there's lots more we can do
 
