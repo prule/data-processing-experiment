@@ -107,7 +107,7 @@ The key points here are:
   }
 ```
 
-- Column definitions identify the name of the column - which must match the column header in the CSV - and the data type
+- Column definitions identify the name of the column - which must match the column header in the CSV - and the data type with formatting options.
 ```json5
 {
   name: "date",
@@ -119,8 +119,20 @@ The key points here are:
   ]
 }
 ```
+- Type classes are implemented to perform the conversion - for some situations this can be a simple CAST, but for richer functionality much more can be implemented here. See [DateType](https://github.com/prule/data-processing-experiment/blob/part-3/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/types/DateType.kt) for an example. This is extensible - all we have to do is implement the `Typer` interface to add new capabilities and register the types with their names in a  `Types` instance which we pass to `DataFrameBuilder`.
+```kotlin
+class IntegerType : Typer {
+    override fun key(): String {
+        return "integer"
+    }
 
-- DataFrameBuilder.typed() uses Spark to select these columns and convert to the appropriate type by looking up the type definition which return a spark column - for some situations this can be a simple CAST, but for richer functionality much more can be implemented here. See [DateType](https://github.com/prule/data-processing-experiment/blob/part-3/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/types/DateType.kt) for an example.
+    override fun process(name: String, formats: List<String>?): Column {
+        return functions.col(name).cast("integer").alias(name)
+    }
+}
+```
+
+- DataFrameBuilder.typed() builds a collection of columns appropriately typed by using the type definition to return a spark column appropriately converted. It then selects these columns from the raw dataframe:
 ```kotlin
 fun typed(): Dataset<Row> {
     val typedColumns: List<Column> = fileSource.table.columns.map { column -> types.get(column.type).process(column.name, column.formats) }
@@ -131,11 +143,13 @@ fun typed(): Dataset<Row> {
 
 ----
 
-Now with the configuration externalised we can make changes without having to update and deploy code - while this may not seem like much at the moment, notice how the code to achieve this is very small, simple, and easy to work with. Also note that this configuration could be sourced from anywhere - like from a database (a web application could be used to store, edit, version configurations). The configuration also acts as easy to read documentation about what data you are using and how the values are typed. You might be able to image a system where this information could be easily accessible/published, so it can be easily referenced.
+Now with the configuration externalised we can make changes without having to update and deploy code - while this may not seem like much at the moment, notice how the code to achieve this is very small, simple, and easy to work with. 
 
-It's important to acknowledge that using the external configuration (json5) isn't mandatory. You can still get some benefits from a hardcoded version - See [DataFrameBuilderTest](https://github.com/prule/data-processing-experiment/blob/c9df1629f8bdac3153c4993adbe0efbdedb140ad/spark/src/test/kotlin/com/example/dataprocessingexperiment/spark/DataFrameBuilderTest.kt#L22) - (where the configuration would be created by code instead of deserializing json) - reuse of functionality, consistent code patterns, and future functionality I'll be introducing soon. External configuration is in addition to these benefits.
+Also note that this configuration could be sourced from anywhere - like from a database (a web application could be used to store, edit and version configurations). The configuration also acts as easy to read documentation about what data you are using and how the values are typed. You might be able to imagine a system where this information could be easily accessible/published, so it can be easily referenced (similar in concept to JavaDoc).
 
-From now on, any data that I need to read in can be accessed in this way - reusing this functionality and pattern. You may have noticed how the DateType allows multiple formats - useful for when your data is not consistent - and now I get this functionality (and the rest) for free in the future.
+It's important to acknowledge that using the external configuration (json5) isn't mandatory. You can still get some benefits from a hardcoded version - See [DataFrameBuilderTest](https://github.com/prule/data-processing-experiment/blob/c9df1629f8bdac3153c4993adbe0efbdedb140ad/spark/src/test/kotlin/com/example/dataprocessingexperiment/spark/DataFrameBuilderTest.kt#L22) (where the configuration would be created by code instead of deserializing json) - reuse of functionality, consistent patterns, and future functionality I'll be introducing soon. External configuration is in addition to these benefits.
+
+From now on, any data that I need to read can be accessed in this way - reusing this functionality and pattern. You may have noticed how the DateType allows multiple formats - useful for when your data is not consistent - and now I get this functionality (and the rest) for free in the future.
 
 Leveraging patterns and functionality like this is one way to get faster and more efficient value out of your projects. By creating a capability (easily create dataframes) we can leverage this again and again - and process data in a consistent manner.
 
@@ -154,7 +168,7 @@ So let's do a sanity check at this point:
 - Value = SMALL, LIMITED
 - Potential = MEDIUM
 
-Granted this is a subjective assessment, but lets see how it shapes up after further progression.
+Granted this is a subjective assessment, but lets see how it shapes up after further progressions.
 
 
 ----
@@ -165,12 +179,6 @@ Running the application via gradle (configured with the required --add-exports v
 
 > Task :app:run
 Starting...
-SLF4J: Class path contains multiple SLF4J providers.
-SLF4J: Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@6236eb5f]
-SLF4J: Found provider [org.apache.logging.slf4j.SLF4JServiceProvider@7c1e2a9e]
-SLF4J: See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
-SLF4J: Actual provider is of type [ch.qos.logback.classic.spi.LogbackServiceProvider@6236eb5f]
-14:49:17.487 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 
 Raw data frame
 
