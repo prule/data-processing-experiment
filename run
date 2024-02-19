@@ -35,7 +35,9 @@ case "$1" in
     echo "Generating docs"
     echo ""
     ./gradlew spark:dokkaHtml
+    ./gradlew tables:dokkaHtml
     open spark/build/dokka/html/index.html
+    open tables/build/dokka/html/index.html
     ;;
 
 
