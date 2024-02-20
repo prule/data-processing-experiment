@@ -6,8 +6,11 @@ import com.example.dataprocessingexperiment.tables.FileSource
 import com.example.dataprocessingexperiment.tables.Table
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.longs.shouldBeGreaterThan
+import io.kotest.matchers.shouldBe
 import mu.KotlinLogging
 import org.apache.spark.SparkConf
+import org.apache.spark.sql.Dataset
+import org.apache.spark.sql.Row
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.types.StructField
@@ -28,6 +31,7 @@ class DataFrameBuilderTest {
         val sparkSession = SparkSession.builder().config(config).orCreate
 
         // define our input source
+        // code version of app/src/main/resources/sample1.statements.json5
         val fileSource = FileSource(
             "test1",
             "test csv file",
@@ -38,39 +42,43 @@ class DataFrameBuilderTest {
                 "test1",
                 "test csv file",
                 listOf(
-                    Column("account", "account", "string"),
-                    Column("amount", "amount", "decimal", listOf("10","2")),
-                    Column("date", "date", "date", listOf("d/M/yyyy", "yyyy-MM-dd")),
+                    Column("date", "date", "date", listOf("yyyy-MM-dd", "dd-MM-yyyy"), required = true),
+                    Column("account", "account", "string", required = true),
                     Column("description", "description", "string"),
+                    Column("amount", "amount", "decimal", listOf("10", "2"), required = true),
                 )
             ),
         )
 
-        // register type converters
-        val types = Types()
-        types.add(DateType()) // this supports multiple configurable date formats
-        types.add(DecimalType())
-
-        //
-        val dataFrameBuilder = DataFrameBuilder(sparkSession, fileSource, types)
+        val dataFrameBuilder = DataFrameBuilder(sparkSession, fileSource, Types.all())
 
         // raw dataset, no typing, all columns
         val rawDataset = dataFrameBuilder.raw
-        logger.debug {"Raw dataset"}
+        display("raw", rawDataset)
 
-        rawDataset.printSchema()
-        rawDataset.show(20)
-
-        rawDataset.count() shouldBeGreaterThan 10
+        rawDataset.count() shouldBe 18
 
         // typed dataset, only columns specified
         val typedDataset = dataFrameBuilder.typed()
-        logger.debug {"Typed dataset"}
-        typedDataset.printSchema()
-        typedDataset.show(20)
+        display("typed", typedDataset)
 
-        typedDataset.count() shouldBeGreaterThan 10
+        typedDataset.count() shouldBe 18
 
+        // typed dataset, only columns specified
+        val validDataset = dataFrameBuilder.valid()
+        display("valid", validDataset)
+
+        validDataset.count() shouldBe 12
+
+    }
+
+    fun display(name: String, ds: Dataset<Row>) {
+        println()
+        println(name)
+        println()
+        ds.printSchema()
+        ds.orderBy("date").show(20)
+        println("row count = ${ds.count()}")
     }
 
 }

@@ -49,24 +49,24 @@ class App {
                 +------------+-------+------------+-------+--------------------+
                 |        date|account| description| amount|             comment|
                 +------------+-------+------------+-------+--------------------+
-                |  2020-13-01|      x|      burger|   0.01|        invalid date|
-                |invalid date|      x|      petrol|   0.02|        invalid date|
                 |        NULL|      x|      tennis|   0.03|             no date|
-                |  2020-12-01|       |      tennis|   0.04|          no account|
-                |  2020-12-01|      x|      petrol|      x| invalid number f...|
-                |           x|      x|           x|      x| row with multipl...|
                 |  01-03-2020|      1|      burger|  15.47|alternative date ...|
                 |  03-03-2020|      1|      tennis|  35.03|alternative date ...|
                 |  04-03-2020|      2|      petrol| 150.47|alternative date ...|
+                |  2020-01-01|      1|      burger|  15.45|                NULL|
+                |  2020-01-02|      1|       movie|  20.00|                NULL|
+                |  2020-01-03|      1|      tennis|  35.00|                NULL|
+                |  2020-01-04|      2|      petrol| 150.45|                NULL|
                 |  2020-02-01|      1|      burger|  15.46|                NULL|
                 |  2020-02-02|      1|       movie|  20.01|                NULL|
                 |  2020-02-03|      1|      tennis|  35.01|                NULL|
                 |  2020-02-04|      2|      petrol| 150.46|                NULL|
                 |  2020-02-04|      2| electricity| 300.47|                NULL|
-                |  2020-01-01|      1|      burger|  15.45|                NULL|
-                |  2020-01-02|      1|       movie|  20.00|                NULL|
-                |  2020-01-03|      1|      tennis|  35.00|                NULL|
-                |  2020-01-04|      2|      petrol| 150.45|                NULL|
+                |  2020-12-01|       |      tennis|   0.04| blank (many spac...|
+                |  2020-12-01|      x|      petrol|      x| invalid number f...|
+                |  2020-13-01|      x|      burger|   0.01|        invalid date|
+                |invalid date|      x|      petrol|   0.02|        invalid date|
+                |           x|      x|           x|      x| row with multipl...|
                 +------------+-------+------------+-------+--------------------+
 
                 row count = 18
@@ -92,24 +92,25 @@ class App {
                 |      NULL|      x|      burger|  0.01|
                 |      NULL|      x|      petrol|  0.02|
                 |      NULL|      x|      tennis|  0.03|
-                |2020-12-01|       |      tennis|  0.04|
-                |2020-12-01|      x|      petrol|  NULL|
                 |      NULL|      x|           x|  NULL|
-                |2020-03-01|      1|      burger| 15.47|
-                |2020-03-03|      1|      tennis| 35.03|
-                |2020-03-04|      2|      petrol|150.47|
+                |2020-01-01|      1|      burger| 15.45|
+                |2020-01-02|      1|       movie| 20.00|
+                |2020-01-03|      1|      tennis| 35.00|
+                |2020-01-04|      2|      petrol|150.45|
                 |2020-02-01|      1|      burger| 15.46|
                 |2020-02-02|      1|       movie| 20.01|
                 |2020-02-03|      1|      tennis| 35.01|
                 |2020-02-04|      2|      petrol|150.46|
                 |2020-02-04|      2| electricity|300.47|
-                |2020-01-01|      1|      burger| 15.45|
-                |2020-01-02|      1|       movie| 20.00|
-                |2020-01-03|      1|      tennis| 35.00|
-                |2020-01-04|      2|      petrol|150.45|
+                |2020-03-01|      1|      burger| 15.47|
+                |2020-03-03|      1|      tennis| 35.03|
+                |2020-03-04|      2|      petrol|150.47|
+                |2020-12-01|       |      tennis|  0.04|
+                |2020-12-01|      x|      petrol|  NULL|
                 +----------+-------+------------+------+
 
                 row count = 18
+
             */
 
             display("Valid dataset",dataFrameBuilder.valid())
@@ -127,18 +128,18 @@ class App {
                 +----------+-------+------------+------+
                 |      date|account| description|amount|
                 +----------+-------+------------+------+
-                |2020-03-01|      1|      burger| 15.47|
-                |2020-03-03|      1|      tennis| 35.03|
-                |2020-03-04|      2|      petrol|150.47|
+                |2020-01-01|      1|      burger| 15.45|
+                |2020-01-02|      1|       movie| 20.00|
+                |2020-01-03|      1|      tennis| 35.00|
+                |2020-01-04|      2|      petrol|150.45|
                 |2020-02-01|      1|      burger| 15.46|
                 |2020-02-02|      1|       movie| 20.01|
                 |2020-02-03|      1|      tennis| 35.01|
                 |2020-02-04|      2|      petrol|150.46|
                 |2020-02-04|      2| electricity|300.47|
-                |2020-01-01|      1|      burger| 15.45|
-                |2020-01-02|      1|       movie| 20.00|
-                |2020-01-03|      1|      tennis| 35.00|
-                |2020-01-04|      2|      petrol|150.45|
+                |2020-03-01|      1|      burger| 15.47|
+                |2020-03-03|      1|      tennis| 35.03|
+                |2020-03-04|      2|      petrol|150.47|
                 +----------+-------+------------+------+
 
                 row count = 12
@@ -150,12 +151,12 @@ class App {
 
     }
 
-    fun display(name: String, ds: Dataset<Row>) {
+    private fun display(name: String, ds: Dataset<Row>) {
         println()
         println(name)
         println()
         ds.printSchema()
-        ds.show(20)
+        ds.orderBy("date").show(20)
         println("row count = ${ds.count()}")
     }
 }
