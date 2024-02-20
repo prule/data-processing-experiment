@@ -6,6 +6,8 @@ import com.example.dataprocessingexperiment.tables.FileSource
 import io.github.xn32.json5k.Json5
 import io.github.xn32.json5k.decodeFromStream
 import org.apache.spark.SparkConf
+import org.apache.spark.sql.Dataset
+import org.apache.spark.sql.Row
 import org.apache.spark.sql.SparkSession
 
 
@@ -31,15 +33,11 @@ class App {
             )
 
             // get the raw version of the dataset, everything is a string, and all columns are included
-            val rawDataset = dataFrameBuilder.raw
-
-            println()
-            println("Raw data frame")
-            println()
-            rawDataset.printSchema()
-            rawDataset.show(20)
+            display("Raw dataset",dataFrameBuilder.raw)
 
             /*
+
+            In the raw dataset, every column is represented as a string.
 
                 root
                  |-- date: string (nullable = true)
@@ -56,6 +54,7 @@ class App {
                 |        NULL|      x|      tennis|   0.03|             no date|
                 |  2020-12-01|       |      tennis|   0.04|          no account|
                 |  2020-12-01|      x|      petrol|      x| invalid number f...|
+                |           x|      x|           x|      x| row with multipl...|
                 |  01-03-2020|      1|      burger|  15.47|alternative date ...|
                 |  03-03-2020|      1|      tennis|  35.03|alternative date ...|
                 |  04-03-2020|      2|      petrol| 150.47|alternative date ...|
@@ -70,18 +69,16 @@ class App {
                 |  2020-01-04|      2|      petrol| 150.45|                NULL|
                 +------------+-------+------------+-------+--------------------+
 
+                row count = 18
+
              */
 
             // get the typed version of the dataset, with columns and types specified in config
-            val typedDataset = dataFrameBuilder.typed()
-
-            println()
-            println("Typed data frame")
-            println()
-            typedDataset.printSchema()
-            typedDataset.show(20)
+            display("Typed dataset",dataFrameBuilder.typed())
 
             /*
+
+            When values can't be converted to their proper type, they'll appear as NULL.
 
                 root
                  |-- date: date (nullable = true)
@@ -97,6 +94,7 @@ class App {
                 |      NULL|      x|      tennis|  0.03|
                 |2020-12-01|       |      tennis|  0.04|
                 |2020-12-01|      x|      petrol|  NULL|
+                |      NULL|      x|           x|  NULL|
                 |2020-03-01|      1|      burger| 15.47|
                 |2020-03-03|      1|      tennis| 35.03|
                 |2020-03-04|      2|      petrol|150.47|
@@ -111,9 +109,54 @@ class App {
                 |2020-01-04|      2|      petrol|150.45|
                 +----------+-------+------------+------+
 
+                row count = 18
             */
+
+            display("Valid dataset",dataFrameBuilder.valid())
+
+            /*
+
+            We can remove any rows where a required column is null - consider these invalid.
+
+                root
+                 |-- date: date (nullable = true)
+                 |-- account: string (nullable = true)
+                 |-- description: string (nullable = true)
+                 |-- amount: decimal(10,2) (nullable = true)
+
+                +----------+-------+------------+------+
+                |      date|account| description|amount|
+                +----------+-------+------------+------+
+                |2020-03-01|      1|      burger| 15.47|
+                |2020-03-03|      1|      tennis| 35.03|
+                |2020-03-04|      2|      petrol|150.47|
+                |2020-02-01|      1|      burger| 15.46|
+                |2020-02-02|      1|       movie| 20.01|
+                |2020-02-03|      1|      tennis| 35.01|
+                |2020-02-04|      2|      petrol|150.46|
+                |2020-02-04|      2| electricity|300.47|
+                |2020-01-01|      1|      burger| 15.45|
+                |2020-01-02|      1|       movie| 20.00|
+                |2020-01-03|      1|      tennis| 35.00|
+                |2020-01-04|      2|      petrol|150.45|
+                +----------+-------+------------+------+
+
+                row count = 12
+
+             */
         }
 
+
+
+    }
+
+    fun display(name: String, ds: Dataset<Row>) {
+        println()
+        println(name)
+        println()
+        ds.printSchema()
+        ds.show(20)
+        println("row count = ${ds.count()}")
     }
 }
 

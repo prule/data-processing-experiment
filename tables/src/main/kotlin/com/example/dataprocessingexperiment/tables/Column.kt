@@ -14,7 +14,8 @@ import kotlinx.serialization.Serializable
  *         formats: [
  *           "yyyy-MM-dd",
  *           "dd-MM-yyyy"
- *         ]
+ *         ],
+ *         required: true
  *       }
  * ```
  */
@@ -23,5 +24,6 @@ data class Column(
     val name: String,
     val description: String,
     val type: String,
-    val formats: List<String>? = listOf()
+    val formats: List<String>? = listOf(),
+    val required: Boolean = false
 )
