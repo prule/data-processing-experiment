@@ -96,7 +96,7 @@ VALID Statistics
 |   row count|   NULL|         NULL|    12|
 +------------+-------+-------------+------+
 ``` 
-Looking at App.kt shows how to use this:
+Looking at [App.kt](https://github.com/prule/data-processing-experiment/blob/part-5/app/src/main/kotlin/com/example/dataprocessingexperiment/app/App.kt) shows how to use this:
 
 ```kotlin
     private fun generateStatistics(dataset: Dataset<Row>, path: String, sparkSession: SparkSession) {
@@ -115,7 +115,7 @@ Looking at App.kt shows how to use this:
     }
 }
 ```
-Implementing a statistic is simple:
+Implementing a [statistic](https://github.com/prule/data-processing-experiment/tree/part-5/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/statistics) is simple:
 ```kotlin
 class Count(): Statistic {
 
@@ -144,8 +144,169 @@ Now lets do a reality check:
   - data selection, cleansing, exploration, visualization, and processing at scale
   - 300 built-in data transformations, so you can quickly transform data without writing any code.
 
-But at the same time I see this discussion on Reddit
+But at the same time I see this discussion on Reddit:
 
 - [Now that Talend is no longer free, what other ETL tool would you recommend...](https://www.reddit.com/r/dataengineering/comments/1axyooe/talend_is_no_longer_free/) where people suggest everything from custom code to all manner of tools. 
 
 Should I take comfort in knowing that many people need these products and many tools exist to serve those needs? It's enough motivation to know that the problem space is real, even if my solution is hypothetical and serves only for experience... give me a thumbs up if you want to encourage me and see where this goes!
+
+Let's run the application again to see what it produces:
+
+```text
+ % ./run run
+
+Running application
+
+
+> Task :app:run
+Starting...
+
+Raw dataset
+
+root
+ |-- date: string (nullable = true)
+ |-- account: string (nullable = true)
+ |-- description: string (nullable = true)
+ |-- amount: string (nullable = true)
+ |-- comment: string (nullable = true)
+
++------------+-------+------------+-------+--------------------+
+|        date|account| description| amount|             comment|
++------------+-------+------------+-------+--------------------+
+|        NULL|      x|      tennis|   0.03|             no date|
+|  01-03-2020|      1|      burger|  15.47|alternative date ...|
+|  03-03-2020|      1|      tennis|  35.03|alternative date ...|
+|  04-03-2020|      2|      petrol| 150.47|alternative date ...|
+|  2020-01-01|      1|      burger|  15.45|                NULL|
+|  2020-01-02|      1|       movie|  20.00|                NULL|
+|  2020-01-03|      1|      tennis|  35.00|                NULL|
+|  2020-01-04|      2|      petrol| 150.45|                NULL|
+|  2020-02-01|      1|      burger|  15.46|                NULL|
+|  2020-02-02|      1|       movie|  20.01|                NULL|
+|  2020-02-03|      1|      tennis|  35.01|                NULL|
+|  2020-02-04|      2|      petrol| 150.46|                NULL|
+|  2020-02-04|      2| electricity| 300.47|                NULL|
+|  2020-12-01|       |      tennis|   0.04| blank (many spac...|
+|  2020-12-01|      x|      petrol|      x| invalid number f...|
+|  2020-13-01|      x|      burger|   0.01|        invalid date|
+|invalid date|      x|      petrol|   0.02|        invalid date|
+|           x|      x|           x|      x| row with multipl...|
++------------+-------+------------+-------+--------------------+
+
+row count = 18
+
+RAW Statistics
+
+root
+ |-- key: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- discriminator: string (nullable = true)
+ |-- value: string (nullable = true)
+
++------------+-------+-------------+-----+
+|         key| column|discriminator|value|
++------------+-------+-------------+-----+
+|CountByMonth|   date|         NULL|    7|
+|CountByMonth|   date|      2020-01|    4|
+|CountByMonth|   date|      2020-02|    5|
+|CountByMonth|   date|      2020-12|    2|
+|CountByValue|account|         NULL|    1|
+|CountByValue|account|            1|    8|
+|CountByValue|account|            2|    4|
+|CountByValue|account|            x|    5|
+|         max| amount|         NULL|    x|
+|         min| amount|         NULL| 0.01|
+|   row count|   NULL|         NULL|   18|
++------------+-------+-------------+-----+
+
+row count = 11
+21:57:16.830 [main] INFO  c.e.d.spark.data.types.DecimalType MDC= - Using decimal(10,2) for column amount
+
+Typed dataset
+
+root
+ |-- date: date (nullable = true)
+ |-- account: string (nullable = true)
+ |-- description: string (nullable = true)
+ |-- amount: decimal(10,2) (nullable = true)
+
++----------+-------+------------+------+
+|      date|account| description|amount|
++----------+-------+------------+------+
+|      NULL|      x|      burger|  0.01|
+|      NULL|      x|      petrol|  0.02|
+|      NULL|      x|      tennis|  0.03|
+|      NULL|      x|           x|  NULL|
+|2020-01-01|      1|      burger| 15.45|
+|2020-01-02|      1|       movie| 20.00|
+|2020-01-03|      1|      tennis| 35.00|
+|2020-01-04|      2|      petrol|150.45|
+|2020-02-01|      1|      burger| 15.46|
+|2020-02-02|      1|       movie| 20.01|
+|2020-02-03|      1|      tennis| 35.01|
+|2020-02-04|      2|      petrol|150.46|
+|2020-02-04|      2| electricity|300.47|
+|2020-03-01|      1|      burger| 15.47|
+|2020-03-03|      1|      tennis| 35.03|
+|2020-03-04|      2|      petrol|150.47|
+|2020-12-01|       |      tennis|  0.04|
+|2020-12-01|      x|      petrol|  NULL|
++----------+-------+------------+------+
+
+row count = 18
+21:57:16.974 [main] INFO  c.e.d.spark.data.types.DecimalType MDC= - Using decimal(10,2) for column amount
+
+Valid dataset
+
+root
+ |-- date: date (nullable = true)
+ |-- account: string (nullable = true)
+ |-- description: string (nullable = true)
+ |-- amount: decimal(10,2) (nullable = true)
+
++----------+-------+------------+------+
+|      date|account| description|amount|
++----------+-------+------------+------+
+|2020-01-01|      1|      burger| 15.45|
+|2020-01-02|      1|       movie| 20.00|
+|2020-01-03|      1|      tennis| 35.00|
+|2020-01-04|      2|      petrol|150.45|
+|2020-02-01|      1|      burger| 15.46|
+|2020-02-02|      1|       movie| 20.01|
+|2020-02-03|      1|      tennis| 35.01|
+|2020-02-04|      2|      petrol|150.46|
+|2020-02-04|      2| electricity|300.47|
+|2020-03-01|      1|      burger| 15.47|
+|2020-03-03|      1|      tennis| 35.03|
+|2020-03-04|      2|      petrol|150.47|
++----------+-------+------------+------+
+
+row count = 12
+
+VALID Statistics
+
+root
+ |-- key: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- discriminator: string (nullable = true)
+ |-- value: string (nullable = true)
+
++------------+-------+-------------+------+
+|         key| column|discriminator| value|
++------------+-------+-------------+------+
+|CountByMonth|   date|      2020-01|     4|
+|CountByMonth|   date|      2020-02|     5|
+|CountByMonth|   date|      2020-03|     3|
+|CountByValue|account|            1|     8|
+|CountByValue|account|            2|     4|
+|         max| amount|         NULL|300.47|
+|         min| amount|         NULL| 15.45|
+|   row count|   NULL|         NULL|    12|
++------------+-------+-------------+------+
+
+row count = 8
+Finished...
+
+BUILD SUCCESSFUL in 5s
+10 actionable tasks: 4 executed, 6 up-to-date
+```
