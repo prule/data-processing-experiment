@@ -1,4 +1,4 @@
-package com.example.dataprocessingexperiment.spark.types
+package com.example.dataprocessingexperiment.spark.data.types
 
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder

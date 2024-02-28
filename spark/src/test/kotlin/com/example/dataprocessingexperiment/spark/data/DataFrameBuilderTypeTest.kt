@@ -1,23 +1,14 @@
-package com.example.dataprocessingexperiment.spark
+package com.example.dataprocessingexperiment.spark.data
 
-import com.example.dataprocessingexperiment.spark.types.*
+import com.example.dataprocessingexperiment.spark.data.types.Types
 import com.example.dataprocessingexperiment.tables.Column
 import com.example.dataprocessingexperiment.tables.FileSource
 import com.example.dataprocessingexperiment.tables.Table
-import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.equals.shouldBeEqual
-import io.kotest.matchers.ints.shouldBeExactly
-import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import mu.KotlinLogging
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.types.StringType
-import org.apache.spark.sql.types.StructField
-import org.apache.spark.sql.types.StructType
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.sql.Date
