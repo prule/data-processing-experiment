@@ -20,4 +20,4 @@ I'm going to split the work into "parts" - simple progressions, each one buildin
   * At this point I'll need some data to work with so I'll create something super simple
 * [Part 3](https://github.com/prule/data-processing-experiment/tree/part-3) - The code in part 2 established some patterns, but it's not flexible or reusable, so I'll refactor it
 * [Part 4](https://github.com/prule/data-processing-experiment/tree/part-4) - Now I've got more generic code there's lots more we can do - I'll start by adding some basic form of validation
-
+* [Part 5](https://github.com/prule/data-processing-experiment/tree/part-5) - After some basic validation I need some statistics about the data
