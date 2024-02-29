@@ -54,7 +54,7 @@ tasks.withType<DokkaTask>().configureEach {
             sourceLink {
                 localDirectory.set(file("src/main/kotlin"))
                 remoteUrl.set(URL(
-                    "https://github.com/prule/data-processing-experiment/tree/part-3/tables/src/main/kotlin"
+                    "https://github.com/prule/data-processing-experiment/tree/part-5/tables/src/main/kotlin"
                 ))
                 remoteLineSuffix.set("#L")
             }
