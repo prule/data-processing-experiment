@@ -29,6 +29,7 @@ class DataFrameBuilderTypeTest {
         // define our input source
         val fileSource = FileSource(
             "test1",
+            "test1",
             "test csv file",
             "../data/sample1/types",
             "csv",
@@ -36,6 +37,7 @@ class DataFrameBuilderTypeTest {
             Table(
                 "test1",
                 "test csv file",
+                false,
                 listOf(
                     Column("boolean", "boolean", "boolean"),
                     Column("date", "date", "date", listOf("d/M/yyyy", "yyyy-MM-dd")),

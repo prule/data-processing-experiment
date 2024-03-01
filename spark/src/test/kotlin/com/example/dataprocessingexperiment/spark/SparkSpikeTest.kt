@@ -27,8 +27,8 @@ class SparkSpikeTest {
         val statementsDataFrame = sparkSession.read()
             .format("csv")
             .option("header", true)
-            .load("../data/sample1/statements")
-            .alias("statements")
+            .load("../data/sample1/transactions")
+            .alias("transactions")
 
         println("Statements data frame")
         statementsDataFrame.show(20)

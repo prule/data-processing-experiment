@@ -17,8 +17,9 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class Table(
-    val name:String,
-    val description:String,
+    val name: String,
+    val description: String,
+    val deduplicate: Boolean = false,
     val columns: List<Column>
 ) {
     fun colByName(name: String): Column {

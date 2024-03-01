@@ -39,7 +39,8 @@ class DataFrameBuilder(
         return raw.select(*typedColumns.map { it }.toTypedArray())
     }
 
-    fun valid(): Dataset<Row> {
+    fun valid(deduplicate: Boolean = true): Dataset<Row> {
+
         // required columns != null conditions
         val requiredColumns: List<Column> = fileSource.table.columns
             .filter { column -> column.required }
@@ -53,13 +54,23 @@ class DataFrameBuilder(
                 // otherwise just check for null
                     col(column.name).isNotNull
             }
+
         // and all columns together so none of the required columns can be null
         var combined: Column? = null
         requiredColumns.forEach { col ->
             combined = if (combined == null) col else combined!!.and(col)
         }
+
         // select all columns where the required columns are not null
-        return typed().select("*").where(combined)
+        val dataset = typed().select("*")
+            .where(combined)
+
+        // handle deduplication
+        return if (deduplicate) {
+            dataset.dropDuplicates()
+        } else {
+            dataset
+        }
     }
 
 }

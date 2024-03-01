@@ -27,13 +27,15 @@ class DataFrameBuilderTest {
         // code version of app/src/main/resources/sample1.statements.json5
         val fileSource = FileSource(
             "test1",
+            "test1",
             "test csv file",
-            "../data/sample1/statements",
+            "../data/sample1/transactions",
             "csv",
             // table structure
             Table(
                 "test1",
                 "test csv file",
+                false,
                 listOf(
                     Column("date", "date", "date", listOf("yyyy-MM-dd", "dd-MM-yyyy"), required = true),
                     Column("account", "account", "string", required = true),

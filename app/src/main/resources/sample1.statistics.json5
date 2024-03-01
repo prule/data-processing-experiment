@@ -1,0 +1,27 @@
+// map of table id to statistics
+{
+  statistics: [
+    {
+      id: "transactions",
+      name: "Transactions Statistics",
+      description: "Statistics configuration for the transactions table",
+      values: [
+        {
+          id: "count"
+        },
+        {
+          id: "countByMonth",
+          column: "date"
+        },
+        {
+          id: "countByValue",
+          column: "account"
+        },
+        {
+          id: "bounds",
+          column: "amount"
+        }
+      ],
+    }
+  ]
+}

@@ -19,6 +19,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 class FileSource(
+    val id: String,
     val name: String,
     val description: String,
     val path: String,

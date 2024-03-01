@@ -1,0 +1,52 @@
+{
+  id: "sample1",
+  name: "Sample 1",
+  description: "Sample 1 is a basic dataset configuration to demonstrate capability",
+  sources: [
+    {
+      id: "transactions",
+      name: "Transactions",
+      description: "Transactions contains transactions from multiple bank accounts",
+      path: "sample1/transactions/",
+      type: "csv",
+      table: {
+        name: "transactions",
+        description: "account transactions",
+        deduplicate: true,
+        columns: [
+          {
+            name: "date",
+            description: "date of transaction",
+            type: "date",
+            formats: [
+              "yyyy-MM-dd",
+              "dd-MM-yyyy"
+            ],
+            required: true
+          },
+          {
+            name: "account",
+            description: "account",
+            type: "string",
+            required: true
+          },
+          {
+            name: "description",
+            description: "description",
+            type: "string",
+          },
+          {
+            name: "amount",
+            description: "amount can be a positive (credit) or negative (debit) number representing dollars and cents",
+            type: "decimal",
+            formats: [
+              "10",
+              "2"
+            ],
+            required: true
+          }
+        ]
+      }
+    }
+  ]
+}
