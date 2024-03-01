@@ -33,7 +33,12 @@
           {
             name: "description",
             description: "description",
-            type: "string",
+            type: "string"
+          },
+          {
+            name: "location",
+            description: "location",
+            type: "string"
           },
           {
             name: "amount",
@@ -47,6 +52,149 @@
           }
         ]
       }
+    },
+
+//    "Official Code State",
+//    "Official Name State",
+//    "Year",
+//    "Official Code Local Government Area",
+//    "Iso 3166-3 Area Code",
+//    "Official Name Local Government Area",
+//    "Type",
+//    "Long Official Name Local Government Area",
+
+    {
+      id: "lga-1",
+      name: "lga-1",
+      description: "lga-1",
+      path: "sample1/lgas/1",
+      type: "csv",
+      table: {
+        name: "lga-1",
+        description: "",
+        deduplicate: true,
+        delimiter: ";",
+        columns: [
+          {
+            name: "Official Code State",
+            description: "",
+            type: "string",
+            required: true
+          },
+          {
+            name: "Official Name State",
+            description: "",
+            type: "string",
+            required: true
+          },
+          {
+            name: "Official Code Local Government Area",
+            description: "",
+            type: "string",
+            required: true
+          },
+          {
+            name: "Official Name Local Government Area",
+            description: "",
+            type: "string",
+            required: true
+          }
+        ]
+      }
+    },
+
+//    "Official Name State",
+//    "Year",
+//    "Official Code Local Government Area",
+//    "Official Code State",
+//    "Iso 3166-3 Area Code",
+//    "Official Name Local Government Area",
+
+    {
+      id: "lga-2",
+      name: "lga-2",
+      description: "lga-2",
+      path: "sample1/lgas/2",
+      type: "csv",
+      table: {
+        name: "lga-2",
+        description: "",
+        deduplicate: true,
+        delimiter: ";",
+        columns: [
+          {
+            name: "Official Code State",
+            description: "",
+            type: "string",
+            required: true
+          },
+          {
+            name: "Official Name State",
+            description: "",
+            type: "string",
+            required: true
+          },
+          {
+            name: "Official Code Local Government Area",
+            description: "",
+            type: "string",
+            required: true
+          },
+          {
+            name: "Official Name Local Government Area",
+            description: "",
+            type: "string",
+            required: true
+          }
+        ]
+      }
+    },
+
+//    "Official Name State",
+    //    "Official Code Local Government Area",
+    //    "Official Code State",
+    //    "Iso 3166-3 Area Code",
+    //    "Official Name Local Government Area",
+
+    {
+      id: "lga-3",
+      name: "lga-3",
+      description: "lga-3",
+      path: "sample1/lgas/3",
+      type: "csv",
+      table: {
+        name: "lga-3",
+        description: "",
+        deduplicate: true,
+        delimiter: ";",
+        columns: [
+          {
+            name: "Official Code State",
+            description: "",
+            type: "string",
+            required: true
+          },
+          {
+            name: "Official Name State",
+            description: "",
+            type: "string",
+            required: true
+          },
+          {
+            name: "Official Code Local Government Area",
+            description: "",
+            type: "string",
+            required: true
+          },
+          {
+            name: "Official Name Local Government Area",
+            description: "",
+            type: "string",
+            required: true
+          }
+        ]
+      }
     }
+
   ]
 }

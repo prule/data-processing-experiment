@@ -36,6 +36,7 @@ class DataFrameBuilderTest {
                 "test1",
                 "test csv file",
                 false,
+                ",",
                 listOf(
                     Column("date", "date", "date", listOf("yyyy-MM-dd", "dd-MM-yyyy"), required = true),
                     Column("account", "account", "string", required = true),

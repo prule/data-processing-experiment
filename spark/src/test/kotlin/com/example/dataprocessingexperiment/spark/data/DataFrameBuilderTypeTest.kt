@@ -38,6 +38,7 @@ class DataFrameBuilderTypeTest {
                 "test1",
                 "test csv file",
                 false,
+                ",",
                 listOf(
                     Column("boolean", "boolean", "boolean"),
                     Column("date", "date", "date", listOf("d/M/yyyy", "yyyy-MM-dd")),

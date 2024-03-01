@@ -7,3 +7,4 @@ build
 
 # Ignore downloaded data
 **/downloaded
+/notes.txt

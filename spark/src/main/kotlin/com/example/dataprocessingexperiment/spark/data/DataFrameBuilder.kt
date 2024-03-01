@@ -25,6 +25,7 @@ class DataFrameBuilder(
         sparkSession.read()
             .format(fileSource.type)
             .option("header", true)
+            .option("delimiter", fileSource.table.delimiter)
             .load(rootPath + fileSource.path)
             .alias(fileSource.name)
     }

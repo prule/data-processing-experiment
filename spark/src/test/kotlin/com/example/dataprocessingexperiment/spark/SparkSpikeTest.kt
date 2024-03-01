@@ -1,9 +1,8 @@
 package com.example.dataprocessingexperiment.spark
 
 import io.kotest.matchers.longs.shouldBeGreaterThan
-import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
 import org.apache.spark.SparkConf
+import org.apache.spark.sql.SaveMode
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions
 import org.junit.jupiter.api.Test
@@ -62,4 +61,97 @@ class SparkSpikeTest {
 
     }
 
+
+    @Test
+    fun `transform lga data`() {
+
+        // spark setup
+        val config = SparkConf().setAppName("spike").setMaster("local")
+        val sparkSession = SparkSession.builder().config(config).orCreate
+
+        // load raw data frame
+        val dataFrame = sparkSession.read()
+            .format("csv")
+            .option("header", true)
+            .option("delimiter", ";")
+            .load("../data/sample1/downloaded/aus-lga-mapping/")
+            .alias("lgas")
+
+        println("data frame")
+        dataFrame.show(20)
+        dataFrame.printSchema()
+
+        val path = "../data/sample1/downloaded/transformed/"
+
+        // only select the columns needed so we can exclude data we don't need here
+        val selectedDataFrame = dataFrame.select(
+            "Year",
+            "Official Code State",
+            "Official Name State",
+            "Official Code Local Government Area",
+            "Official Name Local Government Area",
+            "Iso 3166-3 Area Code",
+            "Type",
+            "Long Official Name Local Government Area"
+        )
+
+        // write CSVs for 3 states with different columns in different orders
+
+        // 1
+        selectedDataFrame.select(
+            "Official Code State",
+            "Official Name State",
+            "Year",
+            "Official Code Local Government Area",
+            "Iso 3166-3 Area Code",
+            "Official Name Local Government Area",
+            "Type",
+            "Long Official Name Local Government Area"
+        )
+            .filter(functions.col("Official Code State").equalTo(1))
+            .limit(10)
+            .write()
+            .option("header", true)
+            .option("delimiter", ";")
+            .mode(SaveMode.Overwrite)
+            .format("csv")
+            .save(path + 1)
+
+        // 2
+        selectedDataFrame.select(
+            "Official Name State",
+            "Year",
+            "Official Code Local Government Area",
+            "Official Code State",
+            "Iso 3166-3 Area Code",
+            "Official Name Local Government Area",
+        )
+            .filter(functions.col("Official Code State").equalTo(2))
+            .limit(10)
+            .write()
+            .option("header", true)
+            .option("delimiter", ";")
+            .mode(SaveMode.Overwrite)
+            .format("csv")
+            .save(path + 2)
+
+
+        // 3
+        selectedDataFrame.select(
+            "Official Name State",
+            "Official Code Local Government Area",
+            "Official Code State",
+            "Iso 3166-3 Area Code",
+            "Official Name Local Government Area",
+        )
+            .filter(functions.col("Official Code State").equalTo(3))
+            .limit(10)
+            .write()
+            .option("header", true)
+            .option("delimiter", ";")
+            .mode(SaveMode.Overwrite)
+            .format("csv")
+            .save(path + 3)
+
+    }
 }

@@ -20,6 +20,7 @@ data class Table(
     val name: String,
     val description: String,
     val deduplicate: Boolean = false,
+    val delimiter: String = ",",
     val columns: List<Column>
 ) {
     fun colByName(name: String): Column {

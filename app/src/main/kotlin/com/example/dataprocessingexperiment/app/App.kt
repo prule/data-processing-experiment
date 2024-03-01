@@ -18,6 +18,7 @@ import java.io.File
 
 
 class App {
+    private val displayRows = 5
 
     fun go() {
         // spark setup
@@ -104,7 +105,11 @@ class App {
         println(name)
         println()
         ds.printSchema()
-        ds.orderBy(sort).show(20)
+        if (ds.columns().contains(sort)) {
+            ds.orderBy(sort).show(displayRows)
+        } else {
+            ds.show(displayRows)
+        }
         println("row count = ${ds.count()}")
     }
 }
