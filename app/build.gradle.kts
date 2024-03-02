@@ -14,12 +14,11 @@ plugins {
 }
 
 repositories {
-    // Use Maven Central for resolving dependencies.
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
-
     implementation(project(":spark"))
 
     // Use the Kotlin JUnit 5 integration.
@@ -29,9 +28,6 @@ dependencies {
     testImplementation(libs.junit.jupiter.engine)
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
-    // This dependency is used by the application.
-    implementation(libs.guava)
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -41,9 +37,28 @@ java {
     }
 }
 
+
 application {
     // Define the main class for the application.
     mainClass = "com.example.dataprocessingexperiment.app.AppKt"
+
+    // spark Java17 Compatible JvmArgs
+    applicationDefaultJvmArgs  = listOf(
+        "--add-exports=java.base/java.lang=ALL-UNNAMED",
+        "--add-exports=java.base/java.lang.invoke=ALL-UNNAMED",
+        "--add-exports=java.base/java.lang.reflect=ALL-UNNAMED",
+        "--add-exports=java.base/java.io=ALL-UNNAMED",
+        "--add-exports=java.base/java.net=ALL-UNNAMED",
+        "--add-exports=java.base/java.nio=ALL-UNNAMED",
+        "--add-exports=java.base/java.util=ALL-UNNAMED",
+        "--add-exports=java.base/java.util.concurrent=ALL-UNNAMED",
+        "--add-exports=java.base/java.util.concurrent.atomic=ALL-UNNAMED",
+        "--add-exports=java.base/sun.nio.ch=ALL-UNNAMED",
+        "--add-exports=java.base/sun.nio.cs=ALL-UNNAMED",
+        "--add-exports=java.base/sun.security.action=ALL-UNNAMED",
+        "--add-exports=java.base/sun.util.calendar=ALL-UNNAMED",
+        "--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED",
+    )
 }
 
 tasks.named<Test>("test") {

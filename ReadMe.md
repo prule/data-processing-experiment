@@ -1,91 +1,43 @@
-Creating the gradle project
+Establishing Spark capability
 ====
 
-To get started I used `gradle init` to create a kotlin application - I'll want a command line application as the entry point and from here I'll add subprojects to this to structure the different parts of the system. If this was a real project I'd probably put most of these subprojects into their own repositories, so they could each have their own release cycle - but for speed and simplicity for now I'll keep them together. This decision is easily changeable so it's not worth dwelling on at the moment.
+Spark SQL lets us query CSV files in a directory as if it was a database.
 
-```
-% gradle init \
-  --type kotlin-application \
-  --dsl kotlin \
-  --test-framework kotlintest \
-  --package com.example.dataprocessingexperiment.app \
-  --project-name data-processing-experiment  \
-  --no-split-project  \
-  --java-version 17
+First I need some data - in this oversimplified example I'm just going to pretend we have some CSV files containing bank transactions:
 
-Generate build using new APIs and behavior (some features may change in the next minor release)? (default: no) [yes, no] 
+https://github.com/prule/data-processing-experiment/blob/80599f86db814a8e89fd50787da4433ede1add80/data/sample1/statements/2020-01.csv?plain=1#L1-L5
 
+This gives me an easy-to-understand domain and some basic structure. See the `./data/sample1/statements/` folder.
 
-> Task :init
-To learn more about Gradle by exploring our Samples at https://docs.gradle.org/8.6/samples/sample_building_kotlin_applications.html
+The first thing we need is a spark session:
 
-BUILD SUCCESSFUL in 2s
-1 actionable task: 1 executed
-```
+https://github.com/prule/data-processing-experiment/blob/8770c3265268f568645d4f230e09dcb5ef29f73f/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/Spike1.kt#L26-L28
 
-Now to add a subproject for the spark code I need a subfolder and a copy of the app build file which I can modify for the subproject...
+Now we can load the statements folder into a data frame:
 
-```
-mkdir spark
-cp app/build.gradle.kts spark
-```
+https://github.com/prule/data-processing-experiment/blob/8770c3265268f568645d4f230e09dcb5ef29f73f/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/Spike1.kt#L30-L39
 
-Now `spark/build.gradle.kts` just needs editing to make it appropriate for the subproject
+This gives us our RAW dataframe, exactly as it is in the CSV files. Now I need to
 
-- remove the application plugin
-- add some spark dependencies
-- add some JVM args so spark plays nice with Java 17
+- select only the columns I want, discarding any data that isn't needed
+- type the columns appropriately
 
-In `app/build.gradle.kts` we'll add those same JVM args for when we run the application, and make `app` depend on `spark`
+This could be done in one step, but I'm doing it as two discrete steps here to call it out as part of the logical process.
 
+https://github.com/prule/data-processing-experiment/blob/8770c3265268f568645d4f230e09dcb5ef29f73f/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/Spike1.kt#L41-L51
 
-I'm using java 17 here, for no particular reason other than it's well established.
+https://github.com/prule/data-processing-experiment/blob/8770c3265268f568645d4f230e09dcb5ef29f73f/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/Spike1.kt#L53-L63
 
-```
-% gradle --version
+And there we have it - a basic runnable spark sql capability.
 
-------------------------------------------------------------
-Gradle 8.6
-------------------------------------------------------------
+Running the application we can see the output from each stage:
 
-Build time:   2024-02-02 16:47:16 UTC
-Revision:     d55c486870a0dc6f6278f53d21381396d0741c6e
+https://github.com/prule/data-processing-experiment/blob/367140b78882922a68129400b2f16da45c7dfae1/app/part-2-sample-console-output.txt#L15-L113
 
-Kotlin:       1.9.20
-Groovy:       3.0.17
-Ant:          Apache Ant(TM) version 1.10.13 compiled on January 4 2023
-JVM:          17.0.7 (Eclipse Adoptium 17.0.7+7)
-OS:           Mac OS X 14.2.1 aarch64
-```
+You should see in the output dataframes that invalid values (those that couldn't be converted to types) come through as NULL.
 
-Set up git:
-```
-% git init
-% git remote add origin https://github.com/prule/data-processing-experiment.git
-```
+Note that in order to run on Java 17 it was necessary to add some exports as JVM arguments:
 
-Run the application to make sure everything is hanging together:
-```
-% ./gradlew app:run         
+https://github.com/prule/data-processing-experiment/blob/8770c3265268f568645d4f230e09dcb5ef29f73f/app/build.gradle.kts#L41-L62
 
-> Task :app:run
-Hello World!
-Hello Spark
-
-BUILD SUCCESSFUL in 1s
-6 actionable tasks: 6 executed
-```
-
-Run tests:
-```
-% ./gradlew clean test
-
-BUILD SUCCESSFUL in 1s
-11 actionable tasks: 11 executed
-```
-
-View the test reports at:
-- ./app/build/reports/tests/test/index.html
-- ./spark/build/reports/tests/test/index.html
-
-Okay, so now the basic project is set up, I can get started!
+This is done for the application in `app/build.gradle.kts` and for tests in `spark/build.gradle.kts`.
