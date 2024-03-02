@@ -1,23 +1,91 @@
-## Overview
+Creating the gradle project
+====
 
-Data processing is on my radar at the moment, and taking a leaf from [John Cricket](https://www.linkedin.com/in/johncrickett/) what better way to get some "practice and experience" in Kotlin, Spark, Data Processing, Design, and Documentation than to build something...
+To get started I used `gradle init` to create a kotlin application - I'll want a command line application as the entry point and from here I'll add subprojects to this to structure the different parts of the system. If this was a real project I'd probably put most of these subprojects into their own repositories, so they could each have their own release cycle - but for speed and simplicity for now I'll keep them together. This decision is easily changeable so it's not worth dwelling on at the moment.
 
-So this is
-- a coding challenge
-- a design challenge
-- a documentation/writing challenge
+```
+% gradle init \
+  --type kotlin-application \
+  --dsl kotlin \
+  --test-framework kotlintest \
+  --package com.example.dataprocessingexperiment.app \
+  --project-name data-processing-experiment  \
+  --no-split-project  \
+  --java-version 17
 
-## The process
+Generate build using new APIs and behavior (some features may change in the next minor release)? (default: no) [yes, no] 
 
-I'm going to put the code in a single git repository - in a real project I'd probably use multiple repos but to keep it self contained and simple I'll use one project with many subprojects - and I'll be using Kotlin, Gradle, Git, Intellij as the tools of choice. 
 
-- https://github.com/prule/data-processing-experiment
+> Task :init
+To learn more about Gradle by exploring our Samples at https://docs.gradle.org/8.6/samples/sample_building_kotlin_applications.html
 
-I'm going to split the work into "parts" - simple progressions, each one building on the last, and I'll do these in git as separate branches. This way we'll be able to see how things progress over time as well as seeing the end result.
+BUILD SUCCESSFUL in 2s
+1 actionable task: 1 executed
+```
 
-* [Part 1](https://github.com/prule/data-processing-experiment/tree/part-1) - Setting up the project (a git repository with a gradle project)
-* [Part 2](https://github.com/prule/data-processing-experiment/tree/part-2) - Some basic spark sql code, so we see how Spark SQL works and what's involved
-  * At this point I'll need some data to work with so I'll create something super simple
-* [Part 3](https://github.com/prule/data-processing-experiment/tree/part-3) - The code in part 2 established some patterns, but it's not flexible or reusable, so I'll refactor it
-* [Part 4](https://github.com/prule/data-processing-experiment/tree/part-4) - Now I've got more generic code there's lots more we can do - I'll start by adding some basic form of validation
-* [Part 5](https://github.com/prule/data-processing-experiment/tree/part-5) - After some basic validation I need some statistics about the data
+Now to add a subproject for the spark code I need a subfolder and a copy of the app build file which I can modify for the subproject...
+
+```
+mkdir spark
+cp app/build.gradle.kts spark
+```
+
+Now `spark/build.gradle.kts` just needs editing to make it appropriate for the subproject
+
+- remove the application plugin
+- add some spark dependencies
+- add some JVM args so spark plays nice with Java 17
+
+In `app/build.gradle.kts` we'll add those same JVM args for when we run the application, and make `app` depend on `spark`
+
+
+I'm using java 17 here, for no particular reason other than it's well established.
+
+```
+% gradle --version
+
+------------------------------------------------------------
+Gradle 8.6
+------------------------------------------------------------
+
+Build time:   2024-02-02 16:47:16 UTC
+Revision:     d55c486870a0dc6f6278f53d21381396d0741c6e
+
+Kotlin:       1.9.20
+Groovy:       3.0.17
+Ant:          Apache Ant(TM) version 1.10.13 compiled on January 4 2023
+JVM:          17.0.7 (Eclipse Adoptium 17.0.7+7)
+OS:           Mac OS X 14.2.1 aarch64
+```
+
+Set up git:
+```
+% git init
+% git remote add origin https://github.com/prule/data-processing-experiment.git
+```
+
+Run the application to make sure everything is hanging together:
+```
+% ./gradlew app:run         
+
+> Task :app:run
+Hello World!
+Hello Spark
+
+BUILD SUCCESSFUL in 1s
+6 actionable tasks: 6 executed
+```
+
+Run tests:
+```
+% ./gradlew clean test
+
+BUILD SUCCESSFUL in 1s
+11 actionable tasks: 11 executed
+```
+
+View the test reports at:
+- ./app/build/reports/tests/test/index.html
+- ./spark/build/reports/tests/test/index.html
+
+Okay, so now the basic project is set up, I can get started!
