@@ -10,6 +10,9 @@
           id: "count"
         },
         {
+          id: "duplicateCount"
+        },
+        {
           id: "countByMonth",
           column: "date"
         },
@@ -20,6 +23,19 @@
         {
           id: "bounds",
           column: "amount"
+        }
+      ],
+    },
+    {
+      id: "lga-1",
+      name: "lga-1 Statistics",
+      description: "Statistics configuration for the lga-1 table",
+      values: [
+        {
+          id: "count"
+        },
+        {
+          id: "duplicateCount"
         }
       ],
     }
