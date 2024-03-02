@@ -1,186 +1,80 @@
-Externalising the table configuration
-====
+Enhancing table metadata
+-
 
-When data is coming from external sources, I think it would be useful to be able to externalise the configuration so it can be easily changed. It will also let many datasets be read without having to write lots of boiler plate code. 
+Now that we have an easy table configuration, the next step is to make it more useful. Here, I'm adding a `required` field to `Column`. 
 
-I want to be able to use a configuration that represents a CSV like the following and have code interpret it and build a spark dataframe containing these columns, typed appropriately:
+With this, I can easily remove rows that don't have required fields. 
 
-```
-{
-    name: "transactions",
-    description: "account transactions",
-    columns: [
-      {
-        name: "date",
-        description: "date of transaction",
-        type: "date",
-        formats: [
-          "yyyy-MM-dd",
-          "dd-MM-yyyy"
-        ]
-      },
-      {
-        name: "account",
-        description: "account",
-        type: "string",
-      },
-      {
-        name: "description",
-        description: "description",
-        type: "string",
-      },
-      {
-        name: "amount",
-        description: "amount can be a positive (credit) or negative (debit) number representing dollars and cents",
-        type: "decimal",
-        formats: [
-          "10",
-          "2"
-        ]
-      }
-    ]
-  }
-```
-
-With this configuration, the code simply [becomes](https://github.com/prule/data-processing-experiment/blob/part-3/app/src/main/kotlin/com/example/dataprocessingexperiment/app/App.kt):
+Super simple, I've added a `valid()` method to `DataFrameBuilder` which returns a dataframe with only valid rows:
 
 ```kotlin
-val fileSource = Json5.decodeFromStream<FileSource>(
-    this::class.java.getResourceAsStream("/sample1.statements.json5")!!
-)
-
-// set up the dataframe
-val dataFrameBuilder = DataFrameBuilder(
-    sparkSession,
-    fileSource,
-    Types.all(),
-    "../data/"
-)
-
-// get the typed version of the dataset, with columns and types specified in config
-val typedDataset = dataFrameBuilder.typed()
-```
-DataFrameBuilder reads the RAW dataset and uses the FileSource configuration to produce a TYPED dataset. The typed dataset will only contain the columns specified in the configuration and uses the Types to do the conversion.
-
-Previously everything was [hardcoded](https://github.com/prule/data-processing-experiment/blob/part-2/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/Spike1.kt):
-
-```kotlin
-// load raw data frame
-val statementsDataFrame = sparkSession.read()
-    .format("csv")
-    .option("header", true)
-    .load("../data/sample1/statements")
-    .alias("statements")
-
-// only select the columns needed so we can exclude data we don't need here
-val selectedDataFrame = statementsDataFrame.select(
-    functions.col("date"),
-    functions.col("account"),
-    functions.col("description"),
-    functions.col("amount"),
-)
-
-// convert to typed columns
-val typedDataFrame = selectedDataFrame.select(
-    functions.to_date(functions.col("date"), "yyyy-MM-dd").alias("amount"),
-    functions.col("account"),
-    functions.col("description"),
-    functions.col("amount").cast("double").alias("amount")
-)
-```
-
-The key points here are:
-
-- FileSource contains information about where the data is along with metadata to help make the configuration self documenting. [DataFrameBuilder.raw](https://github.com/prule/data-processing-experiment/blob/part-3/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/DataFrameBuilder.kt) will use this to load the table using Spark.
-```json5
-{
-  name: "sample 1",
-  description: "sample 1 description",
-  path: "sample1/statements/",
-  type: "csv",
-  table: {
-    name: "transactions",
-    description: "account transactions",
-    columns: [
-      ...
-    ]
-  }
-```
-
-- Column definitions identify the name of the column - which must match the column header in the CSV - and the data type with formatting options.
-```json5
-{
-  name: "date",
-  description: "date of transaction",
-  type: "date",
-  formats: [
-    "yyyy-MM-dd",
-    "dd-MM-yyyy"
-  ]
-}
-```
-- Type classes are implemented to perform the conversion - for some situations this can be a simple CAST, but for richer functionality much more can be implemented here. See [DateType](https://github.com/prule/data-processing-experiment/blob/part-3/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/types/DateType.kt) for an example. This is extensible - all we have to do is implement the `Typer` interface to add new capabilities and register the types with their names in a  `Types` instance which we pass to `DataFrameBuilder`.
-```kotlin
-class IntegerType : Typer {
-    override fun key(): String {
-        return "integer"
+fun valid(): Dataset<Row> {
+    // required columns != null conditions
+    val requiredColumns: List<Column> = fileSource.table.columns
+        .filter { column -> column.required }
+        .map { column ->
+            // for strings, check for null and empty strings
+            if (string.key() == column.type)
+                col(column.name).isNotNull.and(
+                    trim(col(column.name)).notEqual(functions.lit(""))
+                )
+            else
+            // otherwise just check for null
+                col(column.name).isNotNull
+        }
+    // and all columns together so none of the required columns can be null
+    var combined: Column? = null
+    requiredColumns.forEach { col ->
+        combined = if (combined == null) col else combined!!.and(col)
     }
-
-    override fun process(name: String, formats: List<String>?): Column {
-        return functions.col(name).cast("integer").alias(name)
-    }
+    // select all columns where the required columns are not null
+    return typed().select("*").where(combined)
 }
 ```
 
-- DataFrameBuilder.typed() builds a collection of columns appropriately typed by using the type definition to return a spark column appropriately converted. It then selects these columns from the raw dataframe:
-```kotlin
-fun typed(): Dataset<Row> {
-    val typedColumns: List<Column> = fileSource.table.columns.map { column -> types.get(column.type).process(column.name, column.formats) }
-    return raw.select(*typedColumns.map { it }.toTypedArray())
-}
-```
+For a string column I'm checking for null or blank (trimming the column and comparing to and empty string). For everything else it's just a null check - remember, if dates don't match the right format, or if a value can't be converted by casting then the result will be NULL.
 
+An interesting thought comes to mind now - should the type converters contain more logic to enforce validity? Or should this be a separate concern?
+
+For example, IntegerType could take configuration to supply a min and/or max value
+- with this it could return null for any values that fall outside the defined range. 
+- and then, these invalid rows would be filtered from our valid dataframe
+
+I'm not sure about this yet, so I think I'll defer this decision. With more information and experience options will shake out. Part of this experiment is about knowing when to go broad, and when to expand detail... the beauty of it is, at the moment, making changes is easy - the codebase is simple, flexible, unobtrusive so many things are possible.
+
+The downside is that without specific use-cases the validity of the experiment is hard to judge. I'm not too concerned here either. It's unrealistic to build a silver bullet - there will be some cases where this will add value and be fit for purpose and there will be some that won't. 
+
+In the future I intend to apply this framework to different datasets (different in shape and in size) and see how it pans out... 
+
+So lets recap where we are:
+
+- we can create a simple table definition in json5 
+- we can easily build a dataframe from this, with columns properly typed
+- we can easily filter out invalid rows where required fields are null
+- all with a very small amount of flexible code
+
+The next most interesting thing (to me, at the moment) is to derive some insights from this data. As an example, knowing the row count for the raw dataframe - and for the valid dataframe - lets us know the quantity of invalid rows. This type of insight should be easily configurable again, with some simple metadata... but that's for the next installment...
+
+See the code:
+
+- [App](https://github.com/prule/data-processing-experiment/blob/part-4/app/src/main/kotlin/com/example/dataprocessingexperiment/app/App.kt)
+- [DataFrameBuilder](https://github.com/prule/data-processing-experiment/blob/part-4/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/DataFrameBuilder.kt)
+- [sample1.statements.json5](https://github.com/prule/data-processing-experiment/blob/part-4/app/src/main/resources/sample1.statements.json5)
 
 ----
 
-Now with the configuration externalised we can make changes without having to update and deploy code - while this may not seem like much at the moment, notice how the code to achieve this is very small, simple, and easy to work with. 
-
-Also note that this configuration could be sourced from anywhere - like from a database (a web application could be used to store, edit and version configurations). The configuration also acts as easy to read documentation about what data you are using and how the values are typed. You might be able to imagine a system where this information could be easily accessible/published, so it can be easily referenced (similar in concept to JavaDoc).
-
-It's important to acknowledge that using the external configuration (json5) isn't mandatory. You can still get some benefits from a hardcoded version - See [DataFrameBuilderTest](https://github.com/prule/data-processing-experiment/blob/c9df1629f8bdac3153c4993adbe0efbdedb140ad/spark/src/test/kotlin/com/example/dataprocessingexperiment/spark/DataFrameBuilderTest.kt#L22) (where the configuration would be created by code instead of deserializing json) - reuse of functionality, consistent patterns, and future functionality I'll be introducing soon. External configuration is in addition to these benefits.
-
-From now on, any data that I need to read can be accessed in this way - reusing this functionality and pattern. You may have noticed how the DateType allows multiple formats - useful for when your data is not consistent - and now I get this functionality (and the rest) for free in the future.
-
-Leveraging patterns and functionality like this is one way to get faster and more efficient value out of your projects. By creating a capability (easily create dataframes) we can leverage this again and again - and process data in a consistent manner.
-
-From here the code can be progressed to provide more functionality which I'll address in the next couple of parts...
-
-- Now that we have table definitions, I can imagine creating more capabilities to:
-    - generate data in this format
-    - produce documentation explaining how data is used
-    - produce reports detailing insights about the data
-        - in both raw and typed states
-    - filter out invalid data
-
-So let's do a sanity check at this point:
-
-- Complexity = VERY LOW
-- Value = SMALL, LIMITED
-- Potential = MEDIUM
-
-Granted this is a subjective assessment, but lets see how it shapes up after further progressions.
-
-
-----
 Running the application via gradle (configured with the required --add-exports values) we get:
 
 ```text
-% ./gradlew app:run
+ % ./run run
+
+Running application
+
 
 > Task :app:run
 Starting...
 
-Raw data frame
+Raw dataset
 
 root
  |-- date: string (nullable = true)
@@ -192,27 +86,30 @@ root
 +------------+-------+------------+-------+--------------------+
 |        date|account| description| amount|             comment|
 +------------+-------+------------+-------+--------------------+
-|  2020-13-01|      x|      burger|   0.01|        invalid date|
-|invalid date|      x|      petrol|   0.02|        invalid date|
 |        NULL|      x|      tennis|   0.03|             no date|
-|  2020-12-01|       |      tennis|   0.04|          no account|
-|  2020-12-01|      x|      petrol|      x| invalid number f...|
 |  01-03-2020|      1|      burger|  15.47|alternative date ...|
 |  03-03-2020|      1|      tennis|  35.03|alternative date ...|
 |  04-03-2020|      2|      petrol| 150.47|alternative date ...|
+|  2020-01-01|      1|      burger|  15.45|                NULL|
+|  2020-01-02|      1|       movie|  20.00|                NULL|
+|  2020-01-03|      1|      tennis|  35.00|                NULL|
+|  2020-01-04|      2|      petrol| 150.45|                NULL|
 |  2020-02-01|      1|      burger|  15.46|                NULL|
 |  2020-02-02|      1|       movie|  20.01|                NULL|
 |  2020-02-03|      1|      tennis|  35.01|                NULL|
 |  2020-02-04|      2|      petrol| 150.46|                NULL|
 |  2020-02-04|      2| electricity| 300.47|                NULL|
-|  2020-01-01|      1|      burger|  15.45|                NULL|
-|  2020-01-02|      1|       movie|  20.00|                NULL|
-|  2020-01-03|      1|      tennis|  35.00|                NULL|
-|  2020-01-04|      2|      petrol| 150.45|                NULL|
+|  2020-12-01|       |      tennis|   0.04| blank (many spac...|
+|  2020-12-01|      x|      petrol|      x| invalid number f...|
+|  2020-13-01|      x|      burger|   0.01|        invalid date|
+|invalid date|      x|      petrol|   0.02|        invalid date|
+|           x|      x|           x|      x| row with multipl...|
 +------------+-------+------------+-------+--------------------+
 
+row count = 18
+23:19:34.086 [main] INFO  c.e.d.spark.types.DecimalType MDC= - Using decimal(10,2) for column amount
 
-Typed data frame
+Typed dataset
 
 root
  |-- date: date (nullable = true)
@@ -226,24 +123,64 @@ root
 |      NULL|      x|      burger|  0.01|
 |      NULL|      x|      petrol|  0.02|
 |      NULL|      x|      tennis|  0.03|
-|2020-12-01|       |      tennis|  0.04|
-|2020-12-01|      x|      petrol|  NULL|
-|2020-03-01|      1|      burger| 15.47|
-|2020-03-03|      1|      tennis| 35.03|
-|2020-03-04|      2|      petrol|150.47|
+|      NULL|      x|           x|  NULL|
+|2020-01-01|      1|      burger| 15.45|
+|2020-01-02|      1|       movie| 20.00|
+|2020-01-03|      1|      tennis| 35.00|
+|2020-01-04|      2|      petrol|150.45|
 |2020-02-01|      1|      burger| 15.46|
 |2020-02-02|      1|       movie| 20.01|
 |2020-02-03|      1|      tennis| 35.01|
 |2020-02-04|      2|      petrol|150.46|
 |2020-02-04|      2| electricity|300.47|
+|2020-03-01|      1|      burger| 15.47|
+|2020-03-03|      1|      tennis| 35.03|
+|2020-03-04|      2|      petrol|150.47|
+|2020-12-01|       |      tennis|  0.04|
+|2020-12-01|      x|      petrol|  NULL|
++----------+-------+------------+------+
+
+row count = 18
+23:19:34.238 [main] INFO  c.e.d.spark.types.DecimalType MDC= - Using decimal(10,2) for column amount
+
+Valid dataset
+
+root
+ |-- date: date (nullable = true)
+ |-- account: string (nullable = true)
+ |-- description: string (nullable = true)
+ |-- amount: decimal(10,2) (nullable = true)
+
++----------+-------+------------+------+
+|      date|account| description|amount|
++----------+-------+------------+------+
 |2020-01-01|      1|      burger| 15.45|
 |2020-01-02|      1|       movie| 20.00|
 |2020-01-03|      1|      tennis| 35.00|
 |2020-01-04|      2|      petrol|150.45|
+|2020-02-01|      1|      burger| 15.46|
+|2020-02-02|      1|       movie| 20.01|
+|2020-02-03|      1|      tennis| 35.01|
+|2020-02-04|      2|      petrol|150.46|
+|2020-02-04|      2| electricity|300.47|
+|2020-03-01|      1|      burger| 15.47|
+|2020-03-03|      1|      tennis| 35.03|
+|2020-03-04|      2|      petrol|150.47|
 +----------+-------+------------+------+
 
+row count = 12
 Finished...
 
-BUILD SUCCESSFUL in 3s
+BUILD SUCCESSFUL in 4s
 10 actionable tasks: 5 executed, 5 up-to-date
 ```
+
+---
+
+**Note**
+
+One thing I like doing on my pet projects is creating a bash script for common things I need to do. Not only is it convenient - less to type - it also helps me remember what functionality is available and important. 
+
+For example, at some point I’ll forget what the command is to generate the Dokka HTML documentation - fear not, I can just use `./run doc` and it’ll generate it and then open it in the browser...
+
+See [run](https://github.com/prule/data-processing-experiment/blob/part-4/run) for an example

@@ -14,12 +14,14 @@
         formats: [
           "yyyy-MM-dd",
           "dd-MM-yyyy"
-        ]
+        ],
+        required: true
       },
       {
         name: "account",
         description: "account",
         type: "string",
+        required: true
       },
       {
         name: "description",
@@ -33,7 +35,8 @@
         formats: [
           "10",
           "2"
-        ]
+        ],
+        required: true
       }
     ]
   }

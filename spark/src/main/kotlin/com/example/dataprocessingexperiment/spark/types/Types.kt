@@ -27,6 +27,7 @@ class Types {
         private val noop = NoOpType()
         fun all(): Types {
             val types = Types()
+            types.add(StringType())
             types.add(DateType()) // this supports multiple configurable date formats
             types.add(DecimalType())
             types.add(BooleanType())
