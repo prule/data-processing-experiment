@@ -1,14 +1,19 @@
 package com.example.dataprocessingexperiment.app
 
-import com.example.dataprocessingexperiment.spark.DataFrameBuilder
-import com.example.dataprocessingexperiment.spark.types.Types
+import com.example.dataprocessingexperiment.spark.data.DataFrameBuilder
+import com.example.dataprocessingexperiment.spark.data.types.Types
+import com.example.dataprocessingexperiment.spark.statistics.StatisticsRunner
+import com.example.dataprocessingexperiment.spark.statistics.StatisticRepository
+import com.example.dataprocessingexperiment.spark.statistics.collectors.SparkCollector
 import com.example.dataprocessingexperiment.tables.FileSource
+import com.example.dataprocessingexperiment.tables.statistics.Statistics
 import io.github.xn32.json5k.Json5
 import io.github.xn32.json5k.decodeFromStream
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.SparkSession
+import java.io.File
 
 
 class App {
@@ -17,6 +22,10 @@ class App {
         // spark setup
         val config = SparkConf().setAppName("spike").setMaster("local")
         val sparkSession = SparkSession.builder().config(config).orCreate
+
+        // clean up the output directory
+        val outputPath = "./build/out/sample1/statements/statistics"
+        File(outputPath).deleteRecursively()
 
         sparkSession.use {
 
@@ -33,7 +42,8 @@ class App {
             )
 
             // get the raw version of the dataset, everything is a string, and all columns are included
-            display("Raw dataset",dataFrameBuilder.raw)
+            val rawDataset = dataFrameBuilder.raw
+            display("Raw dataset", rawDataset, "date")
 
             /*
 
@@ -73,8 +83,43 @@ class App {
 
              */
 
+            // statistics
+            val rawStatisticsPath = "$outputPath/raw"
+            generateStatistics(rawDataset, rawStatisticsPath, sparkSession)
+            display("RAW Statistics", rawStatisticsPath, "key", sparkSession)
+
+            /*
+
+            RAW Statistics
+
+                root
+                 |-- key: string (nullable = true)
+                 |-- column: string (nullable = true)
+                 |-- discriminator: string (nullable = true)
+                 |-- value: string (nullable = true)
+
+                +------------+-------+-------------+-----+
+                |         key| column|discriminator|value|
+                +------------+-------+-------------+-----+
+                |CountByMonth|   date|         NULL|    7|
+                |CountByMonth|   date|      2020-01|    4|
+                |CountByMonth|   date|      2020-02|    5|
+                |CountByMonth|   date|      2020-12|    2|
+                |CountByValue|account|         NULL|    1|
+                |CountByValue|account|            1|    8|
+                |CountByValue|account|            2|    4|
+                |CountByValue|account|            x|    4|
+                |CountByValue|account|            x|    1|
+                |         max| amount|         NULL|    x|
+                |         min| amount|         NULL| 0.01|
+                |   row count|   NULL|         NULL|   18|
+                +------------+-------+-------------+-----+
+
+             */
+
             // get the typed version of the dataset, with columns and types specified in config
-            display("Typed dataset",dataFrameBuilder.typed())
+            val typedDataset = dataFrameBuilder.typed()
+            display("Typed dataset", typedDataset, "date")
 
             /*
 
@@ -113,7 +158,8 @@ class App {
 
             */
 
-            display("Valid dataset",dataFrameBuilder.valid())
+            val validDataset = dataFrameBuilder.valid()
+            display("Valid dataset", validDataset, "date")
 
             /*
 
@@ -145,18 +191,71 @@ class App {
                 row count = 12
 
              */
+
+            // statistics
+            val validStatisticsPath = "$outputPath/valid"
+            generateStatistics(validDataset, validStatisticsPath, sparkSession)
+            display("VALID Statistics", validStatisticsPath, "key", sparkSession)
+
+            /*
+
+            VALID Statistics
+
+                root
+                 |-- key: string (nullable = true)
+                 |-- column: string (nullable = true)
+                 |-- discriminator: string (nullable = true)
+                 |-- value: string (nullable = true)
+
+                +------------+-------+-------------+------+
+                |         key| column|discriminator| value|
+                +------------+-------+-------------+------+
+                |CountByMonth|   date|      2020-01|     4|
+                |CountByMonth|   date|      2020-02|     5|
+                |CountByMonth|   date|      2020-03|     3|
+                |CountByValue|account|            1|     8|
+                |CountByValue|account|            2|     4|
+                |         max| amount|         NULL|300.47|
+                |         min| amount|         NULL| 15.45|
+                |   row count|   NULL|         NULL|    12|
+                +------------+-------+-------------+------+
+
+             */
         }
-
-
 
     }
 
-    private fun display(name: String, ds: Dataset<Row>) {
+    private fun generateStatistics(dataset: Dataset<Row>, path: String, sparkSession: SparkSession) {
+        // load configuration
+        val statisticConfiguration = Json5.decodeFromStream<Statistics>(
+            this::class.java.getResourceAsStream("/sample1.statements.statistics.json5")!!
+        )
+        // transform from configuration to implementation
+        val statistics = StatisticRepository().buildStatistics(statisticConfiguration)
+        // instantiate a collector for gathering results
+        val collector = SparkCollector(sparkSession, path)
+        // process the statistics for the given dataset, and close the collector on completion
+        // this will result in the statistics being written to CSV
+        collector.use {
+            StatisticsRunner().process(dataset, statistics, collector)
+        }
+    }
+
+    private fun display(name: String, path: String, sort: String, sparkSession: SparkSession) {
+        val statisticDataframe = sparkSession.read()
+            .format("csv")
+            .option("header", true)
+            .load(path)
+
+        display(name, statisticDataframe, sort)
+    }
+
+    private fun display(name: String, ds: Dataset<Row>, sort: String) {
         println()
         println(name)
         println()
         ds.printSchema()
-        ds.orderBy("date").show(20)
+        ds.orderBy(sort).show(20)
         println("row count = ${ds.count()}")
     }
 }

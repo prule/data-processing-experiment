@@ -1,4 +1,4 @@
-package com.example.dataprocessingexperiment.spark.functions
+package com.example.dataprocessingexperiment.spark.data.functions
 
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions.*

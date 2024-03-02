@@ -1,9 +1,8 @@
-package com.example.dataprocessingexperiment.spark.types
+package com.example.dataprocessingexperiment.spark.data.types
 
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.ints.shouldBeExactly
-import org.apache.spark.SparkConf
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.SparkSession
@@ -13,12 +12,8 @@ import org.apache.spark.sql.types.Metadata
 import org.apache.spark.sql.types.StructField
 import org.apache.spark.sql.types.StructType
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
-import java.sql.Date
-import java.time.LocalDate
-import java.time.ZoneId
 
 // see the following link for examples
 // https://github.com/Kotlin/kotlin-spark-api/blob/release/examples/src/main/kotlin/org/jetbrains/kotlinx/spark/examples/UdtRegistration.kt

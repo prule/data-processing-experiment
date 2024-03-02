@@ -1,69 +1,156 @@
-Enhancing table metadata
+Data Processing Experiment - Part 5
 -
+The one where I derive statistics from the data.
 
-Now that we have an easy table configuration, the next step is to make it more useful. Here, I'm adding a `required` field to `Column`. 
+---
 
-With this, I can easily remove rows that don't have required fields. 
+With the table definitions set up, there's now an opportunity to easily create some statistics about the data. 
 
-Super simple, I've added a `valid()` method to `DataFrameBuilder` which returns a dataframe with only valid rows:
+The most simple scenario would be a row count for the dataframe so we know how much data is arriving, and by comparing the raw row count with the valid row count we know the amount of invalid data. Ways this could be useful are to generate reports whenever the data is processed - so patterns can be established and anomalies spotted. 
+
+A couple of patterns I've seen in software frequently impress me:
+
+- Spring Framework - does so many things, and makes everything easy yet is not intrusive - you only need to use what you want
+- AWS services - many individual services that do one simple thing, but together these can be combined to provide value greater than the sum of the individual services
+- Linux - the simplicity of the [everything is a file](https://en.wikipedia.org/wiki/Everything_is_a_file) approach.
+
+With this in mind, I don't want this aspect to impact the existing code - it should sit alongside it - not with it. In a bigger project I'd use a separate module - but for brevity here I'll just put everything in a separate package - separate and optional.
+
+So the model I want looks something like:
 
 ```kotlin
-fun valid(): Dataset<Row> {
-    // required columns != null conditions
-    val requiredColumns: List<Column> = fileSource.table.columns
-        .filter { column -> column.required }
-        .map { column ->
-            // for strings, check for null and empty strings
-            if (string.key() == column.type)
-                col(column.name).isNotNull.and(
-                    trim(col(column.name)).notEqual(functions.lit(""))
-                )
-            else
-            // otherwise just check for null
-                col(column.name).isNotNull
-        }
-    // and all columns together so none of the required columns can be null
-    var combined: Column? = null
-    requiredColumns.forEach { col ->
-        combined = if (combined == null) col else combined!!.and(col)
-    }
-    // select all columns where the required columns are not null
-    return typed().select("*").where(combined)
-}
+StatisticsRunner().process(dataset, statistics, collector)
 ```
 
-For a string column I'm checking for null or blank (trimming the column and comparing to and empty string). For everything else it's just a null check - remember, if dates don't match the right format, or if a value can't be converted by casting then the result will be NULL.
+Statistics should be configurable and be able to be applied to any dataframe. 
 
-An interesting thought comes to mind now - should the type converters contain more logic to enforce validity? Or should this be a separate concern?
+Configuration for the statements table could look like this:
 
-For example, IntegerType could take configuration to supply a min and/or max value
-- with this it could return null for any values that fall outside the defined range. 
-- and then, these invalid rows would be filtered from our valid dataframe
+```json5
+{
+  name: "Statements Statistics",
+  description: "Statistics configuration for the statements table",
+  values: [
+    {
+      id: "count"
+    },
+    {
+      id: "countByMonth",
+      column: "date"
+    },
+    {
+      id: "countByValue",
+      column: "account"
+    },
+    {
+      id: "bounds",
+      column: "amount"
+    }
+  ],
+}
+```
+This is a list of statistics we want to run, with optional configuration such as the column name needed for that particular statistic.
 
-I'm not sure about this yet, so I think I'll defer this decision. With more information and experience options will shake out. Part of this experiment is about knowing when to go broad, and when to expand detail... the beauty of it is, at the moment, making changes is easy - the codebase is simple, flexible, unobtrusive so many things are possible.
+In this example we have
+- count : count the number of rows
+- countByMonth: row count grouped by the Year-Month value of the given column 
+- countByValue: row count grouped by the value of the given column
+- bounds: the min and max values of the given column
 
-The downside is that without specific use-cases the validity of the experiment is hard to judge. I'm not too concerned here either. It's unrealistic to build a silver bullet - there will be some cases where this will add value and be fit for purpose and there will be some that won't. 
+With our sample dataset the result would look something like:
 
-In the future I intend to apply this framework to different datasets (different in shape and in size) and see how it pans out... 
+For the RAW dataset
+```text
+RAW Statistics
 
-So lets recap where we are:
++------------+-------+-------------+-----+
+|         key| column|discriminator|value|
++------------+-------+-------------+-----+
+|CountByMonth|   date|         NULL|    7|
+|CountByMonth|   date|      2020-01|    4|
+|CountByMonth|   date|      2020-02|    5|
+|CountByMonth|   date|      2020-12|    2|
+|CountByValue|account|         NULL|    1|
+|CountByValue|account|            1|    8|
+|CountByValue|account|            2|    4|
+|CountByValue|account|            x|    5|
+|         max| amount|         NULL|    x|
+|         min| amount|         NULL| 0.01|
+|   row count|   NULL|         NULL|   18|
++------------+-------+-------------+-----+
+```
+For the VALID dataset
+```text
+VALID Statistics
 
-- we can create a simple table definition in json5 
-- we can easily build a dataframe from this, with columns properly typed
-- we can easily filter out invalid rows where required fields are null
-- all with a very small amount of flexible code
++------------+-------+-------------+------+
+|         key| column|discriminator| value|
++------------+-------+-------------+------+
+|CountByMonth|   date|      2020-01|     4|
+|CountByMonth|   date|      2020-02|     5|
+|CountByMonth|   date|      2020-03|     3|
+|CountByValue|account|            1|     8|
+|CountByValue|account|            2|     4|
+|         max| amount|         NULL|300.47|
+|         min| amount|         NULL| 15.45|
+|   row count|   NULL|         NULL|    12|
++------------+-------+-------------+------+
+``` 
+Looking at [App.kt](https://github.com/prule/data-processing-experiment/blob/part-5/app/src/main/kotlin/com/example/dataprocessingexperiment/app/App.kt) shows how to use this:
 
-The next most interesting thing (to me, at the moment) is to derive some insights from this data. As an example, knowing the row count for the raw dataframe - and for the valid dataframe - lets us know the quantity of invalid rows. This type of insight should be easily configurable again, with some simple metadata... but that's for the next installment...
+```kotlin
+    private fun generateStatistics(dataset: Dataset<Row>, path: String, sparkSession: SparkSession) {
+    // load configuration
+    val statisticConfiguration = Json5.decodeFromStream<Statistics>(
+        this::class.java.getResourceAsStream("/sample1.statements.statistics.json5")!!
+    )
+    // transform from configuration to implementation
+    val statistics = StatisticRepository().buildStatistics(statisticConfiguration)
+    // instantiate a collector for gathering results
+    val collector = SparkCollector(sparkSession, path)
+    // process the statistics for the given dataset, and close the collector on completion
+    // this will result in the statistics being written to CSV 
+    collector.use {
+        StatisticsRunner().process(dataset, statistics, collector)
+    }
+}
+```
+Implementing a [statistic](https://github.com/prule/data-processing-experiment/tree/part-5/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/statistics) is simple:
+```kotlin
+class Count(): Statistic {
 
-See the code:
+    override fun run(data: Dataset<Row>, collector: Collector) {
+        val value = data.count()
+        collector.add("row count", "", "", value)
+    }
 
-- [App](https://github.com/prule/data-processing-experiment/blob/part-4/app/src/main/kotlin/com/example/dataprocessingexperiment/app/App.kt)
-- [DataFrameBuilder](https://github.com/prule/data-processing-experiment/blob/part-4/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/DataFrameBuilder.kt)
-- [sample1.statements.json5](https://github.com/prule/data-processing-experiment/blob/part-4/app/src/main/resources/sample1.statements.json5)
+}
+```
+If a new statistic is implemented it needs to be registered via `StatisticRepository` so that when we use `statisticRepository.buildStatistics()` it will find the implementation.
 
-----
+There's much that could be improved and extended here - this is just a start. But it's extendable. New statistics can be coded, registered, and applied easily. 
 
-Running the application via gradle (configured with the required --add-exports values) we get:
+Generating reports from these statistics is a separate concern - this would be a separate module again, that is only concerned with displaying and comparing data. Not in anyway involved with how that data is generated.
+
+Let's do another (subjective) sanity check at this point:
+
+- Complexity = VERY LOW
+- Value = SMALL, LIMITED (growing?)
+- Potential = MEDIUM
+
+Now lets do a reality check:
+
+- [AWS SageMaker Data Wrangler](https://aws.amazon.com/sagemaker/data-wrangler/) lets you do more than I have time for 
+  - data selection, cleansing, exploration, visualization, and processing at scale
+  - 300 built-in data transformations, so you can quickly transform data without writing any code.
+
+But at the same time I see this discussion on Reddit:
+
+- [Now that Talend is no longer free, what other ETL tool would you recommend...](https://www.reddit.com/r/dataengineering/comments/1axyooe/talend_is_no_longer_free/) where people suggest everything from custom code to all manner of tools. 
+
+Should I take comfort in knowing that many people need these products and many tools exist to serve those needs? It's enough motivation to know that the problem space is real, even if my solution is hypothetical and serves only for experience... give me a thumbs up if you want to encourage me and see where this goes!
+
+Let's run the application again to see what it produces:
 
 ```text
  % ./run run
@@ -107,7 +194,33 @@ root
 +------------+-------+------------+-------+--------------------+
 
 row count = 18
-23:19:34.086 [main] INFO  c.e.d.spark.types.DecimalType MDC= - Using decimal(10,2) for column amount
+
+RAW Statistics
+
+root
+ |-- key: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- discriminator: string (nullable = true)
+ |-- value: string (nullable = true)
+
++------------+-------+-------------+-----+
+|         key| column|discriminator|value|
++------------+-------+-------------+-----+
+|CountByMonth|   date|         NULL|    7|
+|CountByMonth|   date|      2020-01|    4|
+|CountByMonth|   date|      2020-02|    5|
+|CountByMonth|   date|      2020-12|    2|
+|CountByValue|account|         NULL|    1|
+|CountByValue|account|            1|    8|
+|CountByValue|account|            2|    4|
+|CountByValue|account|            x|    5|
+|         max| amount|         NULL|    x|
+|         min| amount|         NULL| 0.01|
+|   row count|   NULL|         NULL|   18|
++------------+-------+-------------+-----+
+
+row count = 11
+21:57:16.830 [main] INFO  c.e.d.spark.data.types.DecimalType MDC= - Using decimal(10,2) for column amount
 
 Typed dataset
 
@@ -141,7 +254,7 @@ root
 +----------+-------+------------+------+
 
 row count = 18
-23:19:34.238 [main] INFO  c.e.d.spark.types.DecimalType MDC= - Using decimal(10,2) for column amount
+21:57:16.974 [main] INFO  c.e.d.spark.data.types.DecimalType MDC= - Using decimal(10,2) for column amount
 
 Valid dataset
 
@@ -169,18 +282,31 @@ root
 +----------+-------+------------+------+
 
 row count = 12
+
+VALID Statistics
+
+root
+ |-- key: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- discriminator: string (nullable = true)
+ |-- value: string (nullable = true)
+
++------------+-------+-------------+------+
+|         key| column|discriminator| value|
++------------+-------+-------------+------+
+|CountByMonth|   date|      2020-01|     4|
+|CountByMonth|   date|      2020-02|     5|
+|CountByMonth|   date|      2020-03|     3|
+|CountByValue|account|            1|     8|
+|CountByValue|account|            2|     4|
+|         max| amount|         NULL|300.47|
+|         min| amount|         NULL| 15.45|
+|   row count|   NULL|         NULL|    12|
++------------+-------+-------------+------+
+
+row count = 8
 Finished...
 
-BUILD SUCCESSFUL in 4s
-10 actionable tasks: 5 executed, 5 up-to-date
+BUILD SUCCESSFUL in 5s
+10 actionable tasks: 4 executed, 6 up-to-date
 ```
-
----
-
-**Note**
-
-One thing I like doing on my pet projects is creating a bash script for common things I need to do. Not only is it convenient - less to type - it also helps me remember what functionality is available and important. 
-
-For example, at some point I’ll forget what the command is to generate the Dokka HTML documentation - fear not, I can just use `./run doc` and it’ll generate it and then open it in the browser...
-
-See [run](https://github.com/prule/data-processing-experiment/blob/part-4/run) for an example

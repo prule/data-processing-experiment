@@ -1,7 +1,7 @@
-package com.example.dataprocessingexperiment.spark
+package com.example.dataprocessingexperiment.spark.data
 
-import com.example.dataprocessingexperiment.spark.types.StringType
-import com.example.dataprocessingexperiment.spark.types.Types
+import com.example.dataprocessingexperiment.spark.data.types.StringType
+import com.example.dataprocessingexperiment.spark.data.types.Types
 import com.example.dataprocessingexperiment.tables.FileSource
 import org.apache.spark.sql.*
 import org.apache.spark.sql.functions.col

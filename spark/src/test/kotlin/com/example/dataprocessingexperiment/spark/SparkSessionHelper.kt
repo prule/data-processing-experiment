@@ -1,6 +1,6 @@
 package com.example.dataprocessingexperiment.spark
 
-import com.example.dataprocessingexperiment.spark.types.DecimalTypeTest
+import com.example.dataprocessingexperiment.spark.data.types.DecimalTypeTest
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 

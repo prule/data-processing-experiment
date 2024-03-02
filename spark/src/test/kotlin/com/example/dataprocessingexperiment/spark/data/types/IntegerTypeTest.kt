@@ -1,9 +1,7 @@
-package com.example.dataprocessingexperiment.spark.types
+package com.example.dataprocessingexperiment.spark.data.types
 
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotest.matchers.ints.shouldBeExactly
-import org.apache.spark.SparkConf
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.SparkSession
@@ -13,65 +11,57 @@ import org.apache.spark.sql.types.Metadata
 import org.apache.spark.sql.types.StructField
 import org.apache.spark.sql.types.StructType
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import java.math.BigDecimal
-import java.sql.Date
-import java.time.LocalDate
-import java.time.ZoneId
 
-// see the following link for examples
-// https://github.com/Kotlin/kotlin-spark-api/blob/release/examples/src/main/kotlin/org/jetbrains/kotlinx/spark/examples/UdtRegistration.kt
-
-class BooleanTypeTest {
+class IntegerTypeTest {
     private val columnName = "value"
 
     @Test
-    fun `should convert valid booleans`() {
+    fun `should convert valid numbers`() {
 
         // prepare
 
         val data = listOf(
             GenericRow(arrayOf("1")),
-            GenericRow(arrayOf("true")),
-            GenericRow(arrayOf("t")),
+            GenericRow(arrayOf("2")),
+            GenericRow(arrayOf("3.1")),
+            GenericRow(arrayOf("4.6")),
         )
 
         val dataframe = asDataFrame(data)
 
-        val column = BooleanType().process(columnName, listOf())
+        val column = IntegerType().process(columnName, null)
 
         // perform
         val result = dataframe.select(column).collectAsList().map { it.get(0) }
 
         // verify
         result shouldContainExactlyInAnyOrder (listOf(
-            true,
-            true,
-            true,
+            1,
+            2,
+            3,
+            4
         ))
     }
 
     @Test
-    fun `should convert invalid booleans to false`() {
+    fun `invalid numbers should be null`() {
 
         // prepare
 
         val data = listOf(
-            GenericRow(arrayOf("")),
-            GenericRow(arrayOf("x")),
+            GenericRow(arrayOf("zzz")),
         )
 
         val dataframe = asDataFrame(data)
 
-        val column = BooleanType().process(columnName, listOf())
+        val column = DecimalType().process(columnName, null)
 
         // perform
         val result = dataframe.select(column).collectAsList().map { it.get(0) }
 
         // verify
         result shouldContainExactlyInAnyOrder (listOf(
-            null,
             null,
         ))
     }
