@@ -21,6 +21,8 @@ repositories {
 dependencies {
     implementation(project(":spark"))
 
+    implementation("io.github.xn32:json5k:0.3.0")
+
     // Use the Kotlin JUnit 5 integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 
@@ -29,14 +31,6 @@ dependencies {
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
-
-// Apply a specific Java toolchain to ease working on different environments.
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
 
 application {
     // Define the main class for the application.

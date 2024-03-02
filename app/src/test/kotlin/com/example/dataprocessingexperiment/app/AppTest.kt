@@ -8,6 +8,6 @@ import kotlin.test.assertNotNull
 
 class AppTest {
     @Test fun appHasAGreeting() {
-        val classUnderTest = App()
+        App()
     }
 }
