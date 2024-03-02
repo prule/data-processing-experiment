@@ -1,4 +1,4 @@
-8:42:16 pm: Executing 'run --stacktrace'...
+9:28:17 pm: Executing 'run --stacktrace'...
 
 > Task :app:checkKotlinGradlePluginConfigurationErrors
 > Task :spark:checkKotlinGradlePluginConfigurationErrors
@@ -8,19 +8,19 @@
 > Task :tables:processResources NO-SOURCE
 > Task :tables:classes UP-TO-DATE
 > Task :tables:jar UP-TO-DATE
-> Task :spark:compileKotlin UP-TO-DATE
-> Task :spark:compileJava NO-SOURCE
 > Task :spark:processResources NO-SOURCE
-> Task :spark:classes UP-TO-DATE
-> Task :spark:jar UP-TO-DATE
-> Task :app:compileKotlin UP-TO-DATE
-> Task :app:compileJava NO-SOURCE
 > Task :app:processResources UP-TO-DATE
+> Task :spark:compileKotlin
+> Task :spark:compileJava NO-SOURCE
+> Task :spark:classes UP-TO-DATE
+> Task :spark:jar
+> Task :app:compileKotlin
+> Task :app:compileJava NO-SOURCE
 > Task :app:classes UP-TO-DATE
 
 > Task :app:run
 Starting...
-20:42:17.310 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+21:28:18.080 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 SLF4J: Class path contains multiple SLF4J providers.
 SLF4J: Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@6236eb5f]
 SLF4J: Found provider [org.apache.logging.slf4j.SLF4JServiceProvider@7c1e2a9e]
@@ -63,12 +63,6 @@ root
 +------------+-------+------------+-------+-----------------+--------------------+
 
 row count = 20
-+----------+
-|sum(count)|
-+----------+
-|         4|
-+----------+
-
 
 RAW Statistics
 
@@ -160,12 +154,6 @@ root
 +----------+-------+------------+-----------------+------+
 
 row count = 12
-+----------+
-|sum(count)|
-+----------+
-|      NULL|
-+----------+
-
 
 VALID Statistics
 
@@ -220,12 +208,6 @@ root
 +----------+---------------+----+--------------------------+--------------------+--------------------------+--------------------+-------------------------------+
 
 row count = 11
-+----------+
-|sum(count)|
-+----------+
-|         2|
-+----------+
-
 
 RAW Statistics
 
@@ -294,12 +276,6 @@ root
 +------------+---------------+------------+----------------+
 
 row count = 10
-+----------+
-|sum(count)|
-+----------+
-|      NULL|
-+----------+
-
 
 VALID Statistics
 
@@ -344,12 +320,6 @@ root
 +-------------------+----+-----------------------------------+-------------------+--------------------+-----------------------------------+
 
 row count = 10
-+----------+
-|sum(count)|
-+----------+
-|      NULL|
-+----------+
-
 
 RAW Statistics
 
@@ -417,12 +387,6 @@ root
 +------------+------------+------------+-----------------+
 
 row count = 10
-+----------+
-|sum(count)|
-+----------+
-|      NULL|
-+----------+
-
 
 VALID Statistics
 
@@ -466,12 +430,6 @@ root
 +-------------------+-----------------------------------+-------------------+--------------------+-----------------------------------+
 
 row count = 10
-+----------+
-|sum(count)|
-+----------+
-|      NULL|
-+----------+
-
 
 RAW Statistics
 
@@ -539,12 +497,6 @@ root
 +------------+------------+------------+-----------------+
 
 row count = 10
-+----------+
-|sum(count)|
-+----------+
-|      NULL|
-+----------+
-
 
 VALID Statistics
 
@@ -565,5 +517,5 @@ row count = 2
 Finished...
 
 BUILD SUCCESSFUL in 8s
-10 actionable tasks: 4 executed, 6 up-to-date
-8:42:25 pm: Execution finished 'run --stacktrace'.
+10 actionable tasks: 7 executed, 3 up-to-date
+9:28:25 pm: Execution finished 'run --stacktrace'.

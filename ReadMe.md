@@ -4,7 +4,7 @@ The one where I start loading multiple tables
 
 ---
 
-> The code for this project is available in GitHub - I’m using a branch for each part and merging each part into the latest branch. See the ReadMe.md in each branch for the write up.
+> The code for this project is available in GitHub - I’m using a branch for each part and merging each part into the **[latest](https://github.com/prule/data-processing-experiment/tree/latest)** branch. See the ReadMe.md in each branch for the story.
 >
 > - [Github repository for this project](https://github.com/prule/data-processing-experiment/)
 > - [Pull requests for each part](https://github.com/prule/data-processing-experiment/pulls?q=is%3Apr+is%3Aclosed) 
@@ -12,7 +12,7 @@ The one where I start loading multiple tables
 
 Now that I have a simple system that lets me load a table, type it, validate it, and generate statistics, it's time to start pulling it together and making it more useful.
 
-To start with I need to be able to define multiple tables and then I'll need a bit more functionality for tables and columns. I'll also need some sample data to make the current use case more interesting. 
+To start with I need to be able to define multiple tables and then I'll need a bit more functionality for tables and columns. I'll also need some more sample data to make the current use case more interesting. 
 
 I've added `deduplicate` and `delimiter` to the table definition configuration:
 ```json5
@@ -49,7 +49,7 @@ So now
 
 I've also implemented a [DuplicateCount](https://github.com/prule/data-processing-experiment/blob/part-6/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/statistics/DuplicateCount.kt) statistic since it can be useful to know how many rows are duplicated in the data. At the moment it's the simplest implementation that would work (uses ALL columns) but it could be extended to take a list of columns to use in duplicate detection.
 
-I've added some more data to sample 1 - Hierarchy data mapping Local Government Areas (LGA) to State. To keep the size small I've reduced it to only 3 states, provided separately and changed it so there are differences in the column names and number of columns - but they all provide the essential information. Instead of being comma separated, this data uses semicolon - hence the need to add delimiter configuration.
+I've added some more [data](https://github.com/prule/data-processing-experiment/tree/part-6/data/sample1/lgas) to sample 1 - Hierarchy data mapping Local Government Areas (LGA) to State. To keep the size small I've reduced it to only 3 states, provided separately and changed it so there are differences in the column names and number of columns - but they all provide the essential information. Instead of being comma separated, this data uses semicolon - hence the need to add delimiter configuration.
 
 ```text
 data
@@ -92,10 +92,11 @@ Australia
 │   ├── ...
 ...
 ```
+Now if we see a transaction with a location of `Berrigan` we know it's in the state of NSW and now we can roll up transactions by state.
 
 For details about hierarchies and all things star schema, see [Star Schema The Complete Reference](https://www.amazon.com.au/Schema-Complete-Reference-Christopher-Adamson/dp/0071744320/ref=sr_1_1) - a great book, I highly recommend.
 
-Because I've simulated the 3 LGA datasets coming from different sources they get defined as separate tables in the table configuration. To link the transactions to the hierarchy, a location column has been added to transactions. 
+Because I've simulated the 3 LGA datasets coming from different sources they get defined as separate tables with slightly different details in the table configuration. To link the transactions to the hierarchy, a location column has been added to transactions. 
 
 ```json5
 {

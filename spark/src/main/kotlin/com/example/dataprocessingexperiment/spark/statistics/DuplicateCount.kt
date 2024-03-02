@@ -19,8 +19,6 @@ class DuplicateCount() : Statistic {
             .where(functions.col("count").gt(1))
             .select(functions.sum("count"))
 
-        result.show()
-
         collector.add(
             "duplicate row count", "", "", result.first().get(0) ?: 0
         )
