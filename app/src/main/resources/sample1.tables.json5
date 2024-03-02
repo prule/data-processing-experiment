@@ -76,25 +76,29 @@
         delimiter: ";",
         columns: [
           {
-            name: "Official Code State",
+            name: "Code State",
+            alias: "level_1_code",
             description: "",
             type: "string",
             required: true
           },
           {
-            name: "Official Name State",
+            name: "Name State",
+            alias: "level_1_name",
             description: "",
             type: "string",
             required: true
           },
           {
-            name: "Official Code Local Government Area",
+            name: "Code Local Government Area",
+            alias: "level_2_code",
             description: "",
             type: "string",
             required: true
           },
           {
-            name: "Official Name Local Government Area",
+            name: "Name Local Government Area",
+            alias: "level_2_name",
             description: "",
             type: "string",
             required: true
@@ -124,24 +128,28 @@
         columns: [
           {
             name: "Official Code State",
+            alias: "level_1_code",
             description: "",
             type: "string",
             required: true
           },
           {
             name: "Official Name State",
+            alias: "level_1_name",
             description: "",
             type: "string",
             required: true
           },
           {
             name: "Official Code Local Government Area",
+            alias: "level_2_code",
             description: "",
             type: "string",
             required: true
           },
           {
             name: "Official Name Local Government Area",
+            alias: "level_2_name",
             description: "",
             type: "string",
             required: true
@@ -150,7 +158,7 @@
       }
     },
 
-//    "Official Name State",
+    //    "Official Name State",
     //    "Official Code Local Government Area",
     //    "Official Code State",
     //    "Iso 3166-3 Area Code",
@@ -170,24 +178,28 @@
         columns: [
           {
             name: "Official Code State",
+            alias: "level_1_code",
             description: "",
             type: "string",
             required: true
           },
           {
             name: "Official Name State",
+            alias: "level_1_name",
             description: "",
             type: "string",
             required: true
           },
           {
             name: "Official Code Local Government Area",
+            alias: "level_2_code",
             description: "",
             type: "string",
             required: true
           },
           {
             name: "Official Name Local Government Area",
+            alias: "level_2_name",
             description: "",
             type: "string",
             required: true

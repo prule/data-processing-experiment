@@ -30,12 +30,22 @@ class DataFrameBuilder(
             .alias(fileSource.name)
     }
 
-    // Builds a typed dataset using the definition in the table configuration
-    // - Only the columns specified and with their associated types (integer, date, boolean etc)
-    // - Those values that couldn't be converted to a type will be null.
+    /**
+     * Builds a typed dataset using the definition in the table configuration
+     *
+     * - Only the columns specified and with their associated types (integer, date, boolean etc)
+     * - Those values that couldn't be converted to a type will be null.
+     *
+     * Also renames the column according to the specified alias if provided.
+     */
     fun typed(): Dataset<Row> {
         val typedColumns: List<Column> =
-            fileSource.table.columns.map { column -> types.get(column.type).process(column.name, column.formats) }
+            fileSource.table.columns.map { column ->
+                // convert to type
+                types.get(column.type).process(column.name, column.formats)
+                    // rename column to alias
+                    .`as`(column.alias())
+            }
         // call var args function https://stackoverflow.com/a/65520425
         return raw.select(*typedColumns.map { it }.toTypedArray())
     }
