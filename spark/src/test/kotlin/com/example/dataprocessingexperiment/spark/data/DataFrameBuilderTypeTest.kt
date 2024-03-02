@@ -40,12 +40,17 @@ class DataFrameBuilderTypeTest {
                 false,
                 ",",
                 listOf(
-                    Column("boolean", "boolean", "boolean"),
-                    Column("date", "date", "date", listOf("d/M/yyyy", "yyyy-MM-dd")),
-                    Column("decimal", "decimal", "decimal", listOf("10","2")),
-                    Column("integer", "integer", "integer"),
-                    Column("string", "string", "string"),
-                    Column("unknown", "unknown", "unknown"), // test an invalid type definition is defaulted to string
+                    Column("boolean", "boolean", "boolean", "boolean"),
+                    Column("date", "date", "date", "date", listOf("d/M/yyyy", "yyyy-MM-dd")),
+                    Column("decimal", "decimal", "decimal", "decimal", listOf("10", "2")),
+                    Column("integer", "integer", "integer", "integer"),
+                    Column("string", "string", "string", "string"),
+                    Column(
+                        "unknown",
+                        "unknown",
+                        "unknown",
+                        "unknown"
+                    ), // test an invalid type definition is defaulted to string
                 )
             ),
         )
@@ -55,7 +60,7 @@ class DataFrameBuilderTypeTest {
 
         // typed dataset, only columns specified
         val typedDataset = dataFrameBuilder.typed()
-        logger.debug {"Typed dataset"}
+        logger.debug { "Typed dataset" }
         typedDataset.printSchema()
         typedDataset.show(20)
 
@@ -64,7 +69,9 @@ class DataFrameBuilderTypeTest {
         val result = typedDataset.select("*").collectAsList()[0]
 
         result[0] shouldBe true
-        result[1] shouldBeEqual Date(LocalDate.of(2020, 12, 31).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+        result[1] shouldBeEqual Date(
+            LocalDate.of(2020, 12, 31).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        )
         result[2] shouldBeEqual BigDecimal.valueOf(100.12)
         result[3] shouldBe 6
         result[4] shouldBe "any value"

@@ -18,7 +18,7 @@ import java.io.File
 
 
 class App {
-    private val displayRows = 5
+    private val displayRows = 20
 
     fun go() {
         // spark setup

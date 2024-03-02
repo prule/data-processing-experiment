@@ -38,10 +38,10 @@ class DataFrameBuilderTest {
                 false,
                 ",",
                 listOf(
-                    Column("date", "date", "date", listOf("yyyy-MM-dd", "dd-MM-yyyy"), required = true),
-                    Column("account", "account", "string", required = true),
-                    Column("description", "description", "string"),
-                    Column("amount", "amount", "decimal", listOf("10", "2"), required = true),
+                    Column("date", "date", "date", "date", listOf("yyyy-MM-dd", "dd-MM-yyyy"), required = true),
+                    Column("account", "account", "account", "string", required = true),
+                    Column("description", "description", "description", "string"),
+                    Column("amount", "amount", "amount", "decimal", listOf("10", "2"), required = true),
                 )
             ),
         )
