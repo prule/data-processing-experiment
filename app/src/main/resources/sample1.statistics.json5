@@ -38,6 +38,32 @@
           id: "duplicateCount"
         }
       ],
+    },
+    {
+      id: "lga-2",
+      name: "lga-2 Statistics",
+      description: "Statistics configuration for the lga-2 table",
+      values: [
+        {
+          id: "count"
+        },
+        {
+          id: "duplicateCount"
+        }
+      ],
+    },
+    {
+      id: "lga-3",
+      name: "lga-3 Statistics",
+      description: "Statistics configuration for the lga-3 table",
+      values: [
+        {
+          id: "count"
+        },
+        {
+          id: "duplicateCount"
+        }
+      ],
     }
   ]
 }

@@ -35,7 +35,7 @@ class DataFrameBuilderTest {
             Table(
                 "test1",
                 "test csv file",
-                false,
+                true,
                 ",",
                 listOf(
                     Column("date", "date", "date", "date", listOf("yyyy-MM-dd", "dd-MM-yyyy"), required = true),
@@ -52,16 +52,16 @@ class DataFrameBuilderTest {
         val rawDataset = dataFrameBuilder.raw
         display("raw", rawDataset)
 
-        rawDataset.count() shouldBe 18
+        rawDataset.count() shouldBe 20
 
         // typed dataset, only columns specified
         val typedDataset = dataFrameBuilder.typed()
         display("typed", typedDataset)
 
-        typedDataset.count() shouldBe 18
+        typedDataset.count() shouldBe 20
 
         // typed dataset, only columns specified
-        val validDataset = dataFrameBuilder.valid()
+        val validDataset = dataFrameBuilder.valid(true)
         display("valid", validDataset)
 
         validDataset.count() shouldBe 12
