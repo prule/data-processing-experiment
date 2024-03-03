@@ -24,7 +24,7 @@ class DataFrameBuilder(
     val raw: Dataset<Row> by lazy {
         sparkSession.read()
             .format(fileSource.type)
-            .option("header", true)
+            .option("header", true) // headers are always required at this point
             .option("delimiter", fileSource.table.delimiter)
             .load(rootPath + fileSource.path)
             .alias(fileSource.name)
