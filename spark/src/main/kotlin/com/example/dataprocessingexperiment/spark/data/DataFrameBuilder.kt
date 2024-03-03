@@ -8,8 +8,11 @@ import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.functions.trim
 
 /**
- * DataFrameBuilder reads the RAW dataset and uses the FileSource configuration to produce a TYPED dataset. The typed dataset
- * will only contain the columns specified in the configuration and uses the Types to do the conversion.
+ * DataFrameBuilder goes through the following steps
+ * 1. reads the RAW dataset.
+ * 2. creates the SELECTED dataset using only columns specified in configuration and names columns according to aliases.
+ * 3. Uses the configuration to produce a TYPED dataset. The typed dataset uses Types to do the conversion.
+ * 4. Produces a VALID dataset by filtering rows without required values and de-duplicating.
  */
 class DataFrameBuilder(
     private val sparkSession: SparkSession,
@@ -33,6 +36,29 @@ class DataFrameBuilder(
     }
 
     /**
+     * Selects only the columns specified in configuration and maps them to the alias.
+     */
+    fun selected(): Dataset<Row> {
+        val columns: List<Column> =
+            fileSource.table.columns.map { column ->
+                var c: Column? = null
+                for (name in column.name) {
+                    if (raw.columns().contains(name)) {
+                        c = col(name)
+                        break
+                    }
+                }
+                if (c == null) {
+                    throw RuntimeException("Could not find any of the columns ${fileSource.table.columns} on table ${fileSource.id} at ${fileSource.path}")
+                }
+                // rename column to alias
+                c.`as`(column.alias)
+            }
+
+        return raw.select(*columns.map { it }.toTypedArray())
+    }
+
+    /**
      * Builds a typed dataset using the definition in the table configuration
      *
      * - Only the columns specified and with their associated types (integer, date, boolean etc)
@@ -45,12 +71,10 @@ class DataFrameBuilder(
         val typedColumns: List<Column> =
             fileSource.table.columns.map { column ->
                 // convert to type
-                types.get(column.type).process(column.name, column.formats)
-                    // rename column to alias
-                    .`as`(column.alias())
+                types.get(column.type).process(column.alias, column.formats)
             }
         // call var args function https://stackoverflow.com/a/65520425
-        return raw.select(*typedColumns.map { it }.toTypedArray())
+        return selected().select(*typedColumns.map { it }.toTypedArray())
     }
 
     /**
@@ -64,12 +88,12 @@ class DataFrameBuilder(
             .map { column ->
                 // for strings, check for null and empty strings
                 if (string.key() == column.type)
-                    col(column.name).isNotNull.and(
-                        trim(col(column.name)).notEqual(functions.lit(""))
+                    col(column.alias).isNotNull.and(
+                        trim(col(column.alias)).notEqual(functions.lit(""))
                     )
                 else
                 // otherwise just check for null
-                    col(column.name).isNotNull
+                    col(column.alias).isNotNull
             }
 
         // and all columns together so none of the required columns can be null

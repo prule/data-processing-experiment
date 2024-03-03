@@ -56,6 +56,10 @@ class App {
                     "../data/"
                 )
 
+                // ------------
+                // RAW
+                // ------------
+
                 // get the raw version of the dataset, everything is a string, and all columns are included
                 val rawDataset = dataFrameBuilder.raw
                 display("Raw dataset", rawDataset, "date")
@@ -67,9 +71,26 @@ class App {
                     generateStatistics(stats, rawDataset, rawStatisticsPath, sparkSession)
                     display("RAW Statistics", rawStatisticsPath, "key", sparkSession)
                 }
+
+                // ------------
+                // SELECTED
+                // ------------
+
+                // get the raw version of the dataset, everything is a string, and all columns are included
+                val selectedDataset = dataFrameBuilder.selected()
+                display("SELECTED dataset", selectedDataset, "date")
+
+                // ------------
+                // TYPED
+                // ------------
+
                 // get the typed version of the dataset, with columns and types specified in config
                 val typedDataset = dataFrameBuilder.typed()
                 display("Typed dataset", typedDataset, "date")
+
+                // ------------
+                // VALID
+                // ------------
 
                 // get the valid version of the dataset, de-duplicating if required
                 val validDataset = dataFrameBuilder.valid(fileSource.table.deduplicate)

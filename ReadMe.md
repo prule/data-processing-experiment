@@ -51,6 +51,8 @@ Possible future capabilities/considerations:
     - provide a way to inject invalid values to exercise statistics and validation
 - defensive measures
   - statistics could generate massive data if - for example - countBy is used on a high cardinality column - should it check cardinality first before running?
+- configuration validation
+  - detect problems with configurations and report them nicely so they can be fixed
 - Applications
   - web based configuration? don't need to handcraft json then.
   - web based reporting of statistics and comparisons across statistics?
