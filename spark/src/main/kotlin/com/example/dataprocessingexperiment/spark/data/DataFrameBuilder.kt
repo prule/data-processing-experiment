@@ -20,7 +20,9 @@ class DataFrameBuilder(
 
     private val string = StringType()
 
-    // The raw dataset - all columns
+    /**
+     * Loads the raw dataset containing all columns as strings.
+     */
     val raw: Dataset<Row> by lazy {
         sparkSession.read()
             .format(fileSource.type)
@@ -39,6 +41,7 @@ class DataFrameBuilder(
      * Also renames the column according to the specified alias if provided.
      */
     fun typed(): Dataset<Row> {
+        // build a list of Columns to select with the casting or transforms to achieve the required type
         val typedColumns: List<Column> =
             fileSource.table.columns.map { column ->
                 // convert to type
@@ -50,6 +53,9 @@ class DataFrameBuilder(
         return raw.select(*typedColumns.map { it }.toTypedArray())
     }
 
+    /**
+     * Builds a valid dataset by filtering out rows that are missing required values, and de-duplicating if required.
+     */
     fun valid(deduplicate: Boolean = true): Dataset<Row> {
 
         // required columns != null conditions
