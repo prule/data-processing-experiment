@@ -87,7 +87,7 @@ columns: [
 ```
 As a result of this, we need to make `alias` mandatory now, so that we have a definitive name for the column - this is also a good thing since any processes that follow will know what the column is called and can reference it - protected from any changes to the raw data column names.
 
-To support this I've added a new step "Selected" so now we go from raw -> selected -> typed -> valid
+To support this I've added a new step [selected()](https://github.com/prule/data-processing-experiment/blob/part-7/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/data/DataFrameBuilder.kt) so now we go from raw -> selected -> typed -> valid
 
 ```kotlin
 /**
@@ -129,7 +129,7 @@ Giving tables context
 
 So far all thats happening is loading some CSV files into dataframes and performing some simple transforms. In order to do more than that these tables need to be stored in a context after which they can be accessed by a series of transformers that get the real work done.
 
-In the reference implementation App.kt, as each table is loaded, the valid dataframe is added to the context
+In the reference implementation [App.kt](https://github.com/prule/data-processing-experiment/blob/part-7/app/src/main/kotlin/com/example/dataprocessingexperiment/app/App.kt#L111), as each table is loaded, the valid dataframe is added to the context
 ```kotlin
 context.add(fileSource.id, validDataset)
 ```
