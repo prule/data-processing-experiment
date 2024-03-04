@@ -1,5 +1,6 @@
 package com.example.dataprocessingexperiment.app
 
+import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.data.DataFrameBuilder
 import com.example.dataprocessingexperiment.spark.data.types.Types
 import com.example.dataprocessingexperiment.spark.statistics.StatisticsRunner
@@ -40,6 +41,8 @@ class App {
         val statisticConfiguration = Json5.decodeFromStream<StatisticsConfiguration>(
             this::class.java.getResourceAsStream("/sample1.statistics.json5")!!
         )
+
+        val context = SparkContext(tables)
 
         // run
         // load each table
@@ -96,6 +99,8 @@ class App {
                 val validDataset = dataFrameBuilder.valid(fileSource.table.deduplicate)
                 display("Valid dataset", validDataset, "date")
 
+                context.add(fileSource.id, validDataset)
+
                 // statistics
                 stats?.let {
                     val validStatisticsPath = "$outputPath/${fileSource.id}/valid"
@@ -103,11 +108,40 @@ class App {
                     display("VALID Statistics", validStatisticsPath, "key", sparkSession)
                 }
             }
+
+            tables.sources.forEach { fileSource ->
+                if (!fileSource.union.isNullOrBlank()) {
+                    if (context.contains(fileSource.union!!)) {
+                        context.add(
+                            fileSource.union!!,
+                            context.get(fileSource.union!!).union(context.get(fileSource.id))
+                        )
+                    } else {
+                        context.add(
+                            fileSource.union!!,
+                            context.get(fileSource.id)
+                        )
+                    }
+                    context.get(fileSource.union!!).show()
+                }
+            }
+
+            println("Context")
+            context.tablesIds().forEach {
+                println(it)
+                context.get(it).show(100)
+            }
+
         }
 
     }
 
-    private fun generateStatistics(statisticConfiguration: Statistics, dataset: Dataset<Row>, path: String, sparkSession: SparkSession) {
+    private fun generateStatistics(
+        statisticConfiguration: Statistics,
+        dataset: Dataset<Row>,
+        path: String,
+        sparkSession: SparkSession
+    ) {
         // transform from configuration to implementation
         val statistics = StatisticRepository().buildStatistics(statisticConfiguration)
         // instantiate a collector for gathering results
