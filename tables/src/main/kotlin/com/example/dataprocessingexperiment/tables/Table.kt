@@ -24,6 +24,6 @@ data class Table(
     val columns: List<Column>
 ) {
     fun colByName(name: String): Column {
-        return columns.first { col -> col.name.contains(name) }
+        return columns.first { col -> col.names.contains(name) }
     }
 }

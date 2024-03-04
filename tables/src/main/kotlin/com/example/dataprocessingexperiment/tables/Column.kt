@@ -21,7 +21,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class Column(
-    val name: List<String>,
+    val names: List<String>,
     val alias: String,
     val description: String,
     val type: String,

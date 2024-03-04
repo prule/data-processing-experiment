@@ -30,8 +30,8 @@ At the moment this framework supports the following:
 
 Possible future capabilities/considerations:
 - support multiple column names in the raw data (for when data is delivered inconsistently)
-- joins
 - unions
+- joins
 - configure a list of transformers for a table
   - could these be implemented as transformers?
     - add literal columns
@@ -64,3 +64,66 @@ Possible future capabilities/considerations:
     - eg if the data resides in a database can we do the same things - same config, just different implementation?
 
 There is much to be distracted by here, but the primary concerns are keeping the system simple and delivering value.
+
+---
+
+Multiple column names
+-
+Starting from the top, supporting multiple column names is trivial. The first step is to modify the JSON configuration so we can provide an array of strings for `name` and rename the column field from `name` to `names` so now we can do:
+
+```json5
+columns: [
+  {
+    names: [
+      "Code State",
+      "Official Code State"
+    ],
+    alias: "level_1_code",
+    description: "",
+    type: "string",
+    required: true
+  },
+  ...
+```
+As a result of this, we need to make `alias` mandatory now, so that we have a definitive name for the column - this is also a good thing since any processes that follow will know what the column is called and can reference it - protected from any changes to the raw data column names.
+
+```kotlin
+/**
+ * Selects only the columns specified in configuration and maps them to the alias.
+ */
+fun selected(): Dataset<Row> {
+    val columns: List<Column> =
+        fileSource.table.columns.map { column ->
+            // find the first column that exists with the given names
+            var c: Column? = null
+            for (name in column.names) {
+                if (raw.columns().contains(name)) {
+                    c = col(name)
+                    break
+                }
+            }
+            // if we can't find a column then throw exception
+            if (c == null) {
+                throw RuntimeException("Could not find any of the columns ${fileSource.table.columns} on table ${fileSource.id} at ${fileSource.path}")
+            }
+            // rename column to alias
+            c.`as`(column.alias)
+        }
+
+    return raw.select(*columns.map { it }.toTypedArray())
+}
+```
+So now we'll select the first column with any of the following names
+```
+"Code State",
+"Official Code State"
+```
+and alias it to `level_1_code`.
+
+---
+
+Giving tables context
+-
+
+So far all thats happening is loading some CSV files into dataframes and performing some simple transforms. In order to do more than that these tables need to be stored in a context after which they can be accessed by a series of transformers that get the real work done.
+

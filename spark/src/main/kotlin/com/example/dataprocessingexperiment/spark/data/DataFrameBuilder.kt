@@ -41,13 +41,15 @@ class DataFrameBuilder(
     fun selected(): Dataset<Row> {
         val columns: List<Column> =
             fileSource.table.columns.map { column ->
+                // find the first column that exists with the given names
                 var c: Column? = null
-                for (name in column.name) {
+                for (name in column.names) {
                     if (raw.columns().contains(name)) {
                         c = col(name)
                         break
                     }
                 }
+                // if we can't find a column then throw exception
                 if (c == null) {
                     throw RuntimeException("Could not find any of the columns ${fileSource.table.columns} on table ${fileSource.id} at ${fileSource.path}")
                 }
