@@ -87,6 +87,8 @@ columns: [
 ```
 As a result of this, we need to make `alias` mandatory now, so that we have a definitive name for the column - this is also a good thing since any processes that follow will know what the column is called and can reference it - protected from any changes to the raw data column names.
 
+To support this I've added a new step "Selected" so now we go from raw -> selected -> typed -> valid
+
 ```kotlin
 /**
  * Selects only the columns specified in configuration and maps them to the alias.
@@ -127,3 +129,19 @@ Giving tables context
 
 So far all thats happening is loading some CSV files into dataframes and performing some simple transforms. In order to do more than that these tables need to be stored in a context after which they can be accessed by a series of transformers that get the real work done.
 
+In the reference implementation App.kt, as each table is loaded, the valid dataframe is added to the context
+```kotlin
+context.add(fileSource.id, validDataset)
+```
+Once the context is fully populated, UnionProcessor can then process tables with `union` directives and further build the context. 
+```kotlin
+// process union directives
+UnionProcessor(context).process()
+
+// display result
+context.show()
+```
+
+Note that all this is very fluid at the moment - because we don't KNOW what final form we want it to take, it's good to work fast and refactor ruthlessly - so everything is subject to change. What I'm keen to avoid is analysis paralysis and getting tied into a particular implementation or pattern prematurely. I'll implement something, see what it looks like, and then change accordingly.
+
+Next up, we'll see what it looks like to add transformers to table definitions.

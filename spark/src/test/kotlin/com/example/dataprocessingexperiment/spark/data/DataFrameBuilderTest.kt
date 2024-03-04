@@ -31,6 +31,7 @@ class DataFrameBuilderTest {
             "test csv file",
             "../data/sample1/transactions",
             "csv",
+            null,
             // table structure
             Table(
                 "test1",

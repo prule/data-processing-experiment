@@ -100,18 +100,22 @@ class App {
                 val validDataset = dataFrameBuilder.valid(fileSource.table.deduplicate)
                 display("Valid dataset", validDataset, "date")
 
-                context.add(fileSource.id, validDataset)
-
                 // statistics
                 stats?.let {
                     val validStatisticsPath = "$outputPath/${fileSource.id}/valid"
                     generateStatistics(stats, validDataset, validStatisticsPath, sparkSession)
                     display("VALID Statistics", validStatisticsPath, "key", sparkSession)
                 }
+
+                // update the context
+                context.add(fileSource.id, validDataset)
+
             }
 
+            // process union directives
             UnionProcessor(context).process()
 
+            // display result
             context.show()
 
         }
