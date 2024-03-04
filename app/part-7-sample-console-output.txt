@@ -1,4 +1,4 @@
-10:04:06 pm: Executing 'run --stacktrace'...
+9:55:49 pm: Executing 'run --stacktrace'...
 
 > Task :app:checkKotlinGradlePluginConfigurationErrors
 > Task :spark:checkKotlinGradlePluginConfigurationErrors
@@ -8,19 +8,19 @@
 > Task :tables:processResources NO-SOURCE
 > Task :tables:classes UP-TO-DATE
 > Task :tables:jar UP-TO-DATE
-> Task :spark:compileKotlin UP-TO-DATE
-> Task :spark:compileJava NO-SOURCE
 > Task :spark:processResources NO-SOURCE
-> Task :spark:classes UP-TO-DATE
-> Task :spark:jar UP-TO-DATE
 > Task :app:processResources UP-TO-DATE
+> Task :spark:compileKotlin
+> Task :spark:compileJava NO-SOURCE
+> Task :spark:classes UP-TO-DATE
+> Task :spark:jar
 > Task :app:compileKotlin
 > Task :app:compileJava NO-SOURCE
 > Task :app:classes UP-TO-DATE
 
 > Task :app:run
 Starting...
-22:04:07.449 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+21:55:51.003 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 SLF4J: Class path contains multiple SLF4J providers.
 SLF4J: Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@6236eb5f]
 SLF4J: Found provider [org.apache.logging.slf4j.SLF4JServiceProvider@7c1e2a9e]
@@ -626,8 +626,113 @@ root
 +-------------------+------+-------------+-----+
 
 row count = 2
+==============================================
+Context
+transactions
++----------+-------+------------+-----------------+------+
+|      date|account| description|         location|amount|
++----------+-------+------------+-----------------+------+
+|2020-03-01|      1|      burger|Greater Dandenong| 15.47|
+|2020-02-04|      2|      petrol|       Gannawarra|150.46|
+|2020-01-01|      1|      burger|           Gympie| 15.45|
+|2020-02-03|      1|      tennis|        Maroondah| 35.01|
+|2020-01-02|      1|       movie|   Southern Downs| 20.00|
+|2020-02-02|      1|       movie|       Barcaldine| 20.01|
+|2020-01-03|      1|      tennis|           Banana| 35.00|
+|2020-02-01|      1|      burger|         Yarrabah| 15.46|
+|2020-01-04|      2|      petrol|Central Highlands|150.45|
+|2020-02-04|      2| electricity|          Hepburn|300.47|
+|2020-03-03|      1|      tennis|        Maroondah| 35.03|
+|2020-03-04|      2|      petrol|             NULL|150.47|
++----------+-------+------------+-----------------+------+
+
+lga-1
++------------+---------------+------------+----------------+
+|level_1_code|   level_1_name|level_2_code|    level_2_name|
++------------+---------------+------------+----------------+
+|           1|New South Wales|       11700| Central Darling|
+|           1|New South Wales|       11500|    Campbelltown|
+|           1|New South Wales|       17200|          Sydney|
+|           1|New South Wales|       11750|           Cobar|
+|           1|New South Wales|       15990|Northern Beaches|
+|           1|New South Wales|       10650|        Berrigan|
+|           1|New South Wales|       11300|         Burwood|
+|           1|New South Wales|       14750|          Leeton|
+|           1|New South Wales|       10850|         Blayney|
+|           1|New South Wales|       14000|         Hornsby|
++------------+---------------+------------+----------------+
+
+lga-2
++------------+------------+------------+-----------------+
+|level_1_code|level_1_name|level_2_code|     level_2_name|
++------------+------------+------------+-----------------+
+|           2|    Victoria|       24410|        Maroondah|
+|           2|    Victoria|       22910|          Hepburn|
+|           2|    Victoria|       21110|       Boroondara|
+|           2|    Victoria|       22250|       Gannawarra|
+|           2|    Victoria|       21750|      Colac Otway|
+|           2|    Victoria|       26610|        Swan Hill|
+|           2|    Victoria|       24850|         Mitchell|
+|           2|    Victoria|       22670|Greater Dandenong|
+|           2|    Victoria|       23350|           Indigo|
+|           2|    Victoria|       20830|          Baw Baw|
++------------+------------+------------+-----------------+
+
+lga-3
++------------+------------+------------+-----------------+
+|level_1_code|level_1_name|level_2_code|     level_2_name|
++------------+------------+------------+-----------------+
+|           3|  Queensland|       30370|           Banana|
+|           3|  Queensland|       35670|         Napranum|
+|           3|  Queensland|       32270|Central Highlands|
+|           3|  Queensland|       37600|         Yarrabah|
+|           3|  Queensland|       30410|       Barcaldine|
+|           3|  Queensland|       34830|           Mapoon|
+|           3|  Queensland|       33100|        Etheridge|
+|           3|  Queensland|       36660|   Southern Downs|
+|           3|  Queensland|       33620|           Gympie|
+|           3|  Queensland|       35300|        Mount Isa|
++------------+------------+------------+-----------------+
+
+lgas
++------------+---------------+------------+-----------------+
+|level_1_code|   level_1_name|level_2_code|     level_2_name|
++------------+---------------+------------+-----------------+
+|           1|New South Wales|       11700|  Central Darling|
+|           1|New South Wales|       11500|     Campbelltown|
+|           1|New South Wales|       17200|           Sydney|
+|           1|New South Wales|       11750|            Cobar|
+|           1|New South Wales|       15990| Northern Beaches|
+|           1|New South Wales|       10650|         Berrigan|
+|           1|New South Wales|       11300|          Burwood|
+|           1|New South Wales|       14750|           Leeton|
+|           1|New South Wales|       10850|          Blayney|
+|           1|New South Wales|       14000|          Hornsby|
+|           2|       Victoria|       24410|        Maroondah|
+|           2|       Victoria|       22910|          Hepburn|
+|           2|       Victoria|       21110|       Boroondara|
+|           2|       Victoria|       22250|       Gannawarra|
+|           2|       Victoria|       21750|      Colac Otway|
+|           2|       Victoria|       26610|        Swan Hill|
+|           2|       Victoria|       24850|         Mitchell|
+|           2|       Victoria|       22670|Greater Dandenong|
+|           2|       Victoria|       23350|           Indigo|
+|           2|       Victoria|       20830|          Baw Baw|
+|           3|     Queensland|       30370|           Banana|
+|           3|     Queensland|       35670|         Napranum|
+|           3|     Queensland|       32270|Central Highlands|
+|           3|     Queensland|       37600|         Yarrabah|
+|           3|     Queensland|       30410|       Barcaldine|
+|           3|     Queensland|       34830|           Mapoon|
+|           3|     Queensland|       33100|        Etheridge|
+|           3|     Queensland|       36660|   Southern Downs|
+|           3|     Queensland|       33620|           Gympie|
+|           3|     Queensland|       35300|        Mount Isa|
++------------+---------------+------------+-----------------+
+
+==============================================
 Finished...
 
-BUILD SUCCESSFUL in 8s
-10 actionable tasks: 5 executed, 5 up-to-date
-10:04:14 pm: Execution finished 'run --stacktrace'.
+BUILD SUCCESSFUL in 9s
+10 actionable tasks: 7 executed, 3 up-to-date
+9:55:58 pm: Execution finished 'run --stacktrace'.

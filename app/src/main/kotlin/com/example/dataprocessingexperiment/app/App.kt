@@ -1,6 +1,7 @@
 package com.example.dataprocessingexperiment.app
 
 import com.example.dataprocessingexperiment.spark.SparkContext
+import com.example.dataprocessingexperiment.spark.UnionProcessor
 import com.example.dataprocessingexperiment.spark.data.DataFrameBuilder
 import com.example.dataprocessingexperiment.spark.data.types.Types
 import com.example.dataprocessingexperiment.spark.statistics.StatisticsRunner
@@ -109,28 +110,9 @@ class App {
                 }
             }
 
-            tables.sources.forEach { fileSource ->
-                if (!fileSource.union.isNullOrBlank()) {
-                    if (context.contains(fileSource.union!!)) {
-                        context.add(
-                            fileSource.union!!,
-                            context.get(fileSource.union!!).union(context.get(fileSource.id))
-                        )
-                    } else {
-                        context.add(
-                            fileSource.union!!,
-                            context.get(fileSource.id)
-                        )
-                    }
-                    context.get(fileSource.union!!).show()
-                }
-            }
+            UnionProcessor(context).process()
 
-            println("Context")
-            context.tablesIds().forEach {
-                println(it)
-                context.get(it).show(100)
-            }
+            context.show()
 
         }
 

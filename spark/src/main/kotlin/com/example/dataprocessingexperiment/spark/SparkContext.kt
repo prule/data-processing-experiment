@@ -4,7 +4,7 @@ import com.example.dataprocessingexperiment.tables.Tables
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
 
-class SparkContext(tables: Tables) {
+class SparkContext(val tables: Tables) {
     private val data = mutableMapOf<String, Dataset<Row>>()
 
     fun add(id: String, dataset: Dataset<Row>) {
@@ -25,5 +25,15 @@ class SparkContext(tables: Tables) {
 
     fun tablesIds(): List<String> {
         return data.keys.toList()
+    }
+
+    fun show() {
+        println("==============================================")
+        println("Context")
+        tablesIds().forEach {
+            println(it)
+            get(it).show(100)
+        }
+        println("==============================================")
     }
 }
