@@ -1,13 +1,14 @@
 package com.example.dataprocessingexperiment.app
 
 import com.example.dataprocessingexperiment.spark.SparkContext
-import com.example.dataprocessingexperiment.spark.UnionProcessor
+import com.example.dataprocessingexperiment.spark.pipeline.UnionProcessor
 import com.example.dataprocessingexperiment.spark.data.DataFrameBuilder
 import com.example.dataprocessingexperiment.spark.data.types.Types
 import com.example.dataprocessingexperiment.spark.statistics.StatisticsRunner
 import com.example.dataprocessingexperiment.spark.statistics.StatisticRepository
 import com.example.dataprocessingexperiment.spark.statistics.collectors.SparkCollector
 import com.example.dataprocessingexperiment.tables.Tables
+import com.example.dataprocessingexperiment.tables.pipeline.UnionTask
 import com.example.dataprocessingexperiment.tables.statistics.Statistics
 import com.example.dataprocessingexperiment.tables.statistics.StatisticsConfiguration
 import io.github.xn32.json5k.Json5
@@ -50,6 +51,7 @@ class App {
         //  generate statistics if configured
         sparkSession.use {
 
+            // populate context with tables
             tables.sources.forEach { fileSource ->
 
                 // set up the dataframe
@@ -108,17 +110,31 @@ class App {
                 }
 
                 // update the context
-                context.add(fileSource.id, validDataset)
+                context.set(fileSource.id, validDataset)
 
             }
 
-            // process union directives
-            UnionProcessor(context).process()
+            // TODO remove this in favour of pipelines? Or keep and support both?
+            // process union directives by delegating to UnionProcessor
+            context.tables.sources.forEach { fileSource ->
+                val source = fileSource.id
+                val destination = fileSource.union
+                if (!destination.isNullOrBlank()) {
+                    UnionProcessor().process(
+                        context,
+                        UnionTask(
+                            "id", "name", "description",
+                            destination,
+                            listOf(source)
+                        )
+                    )
+                }
 
+            }
             // display result
             context.show()
-
         }
+
 
     }
 

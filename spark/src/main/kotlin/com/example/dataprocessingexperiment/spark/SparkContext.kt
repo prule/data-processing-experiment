@@ -7,7 +7,7 @@ import org.apache.spark.sql.Row
 class SparkContext(val tables: Tables) {
     private val data = mutableMapOf<String, Dataset<Row>>()
 
-    fun add(id: String, dataset: Dataset<Row>) {
+    fun set(id: String, dataset: Dataset<Row>) {
         data.put(id, dataset)
     }
 

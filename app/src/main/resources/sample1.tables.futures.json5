@@ -2,7 +2,6 @@
   id: "sample1",
   name: "Sample 1",
   description: "Sample 1 is a basic dataset configuration to demonstrate capability",
-
   sources: [
     {
       id: "transactions",
@@ -10,14 +9,15 @@
       description: "Transactions contains transactions from multiple bank accounts",
       path: "sample1/transactions/",
       type: "csv",
-      // no unions
       table: {
         name: "transactions",
         description: "account transactions",
         deduplicate: true,
         columns: [
           {
-            names: ["date"],
+            name: [
+              "date"
+            ],
             alias: "date",
             description: "date of transaction",
             type: "date",
@@ -28,26 +28,34 @@
             required: true
           },
           {
-            names: ["account"],
+            name: [
+              "account"
+            ],
             alias: "account",
             description: "account",
             type: "string",
             required: true
           },
           {
-            names: ["description"],
+            name: [
+              "description"
+            ],
             alias: "description",
             description: "description",
             type: "string"
           },
           {
-            names: ["location"],
+            name: [
+              "location"
+            ],
             alias: "location",
             description: "location",
             type: "string"
           },
           {
-            names: ["amount"],
+            name: [
+              "amount"
+            ],
             alias: "amount",
             description: "amount can be a positive (credit) or negative (debit) number representing dollars and cents",
             type: "decimal",
@@ -58,17 +66,51 @@
             required: true
           }
         ]
-      }
+      },
+      transformers: [
+        {
+          // add a literal column
+          id: "literal",
+          configuration: {
+            // column name is "type" and value is "TRANSACTION"
+            name: "type",
+            value: "TRANSACTION"
+          },
+        },
+        {
+          // add a conditional column
+          id: "",
+          configuration: {
+            //
+            name: "type",
+            value: "TRANSACTION"
+          },
+        },
+        {
+          id: "join",
+          config: {
+            // join to table lgas
+            to: "lgas",
+            // where location = level_2_code
+            on: {
+              "location": "level_2_code"
+            },
+            // add level_1_name to the dataset
+            columns: [
+              "level_1_name"
+            ]
+          }
+        }
+      ]
     },
-
-//    "Official Code State",
-//    "Official Name State",
-//    "Year",
-//    "Official Code Local Government Area",
-//    "Iso 3166-3 Area Code",
-//    "Official Name Local Government Area",
-//    "Type",
-//    "Long Official Name Local Government Area",
+    //    "Official Code State",
+    //    "Official Name State",
+    //    "Year",
+    //    "Official Code Local Government Area",
+    //    "Iso 3166-3 Area Code",
+    //    "Official Name Local Government Area",
+    //    "Type",
+    //    "Long Official Name Local Government Area",
 
     {
       id: "lga-1",
@@ -76,7 +118,7 @@
       description: "lga-1",
       path: "sample1/lgas/1",
       type: "csv",
-      union: "lgas",
+      union: "lgas", // union to a new table "lgas"
       table: {
         name: "lga-1",
         description: "",
@@ -84,43 +126,54 @@
         delimiter: ";",
         columns: [
           {
-            names: ["Code State","Official Code State"],
+            name: [
+              "Code State",
+              "Official Code State"
+            ],
             alias: "level_1_code",
             description: "",
             type: "string",
             required: true
           },
           {
-            names: ["Name State","Official Name State"],
+            name: [
+              "Name State",
+              "Official Name State"
+            ],
             alias: "level_1_name",
             description: "",
             type: "string",
             required: true
           },
           {
-            names: ["Code Local Government Area", "Official Code Local Government Area"],
+            name: [
+              "Code Local Government Area",
+              "Official Code Local Government Area"
+            ],
             alias: "level_2_code",
             description: "",
             type: "string",
             required: true
           },
           {
-            names: ["Name Local Government Area", "Official Name Local Government Area"],
+            name: [
+              "Name Local Government Area",
+              "Official Name Local Government Area"
+            ],
             alias: "level_2_name",
             description: "",
             type: "string",
             required: true
           }
         ]
-      }
+      },
     },
-
-//    "Official Name State",
-//    "Year",
-//    "Official Code Local Government Area",
-//    "Official Code State",
-//    "Iso 3166-3 Area Code",
-//    "Official Name Local Government Area",
+    //    "Official Name State",
+    //    "Year",
+    //    "Official Code Local Government Area",
+    //    "Official Code State",
+    //    "Iso 3166-3 Area Code",
+    //    "Official Name Local Government Area",
 
     {
       id: "lga-2",
@@ -128,7 +181,7 @@
       description: "lga-2",
       path: "sample1/lgas/2",
       type: "csv",
-      union: "lgas",
+      union: "lgas", // union to a new table "lgas"
       table: {
         name: "lga-2",
         description: "",
@@ -136,28 +189,40 @@
         delimiter: ";",
         columns: [
           {
-            names: ["Code State","Official Code State"],
+            name: [
+              "Code State",
+              "Official Code State"
+            ],
             alias: "level_1_code",
             description: "",
             type: "string",
             required: true
           },
           {
-            names: ["Name State","Official Name State"],
+            name: [
+              "Name State",
+              "Official Name State"
+            ],
             alias: "level_1_name",
             description: "",
             type: "string",
             required: true
           },
           {
-            names: ["Code Local Government Area", "Official Code Local Government Area"],
+            name: [
+              "Code Local Government Area",
+              "Official Code Local Government Area"
+            ],
             alias: "level_2_code",
             description: "",
             type: "string",
             required: true
           },
           {
-            names: ["Name Local Government Area", "Official Name Local Government Area"],
+            name: [
+              "Name Local Government Area",
+              "Official Name Local Government Area"
+            ],
             alias: "level_2_name",
             description: "",
             type: "string",
@@ -166,7 +231,6 @@
         ]
       }
     },
-
     //    "Official Name State",
     //    "Official Code Local Government Area",
     //    "Official Code State",
@@ -179,7 +243,7 @@
       description: "lga-3",
       path: "sample1/lgas/3",
       type: "csv",
-      union: "lgas",
+      union: "lgas", // union to a new table "lgas"
       table: {
         name: "lga-3",
         description: "",
@@ -187,28 +251,40 @@
         delimiter: ";",
         columns: [
           {
-            names: ["Code State","Official Code State"],
+            name: [
+              "Code State",
+              "Official Code State"
+            ],
             alias: "level_1_code",
             description: "",
             type: "string",
             required: true
           },
           {
-            names: ["Name State","Official Name State"],
+            name: [
+              "Name State",
+              "Official Name State"
+            ],
             alias: "level_1_name",
             description: "",
             type: "string",
             required: true
           },
           {
-            names: ["Code Local Government Area", "Official Code Local Government Area"],
+            name: [
+              "Code Local Government Area",
+              "Official Code Local Government Area"
+            ],
             alias: "level_2_code",
             description: "",
             type: "string",
             required: true
           },
           {
-            names: ["Name Local Government Area", "Official Name Local Government Area"],
+            name: [
+              "Name Local Government Area",
+              "Official Name Local Government Area"
+            ],
             alias: "level_2_name",
             description: "",
             type: "string",
@@ -217,8 +293,5 @@
         ]
       }
     }
-
   ],
-
-
 }
