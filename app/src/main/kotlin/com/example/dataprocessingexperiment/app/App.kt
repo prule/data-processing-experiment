@@ -4,15 +4,21 @@ import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.pipeline.UnionProcessor
 import com.example.dataprocessingexperiment.spark.data.DataFrameBuilder
 import com.example.dataprocessingexperiment.spark.data.types.Types
+import com.example.dataprocessingexperiment.spark.pipeline.PipelineConfigurationRepository
+import com.example.dataprocessingexperiment.spark.pipeline.PipelineProcessor
 import com.example.dataprocessingexperiment.spark.statistics.StatisticsRunner
 import com.example.dataprocessingexperiment.spark.statistics.StatisticRepository
 import com.example.dataprocessingexperiment.spark.statistics.collectors.SparkCollector
 import com.example.dataprocessingexperiment.tables.Tables
+import com.example.dataprocessingexperiment.tables.pipeline.AbstractTask
+import com.example.dataprocessingexperiment.tables.pipeline.JoinTask
+import com.example.dataprocessingexperiment.tables.pipeline.LiteralTask
 import com.example.dataprocessingexperiment.tables.pipeline.UnionTask
 import com.example.dataprocessingexperiment.tables.statistics.Statistics
 import com.example.dataprocessingexperiment.tables.statistics.StatisticsConfiguration
 import io.github.xn32.json5k.Json5
 import io.github.xn32.json5k.decodeFromStream
+import kotlinx.serialization.modules.SerializersModule
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
@@ -114,23 +120,20 @@ class App {
 
             }
 
-            // TODO remove this in favour of pipelines? Or keep and support both?
-            // process union directives by delegating to UnionProcessor
-            context.tables.sources.forEach { fileSource ->
-                val source = fileSource.id
-                val destination = fileSource.union
-                if (!destination.isNullOrBlank()) {
-                    UnionProcessor().process(
-                        context,
-                        UnionTask(
-                            "id", "name", "description",
-                            destination,
-                            listOf(source)
-                        )
-                    )
+            val pipelineConfigurationRepository = PipelineConfigurationRepository(
+                SerializersModule {
+                    polymorphic(AbstractTask::class, JoinTask::class, JoinTask.serializer())
+                    polymorphic(AbstractTask::class, UnionTask::class, UnionTask.serializer())
+                    polymorphic(AbstractTask::class, LiteralTask::class, LiteralTask.serializer())
                 }
+            )
 
-            }
+            val pipelineConfiguration = pipelineConfigurationRepository.load(
+                File("./src/main/resources/sample1.pipeline.json5").inputStream()
+            )
+
+            PipelineProcessor(pipelineConfiguration).process(context)
+
             // display result
             context.show()
         }
