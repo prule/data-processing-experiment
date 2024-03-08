@@ -54,8 +54,8 @@ class LiteralProcessorTest {
             "a",
             "b"
         ))
-        result.select("a").distinct().collectAsList() shouldContainOnly listOf("1")
-        result.select("b").distinct().collectAsList() shouldContainOnly listOf("1")
+        result.select("a").distinct().collectAsList()[0][0] shouldBe "1"
+        result.select("b").distinct().collectAsList()[0][0] shouldBe "2"
     }
 
     private fun asDataFrame(data: List<GenericRow>): Dataset<Row> {
