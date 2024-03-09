@@ -3,16 +3,14 @@ package com.example.dataprocessingexperiment.app
 import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.data.DataFrameBuilder
 import com.example.dataprocessingexperiment.spark.data.types.Types
+import com.example.dataprocessingexperiment.spark.pipeline.OutputProcessor
 import com.example.dataprocessingexperiment.spark.pipeline.PipelineConfigurationRepository
 import com.example.dataprocessingexperiment.spark.pipeline.PipelineProcessor
 import com.example.dataprocessingexperiment.spark.statistics.StatisticsRunner
 import com.example.dataprocessingexperiment.spark.statistics.StatisticRepository
 import com.example.dataprocessingexperiment.spark.statistics.collectors.SparkCollector
 import com.example.dataprocessingexperiment.tables.Tables
-import com.example.dataprocessingexperiment.tables.pipeline.AbstractTaskDefinition
-import com.example.dataprocessingexperiment.tables.pipeline.JoinTaskDefinition
-import com.example.dataprocessingexperiment.tables.pipeline.LiteralTaskDefinition
-import com.example.dataprocessingexperiment.tables.pipeline.UnionTaskDefinition
+import com.example.dataprocessingexperiment.tables.pipeline.*
 import com.example.dataprocessingexperiment.tables.statistics.Statistics
 import com.example.dataprocessingexperiment.tables.statistics.StatisticsConfiguration
 import io.github.xn32.json5k.Json5
@@ -124,6 +122,7 @@ class App {
                     polymorphic(AbstractTaskDefinition::class, JoinTaskDefinition::class, JoinTaskDefinition.serializer())
                     polymorphic(AbstractTaskDefinition::class, UnionTaskDefinition::class, UnionTaskDefinition.serializer())
                     polymorphic(AbstractTaskDefinition::class, LiteralTaskDefinition::class, LiteralTaskDefinition.serializer())
+                    polymorphic(AbstractTaskDefinition::class, OutputTaskDefinition::class, OutputTaskDefinition.serializer())
                 }
             )
 
