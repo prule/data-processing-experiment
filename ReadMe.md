@@ -1,7 +1,6 @@
 Data Processing Experiment - Part 7
 - The one where I look at the current state of things and ponder what the future may hold
 
-
 ---
 
 > The code for this project is available in GitHub - I’m using a branch for each part and merging each part into the **[latest](https://github.com/prule/data-processing-experiment/tree/latest)** branch. See the ReadMe.md in each branch for the story.
@@ -9,6 +8,10 @@ Data Processing Experiment - Part 7
 > - [Github repository for this project](https://github.com/prule/data-processing-experiment/)
 > - [Pull requests for each part](https://github.com/prule/data-processing-experiment/pulls?q=is%3Apr+is%3Aclosed) 
 > - [Branch for part-7](https://github.com/prule/data-processing-experiment/tree/part-7)
+---
+
+Review
+=
 
 At the moment this framework supports the following:
 - Configuration of raw tables via JSON
@@ -28,6 +31,8 @@ At the moment this framework supports the following:
     - how the data is distributed (eg number of transactions per month)
       - when things don't look right, these statistics might be useful in finding data problems
 
+Futures
+=
 Possible future capabilities/considerations:
 - support multiple column names in the raw data (for when data is delivered inconsistently)
 - unions
@@ -66,7 +71,8 @@ Possible future capabilities/considerations:
 There is much to be distracted by here, but the primary concerns are keeping the system simple and delivering value.
 
 ---
-
+Moving forward
+=
 Multiple column names
 -
 Starting from the top, supporting multiple column names is trivial. The first step is to modify the JSON configuration so we can provide an array of strings for `name` and rename the column field from `name` to `names` so now we can do:
@@ -179,6 +185,9 @@ UnionProcessor(context).process()
 context.show()
 ```
 
+---
+Wrapping up
+=
 Note that all this is very fluid at the moment - because we don't KNOW what final form we want it to take, it's good to work fast and refactor ruthlessly - so everything is subject to change. What I'm keen to avoid is analysis paralysis and getting tied into a particular implementation or pattern prematurely. I'll implement something, see what it looks like, and then change accordingly.
 
 Next up, we'll see what it looks like to define and execute a series of tasks given the populated context.
