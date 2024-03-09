@@ -47,7 +47,7 @@ class JoinProcessor : Processor {
         }
 
         // join and select the columns
-        val result = table1.join(table2, expr)
+        val result = table1.join(table2, expr, joinDefinition.joinType)
             .select(*columns.map { it }.toTypedArray())
 
         // add to context

@@ -12,6 +12,7 @@ data class JoinTaskDefinition(
     val table1: String,
     val table2: String,
     val destination: String,
+    val joinType: String,
     val on: Map<String, String>,
     val columns: List<String>
 ): AbstractTaskDefinition() {

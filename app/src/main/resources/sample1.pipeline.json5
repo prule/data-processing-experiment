@@ -9,7 +9,7 @@
       name: "name",
       description: "description",
       destination: "lgas",
-      // Union tables "a" and "b" together into table "xyz"
+      // Union tables "lga-1" and "lga-2" and "lga-3" together into table "lgas"
       tables: [
         "lga-1",
         "lga-2",
@@ -33,17 +33,20 @@
       id: "t1",
       name: "name",
       description: "description",
-      // join table "t1" to "t2" using t1.a=t2.aa and t1.b=t2.bb
-      // include columns from t1, only add t2.z and store this in "t3" (we could store as t1 if we want to override the original t1 dataframe with the joined result)
+      // join table "transactions" to "lgas" using transactions.location=lgas.level_2_name
+      // include columns from t1, add lgas.level_1_name and store this in "transactionsWithLGAs" (we could store as transactions if we want to override the original transactions dataframe with the joined result)
       table1: "transactions",
       table2: "lgas",
       destination: "transactionsWithLGAs",
+      // join "on" definition
       on: {
         "location": "level_2_name"
       },
+      // include these columns from lgas
       columns: [
         "level_1_name"
-      ]
+      ],
+      joinType: "left"
     },
   ]
 }
