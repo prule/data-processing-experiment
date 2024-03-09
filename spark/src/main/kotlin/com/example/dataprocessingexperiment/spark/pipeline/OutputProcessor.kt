@@ -7,7 +7,7 @@ import com.example.dataprocessingexperiment.tables.pipeline.OutputTaskDefinition
 import org.apache.spark.sql.functions
 
 /**
- *
+ * Writes the dataframe to the given path.
  */
 class OutputProcessor : Processor {
     fun process(context: SparkContext, outputDefinition: OutputTaskDefinition) {

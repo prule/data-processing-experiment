@@ -53,8 +53,6 @@
       id: "t4",
       name: "name",
       description: "description",
-      // join table "transactions" to "lgas" using transactions.location=lgas.level_2_name
-      // include columns from t1, add lgas.level_1_name and store this in "transactionsWithLGAs" (we could store as transactions if we want to override the original transactions dataframe with the joined result)
       table: "transactionsWithLGAs",
       path: "./build/output/sample1/transactions",
       format: "csv",

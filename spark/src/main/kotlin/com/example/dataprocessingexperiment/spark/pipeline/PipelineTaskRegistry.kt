@@ -21,13 +21,12 @@ class PipelineTaskRegistry {
         externalTasks.put(definition, processor)
     }
 
+    /**
+     * Returns an instance of the Processor registered for the give task definition.
+     */
     fun processor(id: KClass<AbstractTaskDefinition>): Processor {
         // gives preference to externally registered tasks so the defaults can be overridden
-        val map = if (externalTasks.containsKey(id)) {
-            externalTasks
-        } else {
-            taskMap
-        }
+        val map = if (externalTasks.containsKey(id)) { externalTasks } else { taskMap }
         // instantiate the processor
         return map[id]!!.java.constructors.first { it.parameterCount == 0 }.newInstance() as Processor
     }
