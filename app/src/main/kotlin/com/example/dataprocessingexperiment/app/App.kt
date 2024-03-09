@@ -1,7 +1,6 @@
 package com.example.dataprocessingexperiment.app
 
 import com.example.dataprocessingexperiment.spark.SparkContext
-import com.example.dataprocessingexperiment.spark.pipeline.UnionProcessor
 import com.example.dataprocessingexperiment.spark.data.DataFrameBuilder
 import com.example.dataprocessingexperiment.spark.data.types.Types
 import com.example.dataprocessingexperiment.spark.pipeline.PipelineConfigurationRepository
@@ -10,10 +9,10 @@ import com.example.dataprocessingexperiment.spark.statistics.StatisticsRunner
 import com.example.dataprocessingexperiment.spark.statistics.StatisticRepository
 import com.example.dataprocessingexperiment.spark.statistics.collectors.SparkCollector
 import com.example.dataprocessingexperiment.tables.Tables
-import com.example.dataprocessingexperiment.tables.pipeline.AbstractTask
-import com.example.dataprocessingexperiment.tables.pipeline.JoinTask
-import com.example.dataprocessingexperiment.tables.pipeline.LiteralTask
-import com.example.dataprocessingexperiment.tables.pipeline.UnionTask
+import com.example.dataprocessingexperiment.tables.pipeline.AbstractTaskDefinition
+import com.example.dataprocessingexperiment.tables.pipeline.JoinTaskDefinition
+import com.example.dataprocessingexperiment.tables.pipeline.LiteralTaskDefinition
+import com.example.dataprocessingexperiment.tables.pipeline.UnionTaskDefinition
 import com.example.dataprocessingexperiment.tables.statistics.Statistics
 import com.example.dataprocessingexperiment.tables.statistics.StatisticsConfiguration
 import io.github.xn32.json5k.Json5
@@ -122,9 +121,9 @@ class App {
 
             val pipelineConfigurationRepository = PipelineConfigurationRepository(
                 SerializersModule {
-                    polymorphic(AbstractTask::class, JoinTask::class, JoinTask.serializer())
-                    polymorphic(AbstractTask::class, UnionTask::class, UnionTask.serializer())
-                    polymorphic(AbstractTask::class, LiteralTask::class, LiteralTask.serializer())
+                    polymorphic(AbstractTaskDefinition::class, JoinTaskDefinition::class, JoinTaskDefinition.serializer())
+                    polymorphic(AbstractTaskDefinition::class, UnionTaskDefinition::class, UnionTaskDefinition.serializer())
+                    polymorphic(AbstractTaskDefinition::class, LiteralTaskDefinition::class, LiteralTaskDefinition.serializer())
                 }
             )
 

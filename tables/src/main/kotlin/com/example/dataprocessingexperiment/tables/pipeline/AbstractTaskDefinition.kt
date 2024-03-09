@@ -3,7 +3,7 @@ package com.example.dataprocessingexperiment.tables.pipeline
 import kotlinx.serialization.Serializable
 
 @Serializable
-abstract class AbstractTask {
+abstract class AbstractTaskDefinition {
 //    abstract val type: String
     abstract val id: String
     abstract val name: String

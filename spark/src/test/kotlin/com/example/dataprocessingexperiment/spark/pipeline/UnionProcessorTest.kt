@@ -3,7 +3,7 @@ package com.example.dataprocessingexperiment.spark.pipeline
 import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import com.example.dataprocessingexperiment.tables.Tables
-import com.example.dataprocessingexperiment.tables.pipeline.UnionTask
+import com.example.dataprocessingexperiment.tables.pipeline.UnionTaskDefinition
 import io.kotest.matchers.shouldBe
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
@@ -39,7 +39,7 @@ class UnionProcessorTest {
         context.set("dataFrame1", dataframe1)
         context.set("dataFrame2", dataframe2)
 
-        val task = UnionTask(
+        val task = UnionTaskDefinition(
             "id",
             "name",
             "description",

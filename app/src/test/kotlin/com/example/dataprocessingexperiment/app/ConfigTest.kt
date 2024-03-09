@@ -2,15 +2,10 @@ package com.example.dataprocessingexperiment.app
 
 import com.example.dataprocessingexperiment.tables.pipeline.*
 import io.github.xn32.json5k.Json5
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.SerializersModuleBuilder
-import kotlinx.serialization.modules.polymorphic
 import org.junit.jupiter.api.Test
-import kotlin.reflect.KClass
 
 class ConfigTest {
 
@@ -18,13 +13,13 @@ class ConfigTest {
     fun `should work`() {
 
         val module = SerializersModule {
-            polymorphic(AbstractTask::class, JoinTask::class, JoinTask.serializer())
-            polymorphic(AbstractTask::class, UnionTask::class, UnionTask.serializer())
-            polymorphic(AbstractTask::class, LiteralTask::class, LiteralTask.serializer())
+            polymorphic(AbstractTaskDefinition::class, JoinTaskDefinition::class, JoinTaskDefinition.serializer())
+            polymorphic(AbstractTaskDefinition::class, UnionTaskDefinition::class, UnionTaskDefinition.serializer())
+            polymorphic(AbstractTaskDefinition::class, LiteralTaskDefinition::class, LiteralTaskDefinition.serializer())
         }
         val format = Json5 { serializersModule = module }
 
-        val joinTask: AbstractTask = JoinTask(
+        val joinTask: AbstractTaskDefinition = JoinTaskDefinition(
 //            "com.example.dataprocessingexperiment.tables.pipeline.JoinTask",
             "id",
             "name",
@@ -35,9 +30,9 @@ class ConfigTest {
             mapOf("a" to "1", "b" to "2"),
             listOf("z")
         )
-        val string = format.encodeToString<AbstractTask>(joinTask)
+        val string = format.encodeToString<AbstractTaskDefinition>(joinTask)
         println(string)
-        val joinTask1 = format.decodeFromString<AbstractTask>(string)
+        val joinTask1 = format.decodeFromString<AbstractTaskDefinition>(string)
 
         println(joinTask1)
 
@@ -66,15 +61,15 @@ class ConfigTest {
 //                polymorphic(AbstractTask::class, JoinTask::class, entry.value as KSerializer<out AbstractTask>)
 //            }
 
-            polymorphic(AbstractTask::class, JoinTask::class, JoinTask.serializer())
-            polymorphic(AbstractTask::class, UnionTask::class, UnionTask.serializer())
-            polymorphic(AbstractTask::class, LiteralTask::class, LiteralTask.serializer())
+            polymorphic(AbstractTaskDefinition::class, JoinTaskDefinition::class, JoinTaskDefinition.serializer())
+            polymorphic(AbstractTaskDefinition::class, UnionTaskDefinition::class, UnionTaskDefinition.serializer())
+            polymorphic(AbstractTaskDefinition::class, LiteralTaskDefinition::class, LiteralTaskDefinition.serializer())
         }
 
 //        SerializersModuleBuilder().polymorphic(AbstractTask::class)
 
 
-        val joinTask: AbstractTask = JoinTask(
+        val joinTask: AbstractTaskDefinition = JoinTaskDefinition(
 //            "com.example.dataprocessingexperiment.tables.pipeline.JoinTask",
             "id",
             "name",
@@ -86,7 +81,7 @@ class ConfigTest {
             listOf("z")
         )
 
-        val unionTask: AbstractTask = UnionTask(
+        val unionTask: AbstractTaskDefinition = UnionTaskDefinition(
 //            "com.example.dataprocessingexperiment.tables.pipeline.UnionTask",
             "id",
             "name",
@@ -95,7 +90,7 @@ class ConfigTest {
             listOf("a", "b")
         )
 
-        val literalTask: AbstractTask = LiteralTask(
+        val literalTask: AbstractTaskDefinition = LiteralTaskDefinition(
 //            "com.example.dataprocessingexperiment.tables.pipeline.LiteralTask",
             "id",
             "name",

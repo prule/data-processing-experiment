@@ -1,21 +1,21 @@
 package com.example.dataprocessingexperiment.spark.pipeline
 
-import com.example.dataprocessingexperiment.tables.pipeline.AbstractTask
-import com.example.dataprocessingexperiment.tables.pipeline.JoinTask
-import com.example.dataprocessingexperiment.tables.pipeline.LiteralTask
-import com.example.dataprocessingexperiment.tables.pipeline.UnionTask
+import com.example.dataprocessingexperiment.tables.pipeline.AbstractTaskDefinition
+import com.example.dataprocessingexperiment.tables.pipeline.JoinTaskDefinition
+import com.example.dataprocessingexperiment.tables.pipeline.LiteralTaskDefinition
+import com.example.dataprocessingexperiment.tables.pipeline.UnionTaskDefinition
 import kotlin.reflect.KClass
 
 class PipelineTaskRegistry {
     private val taskMap = mapOf(
-        JoinTask::class to JoinProcessor::class,
-        UnionTask::class to UnionProcessor::class,
-        LiteralTask::class to LiteralProcessor::class
+        JoinTaskDefinition::class to JoinProcessor::class,
+        UnionTaskDefinition::class to UnionProcessor::class,
+        LiteralTaskDefinition::class to LiteralProcessor::class
     )
 
-    private val externalTasks: MutableMap<KClass<out AbstractTask>, KClass<out Processor>> = mutableMapOf()
+    private val externalTasks: MutableMap<KClass<out AbstractTaskDefinition>, KClass<out Processor>> = mutableMapOf()
 
-    fun processor(id: KClass<AbstractTask>): Processor {
+    fun processor(id: KClass<AbstractTaskDefinition>): Processor {
         val map = if (externalTasks.containsKey(id)) {
             externalTasks
         } else {

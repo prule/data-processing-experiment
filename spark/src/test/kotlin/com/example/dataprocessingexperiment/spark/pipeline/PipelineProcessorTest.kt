@@ -3,8 +3,8 @@ package com.example.dataprocessingexperiment.spark.pipeline
 import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import com.example.dataprocessingexperiment.tables.Tables
-import com.example.dataprocessingexperiment.tables.pipeline.JoinTask
-import com.example.dataprocessingexperiment.tables.pipeline.LiteralTask
+import com.example.dataprocessingexperiment.tables.pipeline.JoinTaskDefinition
+import com.example.dataprocessingexperiment.tables.pipeline.LiteralTaskDefinition
 import com.example.dataprocessingexperiment.tables.pipeline.PipelineConfiguration
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
@@ -47,7 +47,7 @@ class PipelineProcessorTest {
         context.set("dataFrame1", dataframe1)
         context.set("dataFrame2", dataframe2)
 
-        val joinTask = JoinTask(
+        val joinTask = JoinTaskDefinition(
             "id",
             "name",
             "description",
@@ -58,7 +58,7 @@ class PipelineProcessorTest {
             listOf("val1")
         )
 
-        val literalTask = LiteralTask(
+        val literalTask = LiteralTaskDefinition(
             "id",
             "name",
             "description",

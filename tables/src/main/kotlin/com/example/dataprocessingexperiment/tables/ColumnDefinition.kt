@@ -20,7 +20,7 @@ import kotlinx.serialization.Serializable
  * ```
  */
 @Serializable
-data class Column(
+data class ColumnDefinition(
     val names: List<String>,
     val alias: String,
     val description: String,

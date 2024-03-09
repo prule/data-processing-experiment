@@ -3,12 +3,12 @@ package com.example.dataprocessingexperiment.tables.pipeline
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LiteralTask(
-//    override val type: String,
+data class UnionTaskDefinition(
     override val id: String,
     override val name: String,
     override val description: String,
-//
-    val table: String,
-    val columns: Map<String, String>, // TODO need to be able to add literals that aren't strings?
-): AbstractTask()
+
+    val destination: String,
+    val tables: List<String>
+): AbstractTaskDefinition() {
+}

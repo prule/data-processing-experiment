@@ -1,8 +1,8 @@
 package com.example.dataprocessingexperiment.spark.pipeline
 
 import com.example.dataprocessingexperiment.spark.SparkContext
-import com.example.dataprocessingexperiment.tables.pipeline.AbstractTask
-import com.example.dataprocessingexperiment.tables.pipeline.JoinTask
+import com.example.dataprocessingexperiment.tables.pipeline.AbstractTaskDefinition
+import com.example.dataprocessingexperiment.tables.pipeline.JoinTaskDefinition
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions
 
@@ -11,7 +11,7 @@ import org.apache.spark.sql.functions
  */
 class JoinProcessor : Processor {
 
-    fun process(context: SparkContext, joinDefinition: JoinTask) {
+    fun process(context: SparkContext, joinDefinition: JoinTaskDefinition) {
 
         // alias the tables so we avoid problems where columns are named the same in both datasets
         val table1 = context.get(joinDefinition.table1).alias(joinDefinition.table1)
@@ -55,7 +55,7 @@ class JoinProcessor : Processor {
 
     }
 
-    override fun process(context: SparkContext, task: AbstractTask) {
-        process(context, task as JoinTask)
+    override fun process(context: SparkContext, task: AbstractTaskDefinition) {
+        process(context, task as JoinTaskDefinition)
     }
 }

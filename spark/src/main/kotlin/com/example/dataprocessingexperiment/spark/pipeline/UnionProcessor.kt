@@ -1,14 +1,14 @@
 package com.example.dataprocessingexperiment.spark.pipeline
 
 import com.example.dataprocessingexperiment.spark.SparkContext
-import com.example.dataprocessingexperiment.tables.pipeline.AbstractTask
-import com.example.dataprocessingexperiment.tables.pipeline.UnionTask
+import com.example.dataprocessingexperiment.tables.pipeline.AbstractTaskDefinition
+import com.example.dataprocessingexperiment.tables.pipeline.UnionTaskDefinition
 
 /**
  * Uses the `union` property on the source to union several tables together into one `destination` table.
  */
 class UnionProcessor : Processor {
-    fun process(context: SparkContext, task: UnionTask) {
+    fun process(context: SparkContext, task: UnionTaskDefinition) {
 
         for (table in task.tables) {
 
@@ -31,7 +31,7 @@ class UnionProcessor : Processor {
         }
     }
 
-    override fun process(context: SparkContext, task: AbstractTask) {
-        process(context, task as UnionTask)
+    override fun process(context: SparkContext, task: AbstractTaskDefinition) {
+        process(context, task as UnionTaskDefinition)
     }
 }

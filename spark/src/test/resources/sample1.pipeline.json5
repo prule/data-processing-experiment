@@ -4,7 +4,7 @@
   description: "description",
   tasks: [
     {
-      type: "com.example.dataprocessingexperiment.tables.pipeline.JoinTask",
+      type: "com.example.dataprocessingexperiment.tables.pipeline.JoinTaskDefinition",
       id: "t1",
       name: "name",
       description: "description",
@@ -22,7 +22,7 @@
       ]
     },
     {
-      type: "com.example.dataprocessingexperiment.tables.pipeline.UnionTask",
+      type: "com.example.dataprocessingexperiment.tables.pipeline.UnionTaskDefinition",
       id: "t2",
       name: "name",
       description: "description",
@@ -34,7 +34,7 @@
       ]
     },
     {
-      type: "com.example.dataprocessingexperiment.tables.pipeline.LiteralTask",
+      type: "com.example.dataprocessingexperiment.tables.pipeline.LiteralTaskDefinition",
       id: "id",
       name: "name",
       description: "description",

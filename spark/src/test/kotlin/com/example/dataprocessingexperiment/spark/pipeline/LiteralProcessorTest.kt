@@ -3,9 +3,8 @@ package com.example.dataprocessingexperiment.spark.pipeline
 import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import com.example.dataprocessingexperiment.tables.Tables
-import com.example.dataprocessingexperiment.tables.pipeline.LiteralTask
+import com.example.dataprocessingexperiment.tables.pipeline.LiteralTaskDefinition
 import io.kotest.matchers.collections.shouldContainAll
-import io.kotest.matchers.collections.shouldContainOnly
 import io.kotest.matchers.shouldBe
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
@@ -34,7 +33,7 @@ class LiteralProcessorTest {
         val context = SparkContext(Tables("test", "test", "test", listOf()))
         context.set("dataFrame1", dataframe1)
 
-        val literalTask = LiteralTask(
+        val literalTask = LiteralTaskDefinition(
 //            "com.example.dataprocessingexperiment.tables.pipeline.LiteralTask",
             "id",
             "name",
