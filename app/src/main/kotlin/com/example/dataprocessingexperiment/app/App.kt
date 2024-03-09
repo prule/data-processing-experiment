@@ -57,12 +57,12 @@ class App {
         sparkSession.use {
 
             // populate context with tables
-            tables.sources.forEach { fileSource ->
+            tables.sources.forEach { source ->
 
                 // set up the dataframe
                 val dataFrameBuilder = DataFrameBuilder(
                     sparkSession,
-                    fileSource,
+                    source,
                     Types.all(),
                     "../data/"
                 )
@@ -76,9 +76,9 @@ class App {
                 display("Raw dataset", rawDataset, "date")
 
                 // statistics
-                val stats = statisticConfiguration.statisticsById(fileSource.id)
+                val stats = statisticConfiguration.statisticsById(source.id)
                 stats?.let {
-                    val rawStatisticsPath = "$outputPath/${fileSource.id}/raw"
+                    val rawStatisticsPath = "$outputPath/${source.id}/raw"
                     generateStatistics(stats, rawDataset, rawStatisticsPath, sparkSession)
                     display("RAW Statistics", rawStatisticsPath, "key", sparkSession)
                 }
@@ -104,18 +104,18 @@ class App {
                 // ------------
 
                 // get the valid version of the dataset, de-duplicating if required
-                val validDataset = dataFrameBuilder.valid(fileSource.table.deduplicate)
+                val validDataset = dataFrameBuilder.valid(source.table.deduplicate)
                 display("Valid dataset", validDataset, "date")
 
                 // statistics
                 stats?.let {
-                    val validStatisticsPath = "$outputPath/${fileSource.id}/valid"
+                    val validStatisticsPath = "$outputPath/${source.id}/valid"
                     generateStatistics(stats, validDataset, validStatisticsPath, sparkSession)
                     display("VALID Statistics", validStatisticsPath, "key", sparkSession)
                 }
 
                 // update the context
-                context.set(fileSource.id, validDataset)
+                context.set(source.id, validDataset)
 
             }
 

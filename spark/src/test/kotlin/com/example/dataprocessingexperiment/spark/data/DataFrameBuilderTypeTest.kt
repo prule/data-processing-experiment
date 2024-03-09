@@ -2,7 +2,7 @@ package com.example.dataprocessingexperiment.spark.data
 
 import com.example.dataprocessingexperiment.spark.data.types.Types
 import com.example.dataprocessingexperiment.tables.ColumnDefinition
-import com.example.dataprocessingexperiment.tables.FileSource
+import com.example.dataprocessingexperiment.tables.SourceDefinition
 import com.example.dataprocessingexperiment.tables.TableDefinition
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldBe
@@ -27,7 +27,7 @@ class DataFrameBuilderTypeTest {
         val sparkSession = SparkSession.builder().config(config).orCreate
 
         // define our input source
-        val fileSource = FileSource(
+        val sourceDefinition = SourceDefinition(
             "test1",
             "test1",
             "test csv file",
@@ -56,7 +56,7 @@ class DataFrameBuilderTypeTest {
         )
 
         // build the dataframe
-        val dataFrameBuilder = DataFrameBuilder(sparkSession, fileSource, Types.all())
+        val dataFrameBuilder = DataFrameBuilder(sparkSession, sourceDefinition, Types.all())
 
         // typed dataset, only columns specified
         val typedDataset = dataFrameBuilder.typed()

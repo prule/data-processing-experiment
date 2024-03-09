@@ -2,7 +2,7 @@ package com.example.dataprocessingexperiment.spark.data
 
 import com.example.dataprocessingexperiment.spark.data.types.Types
 import com.example.dataprocessingexperiment.tables.ColumnDefinition
-import com.example.dataprocessingexperiment.tables.FileSource
+import com.example.dataprocessingexperiment.tables.SourceDefinition
 import com.example.dataprocessingexperiment.tables.TableDefinition
 import io.kotest.matchers.shouldBe
 import mu.KotlinLogging
@@ -25,7 +25,7 @@ class DataFrameBuilderTest {
 
         // define our input source
         // code version of app/src/main/resources/sample1.statements.json5
-        val fileSource = FileSource(
+        val sourceDefinition = SourceDefinition(
             "test1",
             "test1",
             "test csv file",
@@ -46,7 +46,7 @@ class DataFrameBuilderTest {
             ),
         )
 
-        val dataFrameBuilder = DataFrameBuilder(sparkSession, fileSource, Types.all())
+        val dataFrameBuilder = DataFrameBuilder(sparkSession, sourceDefinition, Types.all())
 
         // raw dataset, no typing, all columns
         val rawDataset = dataFrameBuilder.raw

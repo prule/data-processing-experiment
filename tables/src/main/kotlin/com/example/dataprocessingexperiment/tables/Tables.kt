@@ -21,9 +21,9 @@ data class Tables(
     val id: String,
     val name: String,
     val description: String,
-    val sources: List<FileSource>
+    val sources: List<SourceDefinition>
 ) {
-    fun tableById(id: String): FileSource {
+    fun tableById(id: String): SourceDefinition {
         return sources.first { source -> source.id == id }
     }
 }

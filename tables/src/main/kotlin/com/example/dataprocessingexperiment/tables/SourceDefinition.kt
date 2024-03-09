@@ -3,7 +3,7 @@ package com.example.dataprocessingexperiment.tables
 import kotlinx.serialization.Serializable
 
 /**
- * FileSource defines the location of the table data and the table structure.
+ * SourceDefinition defines the location of the table data and the table structure.
  *
  * ```
  * {
@@ -18,7 +18,7 @@ import kotlinx.serialization.Serializable
  * ```
  */
 @Serializable
-class FileSource(
+class SourceDefinition(
     val id: String,
     val name: String,
     val description: String,
