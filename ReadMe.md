@@ -277,7 +277,37 @@ Because I've simulated the 3 LGA datasets coming from different sources they get
 
 Once we load these LGA dataframes they'll all look the same, and it would be possible to union them together. In fact, as this experiment progresses I hope to add more functionality - such as unioning, joining, derived columns etc via configuration - in the hope that this achieves 80% of the basic needs, leaving only the remaining 20% for bespoke implementation. If this pans out then it may result in a framework that allows for quick, easy, self documenting, consistent, low code data pipelines - which would be much better than 100% bespoke code every time.
 
-If the JSON configuration is looking unwieldy then don't worry. In a complete solution the JSON wouldn't have to be hand crafted - tools could take care of this...
+In the [reference application](https://github.com/prule/data-processing-experiment/blob/part-6/app/src/main/kotlin/com/example/dataprocessingexperiment/app/App.kt), all thats needed now is to load the table configurations and iterate over the table definitions: 
+
+```kotlin
+// load table configuration
+val tables = Json5.decodeFromStream<Tables>(
+    this::class.java.getResourceAsStream("/sample1.tables.json5")!!
+)
+// load statistics configuration
+val statisticConfiguration = Json5.decodeFromStream<StatisticsConfiguration>(
+    this::class.java.getResourceAsStream("/sample1.statistics.json5")!!
+)
+// process each table
+tables.sources.forEach { fileSource ->
+    
+    // use DataFrameBuilder to load the table
+
+    // get the RAW version of the dataset, everything is a string, and all columns are included
+    //   output some rows for demonstration
+    //   generate RAW statistics 
+
+    // get the TYPED dataset
+    //   output some rows for demonstration
+
+    // get the VALID dataset
+    //   output some rows for demonstration
+    //   generate VALID statistics 
+    
+}
+```
+
+If the [JSON configuration](https://github.com/prule/data-processing-experiment/blob/part-6/app/src/main/resources/sample1.tables.json5) is looking unwieldy then don't worry. In a complete solution the JSON wouldn't have to be hand crafted - tools could take care of this...
 
 Imagine an application that lets you define data providers:
 - For each data provider you define data sources (tables)
@@ -287,7 +317,7 @@ Imagine an application that lets you define data providers:
 
 I'm aware there are existing tools for doing this - each with their associated costs and constraints. But the purpose of this exercise is to gain experience through DOING ([John Crickett](https://www.linkedin.com/in/johncrickett/) style!). And I'm writing this up do gain experience in communication - which is actually taking more time than doing the coding. 
 
-This is an interesting point - building the system is actually fast, inexpensive, and simple. Writing about it is slower, harder, and more complicated!
+> This is an interesting point - **building the system is actually fast, inexpensive, and simple** (this is a **credit to the tools, languages and libraries** we have these days). Writing about it is slower, harder, and more complicated and is where the time is going!
 
 Now, let's see the output from our reference implementation:
 
