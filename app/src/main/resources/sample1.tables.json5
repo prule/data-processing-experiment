@@ -10,7 +10,6 @@
       description: "Transactions contains transactions from multiple bank accounts",
       path: "sample1/transactions/",
       type: "csv",
-      // no unions
       table: {
         name: "transactions",
         description: "account transactions",
@@ -76,7 +75,6 @@
       description: "lga-1",
       path: "sample1/lgas/1",
       type: "csv",
-      union: "lgas",
       table: {
         name: "lga-1",
         description: "",
@@ -128,7 +126,6 @@
       description: "lga-2",
       path: "sample1/lgas/2",
       type: "csv",
-      union: "lgas",
       table: {
         name: "lga-2",
         description: "",
@@ -179,7 +176,6 @@
       description: "lga-3",
       path: "sample1/lgas/3",
       type: "csv",
-      union: "lgas",
       table: {
         name: "lga-3",
         description: "",

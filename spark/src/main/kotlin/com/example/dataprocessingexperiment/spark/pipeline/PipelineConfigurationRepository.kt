@@ -3,10 +3,7 @@ package com.example.dataprocessingexperiment.spark.pipeline
 import com.example.dataprocessingexperiment.tables.pipeline.PipelineConfiguration
 import io.github.xn32.json5k.Json5
 import io.github.xn32.json5k.decodeFromStream
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.modules.SerializersModule
-import org.json4s.Reader
 import java.io.InputStream
 
 // https://github.com/Kotlin/kotlinx.serialization/blob/master/docs/polymorphism.md

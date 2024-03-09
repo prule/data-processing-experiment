@@ -22,7 +22,7 @@ class PipelineConfigurationRepositoryTest {
         )
 
         val pipelineConfiguration = pipelineConfigurationRepository.load(
-            File("./src/test/resources/sample1.pipeline.json5").inputStream()
+            File("./src/test/resources/test.pipeline.json5").inputStream()
         )
 
         pipelineConfiguration.tasks[0].javaClass shouldBe JoinTaskDefinition::class.java

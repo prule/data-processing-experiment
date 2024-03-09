@@ -24,6 +24,5 @@ class FileSource(
     val description: String,
     val path: String,
     val type: String,
-    val union: String? = "",
     val table: TableDefinition,
 )
