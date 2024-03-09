@@ -1,7 +1,11 @@
 package com.example.dataprocessingexperiment.spark
 
+/**
+ * Iterates over all the table definitions and processes the `union` attribute.
+ */
 class UnionProcessor(private val context: SparkContext) {
     fun process() {
+        // for each table
         context.tables.sources.forEach { fileSource ->
 
             val source = fileSource.id

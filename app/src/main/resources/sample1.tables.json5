@@ -81,6 +81,7 @@
         description: "",
         deduplicate: true,
         delimiter: ";",
+        // with multiple column names we can now us the same column definitions for each of the LGA tables
         columns: [
           {
             names: ["Code State","Official Code State"],
@@ -133,6 +134,7 @@
         description: "",
         deduplicate: true,
         delimiter: ";",
+        // with multiple column names we can now us the same column definitions for each of the LGA tables
         columns: [
           {
             names: ["Code State","Official Code State"],
@@ -184,6 +186,7 @@
         description: "",
         deduplicate: true,
         delimiter: ";",
+        // with multiple column names we can now us the same column definitions for each of the LGA tables
         columns: [
           {
             names: ["Code State","Official Code State"],
