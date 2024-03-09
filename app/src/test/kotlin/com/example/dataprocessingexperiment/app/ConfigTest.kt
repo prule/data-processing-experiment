@@ -27,6 +27,7 @@ class ConfigTest {
             "from",
             "to",
             "destination",
+            "inner",
             mapOf("a" to "1", "b" to "2"),
             listOf("z")
         )
@@ -77,6 +78,7 @@ class ConfigTest {
             "from",
             "to",
             "joinedTable",
+            "inner",
             mapOf("a" to "1", "b" to "2"),
             listOf("z")
         )

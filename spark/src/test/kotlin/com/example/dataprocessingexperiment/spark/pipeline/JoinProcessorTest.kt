@@ -51,6 +51,7 @@ class JoinProcessorTest {
             "dataFrame1",
             "dataFrame2",
             "joinedTable",
+            "inner",
             mapOf("val1" to "val1"),
             listOf("val1")
         )

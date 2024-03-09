@@ -13,6 +13,7 @@
       table1: "t1",
       table2: "t2",
       destination: "t3",
+      joinType: "inner",
       on: {
         "a": "aa",
         "b": "bb"
