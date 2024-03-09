@@ -1,0 +1,69 @@
+// map of table id to statistics
+{
+  statistics: [
+    {
+      id: "transactions",
+      name: "Transactions Statistics",
+      description: "Statistics configuration for the transactions table",
+      values: [
+        {
+          id: "count"
+        },
+        {
+          id: "duplicateCount"
+        },
+        {
+          id: "countByMonth",
+          column: "date"
+        },
+        {
+          id: "countByValue",
+          column: "account"
+        },
+        {
+          id: "bounds",
+          column: "amount"
+        }
+      ],
+    },
+    {
+      id: "lga-1",
+      name: "lga-1 Statistics",
+      description: "Statistics configuration for the lga-1 table",
+      values: [
+        {
+          id: "count"
+        },
+        {
+          id: "duplicateCount"
+        }
+      ],
+    },
+    {
+      id: "lga-2",
+      name: "lga-2 Statistics",
+      description: "Statistics configuration for the lga-2 table",
+      values: [
+        {
+          id: "count"
+        },
+        {
+          id: "duplicateCount"
+        }
+      ],
+    },
+    {
+      id: "lga-3",
+      name: "lga-3 Statistics",
+      description: "Statistics configuration for the lga-3 table",
+      values: [
+        {
+          id: "count"
+        },
+        {
+          id: "duplicateCount"
+        }
+      ],
+    }
+  ]
+}

@@ -22,8 +22,17 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Column(
     val name: String,
+    val alias: String? = name,
     val description: String,
     val type: String,
     val formats: List<String>? = listOf(),
     val required: Boolean = false
-)
+) {
+    fun alias(): String {
+        return if (alias.isNullOrBlank()) {
+            name
+        } else {
+            alias
+        }
+    }
+}

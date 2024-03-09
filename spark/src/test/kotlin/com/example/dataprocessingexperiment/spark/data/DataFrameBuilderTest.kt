@@ -27,18 +27,21 @@ class DataFrameBuilderTest {
         // code version of app/src/main/resources/sample1.statements.json5
         val fileSource = FileSource(
             "test1",
+            "test1",
             "test csv file",
-            "../data/sample1/statements",
+            "../data/sample1/transactions",
             "csv",
             // table structure
             Table(
                 "test1",
                 "test csv file",
+                true,
+                ",",
                 listOf(
-                    Column("date", "date", "date", listOf("yyyy-MM-dd", "dd-MM-yyyy"), required = true),
-                    Column("account", "account", "string", required = true),
-                    Column("description", "description", "string"),
-                    Column("amount", "amount", "decimal", listOf("10", "2"), required = true),
+                    Column("date", "date", "date", "date", listOf("yyyy-MM-dd", "dd-MM-yyyy"), required = true),
+                    Column("account", "account", "account", "string", required = true),
+                    Column("description", "description", "description", "string"),
+                    Column("amount", "amount", "amount", "decimal", listOf("10", "2"), required = true),
                 )
             ),
         )
@@ -49,16 +52,16 @@ class DataFrameBuilderTest {
         val rawDataset = dataFrameBuilder.raw
         display("raw", rawDataset)
 
-        rawDataset.count() shouldBe 18
+        rawDataset.count() shouldBe 20
 
         // typed dataset, only columns specified
         val typedDataset = dataFrameBuilder.typed()
         display("typed", typedDataset)
 
-        typedDataset.count() shouldBe 18
+        typedDataset.count() shouldBe 20
 
         // typed dataset, only columns specified
-        val validDataset = dataFrameBuilder.valid()
+        val validDataset = dataFrameBuilder.valid(true)
         display("valid", validDataset)
 
         validDataset.count() shouldBe 12

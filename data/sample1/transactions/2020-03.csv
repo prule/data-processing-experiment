@@ -1,0 +1,4 @@
+date,account,description,amount,location,comment
+01-03-2020, 1, burger, 15.47,Greater Dandenong,alternative date format
+03-03-2020, 1, tennis, 35.03,Maroondah,alternative date format
+04-03-2020, 2, petrol, 150.47,,alternative date format

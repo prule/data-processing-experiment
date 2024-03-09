@@ -1,0 +1,8 @@
+date,account,description,amount,location,comment
+2020-13-01, x, burger, 0.01,unknown location, invalid date
+invalid date, x, petrol, 0.02, ,invalid date
+, x, tennis, 0.03,, no date
+2020-12-01,      , tennis, 0.04,, blank (many spaces) account
+2020-12-01, x, petrol, x,, invalid number for amount
+x,x,x,x,, row with multiple invalid columns and duplicated
+x,x,x,x,, row with multiple invalid columns and duplicated

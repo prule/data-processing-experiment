@@ -38,12 +38,12 @@ class DecimalType : Typer {
                 val scale = if (formats.size > 1) formats[1].toIntOrNull() else null
                 if (precision != null && scale != null) {
                     typeCast = "decimal(${precision},${scale})"
-                    logger.info { "Using $typeCast for column $name" }
+                    logger.debug { "Using $typeCast for column $name" }
                 } else {
-                    logger.info { "Invalid formats provided so using default $typeCast for column $name" }
+                    logger.debug { "Invalid formats provided so using default $typeCast for column $name" }
                 }
             } else {
-                logger.info { "No formats provided so using default $typeCast for column $name" }
+                logger.debug { "No formats provided so using default $typeCast for column $name" }
             }
         }
         return functions.col(name).cast(typeCast).alias(name)

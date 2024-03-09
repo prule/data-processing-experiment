@@ -21,6 +21,7 @@ class StatisticRepository {
         add(CountByMonth(""), "countByMonth")
         add(Maximum(""), "maximum")
         add(Minimum(""), "minimum")
+        add(DuplicateCount(), "duplicateCount")
     }
 
     fun add(statistic: Statistic, alias: String? = null) {

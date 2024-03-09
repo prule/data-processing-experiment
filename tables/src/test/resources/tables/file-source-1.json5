@@ -1,4 +1,5 @@
 {
+  id: "sample1",
   name: "sample 1",
   description: "sample 1 description",
   path: "sample1/transactions/",

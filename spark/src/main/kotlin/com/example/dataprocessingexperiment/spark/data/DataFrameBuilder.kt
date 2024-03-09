@@ -25,21 +25,33 @@ class DataFrameBuilder(
         sparkSession.read()
             .format(fileSource.type)
             .option("header", true)
+            .option("delimiter", fileSource.table.delimiter)
             .load(rootPath + fileSource.path)
             .alias(fileSource.name)
     }
 
-    // Builds a typed dataset using the definition in the table configuration
-    // - Only the columns specified and with their associated types (integer, date, boolean etc)
-    // - Those values that couldn't be converted to a type will be null.
+    /**
+     * Builds a typed dataset using the definition in the table configuration
+     *
+     * - Only the columns specified and with their associated types (integer, date, boolean etc)
+     * - Those values that couldn't be converted to a type will be null.
+     *
+     * Also renames the column according to the specified alias if provided.
+     */
     fun typed(): Dataset<Row> {
         val typedColumns: List<Column> =
-            fileSource.table.columns.map { column -> types.get(column.type).process(column.name, column.formats) }
+            fileSource.table.columns.map { column ->
+                // convert to type
+                types.get(column.type).process(column.name, column.formats)
+                    // rename column to alias
+                    .`as`(column.alias())
+            }
         // call var args function https://stackoverflow.com/a/65520425
         return raw.select(*typedColumns.map { it }.toTypedArray())
     }
 
-    fun valid(): Dataset<Row> {
+    fun valid(deduplicate: Boolean = true): Dataset<Row> {
+
         // required columns != null conditions
         val requiredColumns: List<Column> = fileSource.table.columns
             .filter { column -> column.required }
@@ -53,13 +65,23 @@ class DataFrameBuilder(
                 // otherwise just check for null
                     col(column.name).isNotNull
             }
+
         // and all columns together so none of the required columns can be null
         var combined: Column? = null
         requiredColumns.forEach { col ->
             combined = if (combined == null) col else combined!!.and(col)
         }
+
         // select all columns where the required columns are not null
-        return typed().select("*").where(combined)
+        val dataset = typed().select("*")
+            .where(combined)
+
+        // handle deduplication
+        return if (deduplicate) {
+            dataset.dropDuplicates()
+        } else {
+            dataset
+        }
     }
 
 }

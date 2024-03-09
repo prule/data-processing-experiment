@@ -27,7 +27,7 @@ case "$1" in
     echo ""
     echo "Running tests"
     echo ""
-    ./gradlew test
+    ./gradlew clean test
     ;;
 
   'doc')
@@ -63,6 +63,15 @@ case "$1" in
     echo ""
     ;;
 
+  'data:download')
+    echo ""
+    echo "Downloading data"
+    mkdir -p ./data/sample1/downloaded/aus-lga-mapping
+    curl "https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/georef-australia-local-government-area@public/exports/csv?lang=en&timezone=Australia%2FSydney&use_labels=true&delimiter=%3B" \
+    -o "./data/sample1/downloaded/aus-lga-mapping/georef-australia-local-government-area.csv"
+    echo ""
+    echo ""
+    ;;
 
   *)
     echo -e ""
@@ -80,5 +89,6 @@ case "$1" in
     echo "$(tput setaf 3)    doc                                        $(tput sgr0)      Generate Dokka documentation and open in browser"
     echo "$(tput setaf 3)    grade:upgrade <version>                    $(tput sgr0)      Upgrade gradle"
     echo "$(tput setaf 3)    report:test:open                           $(tput sgr0)      Open junit test reports for all modules"
+    echo "$(tput setaf 3)    data:download                              $(tput sgr0)      Download external data to ./data"
 
 esac
