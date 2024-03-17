@@ -7,6 +7,8 @@ So this is
 - a design challenge
 - a documentation/writing challenge
 
+Read about it here https://paulr70.substack.com/p/data-processing-experiment-part-0
+
 ## The process
 
 I'm going to put the code in a single git repository - in a real project I'd probably use multiple repos but to keep it self contained and simple I'll use one project with many subprojects - and I'll be using Kotlin, Gradle, Git, Intellij as the tools of choice. 
