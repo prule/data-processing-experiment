@@ -1,5 +1,7 @@
 package com.example.dataprocessingexperiment.app
 
+import com.example.dataprocessingexperiment.spark.SparkContext
+import com.example.dataprocessingexperiment.spark.UnionProcessor
 import com.example.dataprocessingexperiment.spark.data.DataFrameBuilder
 import com.example.dataprocessingexperiment.spark.data.types.Types
 import com.example.dataprocessingexperiment.spark.statistics.StatisticsRunner
@@ -16,6 +18,9 @@ import org.apache.spark.sql.Row
 import org.apache.spark.sql.SparkSession
 import java.io.File
 
+/**
+ * Reference implementation to demonstrate and exercise current capabilities.
+ */
 
 class App {
     private val displayRows = 20
@@ -29,15 +34,21 @@ class App {
         val outputPath = "./build/out/sample1/statements/statistics"
         File(outputPath).deleteRecursively()
 
+        // load configuration
+        val tables = Json5.decodeFromStream<Tables>(
+            this::class.java.getResourceAsStream("/sample1.tables.json5")!!
+        )
+
+        val statisticConfiguration = Json5.decodeFromStream<StatisticsConfiguration>(
+            this::class.java.getResourceAsStream("/sample1.statistics.json5")!!
+        )
+
+        val context = SparkContext(tables)
+
+        // run
+        // load each table
+        //  generate statistics if configured
         sparkSession.use {
-
-            val tables = Json5.decodeFromStream<Tables>(
-                this::class.java.getResourceAsStream("/sample1.tables.json5")!!
-            )
-
-            val statisticConfiguration = Json5.decodeFromStream<StatisticsConfiguration>(
-                this::class.java.getResourceAsStream("/sample1.statistics.json5")!!
-            )
 
             tables.sources.forEach { fileSource ->
 
@@ -48,6 +59,10 @@ class App {
                     Types.all(),
                     "../data/"
                 )
+
+                // ------------
+                // RAW
+                // ------------
 
                 // get the raw version of the dataset, everything is a string, and all columns are included
                 val rawDataset = dataFrameBuilder.raw
@@ -60,9 +75,26 @@ class App {
                     generateStatistics(stats, rawDataset, rawStatisticsPath, sparkSession)
                     display("RAW Statistics", rawStatisticsPath, "key", sparkSession)
                 }
+
+                // ------------
+                // SELECTED
+                // ------------
+
+                // get the raw version of the dataset, everything is a string, and all columns are included
+                val selectedDataset = dataFrameBuilder.selected()
+                display("SELECTED dataset", selectedDataset, "date")
+
+                // ------------
+                // TYPED
+                // ------------
+
                 // get the typed version of the dataset, with columns and types specified in config
                 val typedDataset = dataFrameBuilder.typed()
                 display("Typed dataset", typedDataset, "date")
+
+                // ------------
+                // VALID
+                // ------------
 
                 // get the valid version of the dataset, de-duplicating if required
                 val validDataset = dataFrameBuilder.valid(fileSource.table.deduplicate)
@@ -74,12 +106,28 @@ class App {
                     generateStatistics(stats, validDataset, validStatisticsPath, sparkSession)
                     display("VALID Statistics", validStatisticsPath, "key", sparkSession)
                 }
+
+                // update the context
+                context.add(fileSource.id, validDataset)
+
             }
+
+            // process union directives
+            UnionProcessor(context).process()
+
+            // display result
+            context.show()
+
         }
 
     }
 
-    private fun generateStatistics(statisticConfiguration: Statistics, dataset: Dataset<Row>, path: String, sparkSession: SparkSession) {
+    private fun generateStatistics(
+        statisticConfiguration: Statistics,
+        dataset: Dataset<Row>,
+        path: String,
+        sparkSession: SparkSession
+    ) {
         // transform from configuration to implementation
         val statistics = StatisticRepository().buildStatistics(statisticConfiguration)
         // instantiate a collector for gathering results

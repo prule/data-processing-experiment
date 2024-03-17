@@ -33,6 +33,7 @@ class DataFrameBuilderTypeTest {
             "test csv file",
             "../data/sample1/types",
             "csv",
+            null,
             // table structure
             Table(
                 "test1",
@@ -40,13 +41,13 @@ class DataFrameBuilderTypeTest {
                 false,
                 ",",
                 listOf(
-                    Column("boolean", "boolean", "boolean", "boolean"),
-                    Column("date", "date", "date", "date", listOf("d/M/yyyy", "yyyy-MM-dd")),
-                    Column("decimal", "decimal", "decimal", "decimal", listOf("10", "2")),
-                    Column("integer", "integer", "integer", "integer"),
-                    Column("string", "string", "string", "string"),
+                    Column(listOf("boolean"), "boolean", "boolean", "boolean"),
+                    Column(listOf("date"), "date", "date", "date", listOf("d/M/yyyy", "yyyy-MM-dd")),
+                    Column(listOf("decimal"), "decimal", "decimal", "decimal", listOf("10", "2")),
+                    Column(listOf("integer"), "integer", "integer", "integer"),
+                    Column(listOf("string"), "string", "string", "string"),
                     Column(
-                        "unknown",
+                        listOf("unknown"),
                         "unknown",
                         "unknown",
                         "unknown"

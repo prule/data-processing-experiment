@@ -31,6 +31,7 @@ class DataFrameBuilderTest {
             "test csv file",
             "../data/sample1/transactions",
             "csv",
+            null,
             // table structure
             Table(
                 "test1",
@@ -38,10 +39,10 @@ class DataFrameBuilderTest {
                 true,
                 ",",
                 listOf(
-                    Column("date", "date", "date", "date", listOf("yyyy-MM-dd", "dd-MM-yyyy"), required = true),
-                    Column("account", "account", "account", "string", required = true),
-                    Column("description", "description", "description", "string"),
-                    Column("amount", "amount", "amount", "decimal", listOf("10", "2"), required = true),
+                    Column(listOf("date"), "date", "date", "date", listOf("yyyy-MM-dd", "dd-MM-yyyy"), required = true),
+                    Column(listOf("account"), "account", "account", "string", required = true),
+                    Column(listOf("description"), "description", "description", "string"),
+                    Column(listOf("amount"), "amount", "amount", "decimal", listOf("10", "2"), required = true),
                 )
             ),
         )

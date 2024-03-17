@@ -2,6 +2,7 @@
   id: "sample1",
   name: "Sample 1",
   description: "Sample 1 is a basic dataset configuration to demonstrate capability",
+
   sources: [
     {
       id: "transactions",
@@ -15,7 +16,8 @@
         deduplicate: true,
         columns: [
           {
-            name: "date",
+            names: ["date"],
+            alias: "date",
             description: "date of transaction",
             type: "date",
             formats: [
@@ -25,23 +27,27 @@
             required: true
           },
           {
-            name: "account",
+            names: ["account"],
+            alias: "account",
             description: "account",
             type: "string",
             required: true
           },
           {
-            name: "description",
+            names: ["description"],
+            alias: "description",
             description: "description",
             type: "string"
           },
           {
-            name: "location",
+            names: ["location"],
+            alias: "location",
             description: "location",
             type: "string"
           },
           {
-            name: "amount",
+            names: ["amount"],
+            alias: "amount",
             description: "amount can be a positive (credit) or negative (debit) number representing dollars and cents",
             type: "decimal",
             formats: [
@@ -69,35 +75,37 @@
       description: "lga-1",
       path: "sample1/lgas/1",
       type: "csv",
+      union: "lgas",
       table: {
         name: "lga-1",
         description: "",
         deduplicate: true,
         delimiter: ";",
+        // with multiple column names we can now us the same column definitions for each of the LGA tables
         columns: [
           {
-            name: "Code State",
+            names: ["Code State","Official Code State"],
             alias: "level_1_code",
             description: "",
             type: "string",
             required: true
           },
           {
-            name: "Name State",
+            names: ["Name State","Official Name State"],
             alias: "level_1_name",
             description: "",
             type: "string",
             required: true
           },
           {
-            name: "Code Local Government Area",
+            names: ["Code Local Government Area", "Official Code Local Government Area"],
             alias: "level_2_code",
             description: "",
             type: "string",
             required: true
           },
           {
-            name: "Name Local Government Area",
+            names: ["Name Local Government Area", "Official Name Local Government Area"],
             alias: "level_2_name",
             description: "",
             type: "string",
@@ -120,35 +128,37 @@
       description: "lga-2",
       path: "sample1/lgas/2",
       type: "csv",
+      union: "lgas",
       table: {
         name: "lga-2",
         description: "",
         deduplicate: true,
         delimiter: ";",
+        // with multiple column names we can now us the same column definitions for each of the LGA tables
         columns: [
           {
-            name: "Official Code State",
+            names: ["Code State","Official Code State"],
             alias: "level_1_code",
             description: "",
             type: "string",
             required: true
           },
           {
-            name: "Official Name State",
+            names: ["Name State","Official Name State"],
             alias: "level_1_name",
             description: "",
             type: "string",
             required: true
           },
           {
-            name: "Official Code Local Government Area",
+            names: ["Code Local Government Area", "Official Code Local Government Area"],
             alias: "level_2_code",
             description: "",
             type: "string",
             required: true
           },
           {
-            name: "Official Name Local Government Area",
+            names: ["Name Local Government Area", "Official Name Local Government Area"],
             alias: "level_2_name",
             description: "",
             type: "string",
@@ -170,35 +180,37 @@
       description: "lga-3",
       path: "sample1/lgas/3",
       type: "csv",
+      union: "lgas",
       table: {
         name: "lga-3",
         description: "",
         deduplicate: true,
         delimiter: ";",
+        // with multiple column names we can now us the same column definitions for each of the LGA tables
         columns: [
           {
-            name: "Official Code State",
+            names: ["Code State","Official Code State"],
             alias: "level_1_code",
             description: "",
             type: "string",
             required: true
           },
           {
-            name: "Official Name State",
+            names: ["Name State","Official Name State"],
             alias: "level_1_name",
             description: "",
             type: "string",
             required: true
           },
           {
-            name: "Official Code Local Government Area",
+            names: ["Code Local Government Area", "Official Code Local Government Area"],
             alias: "level_2_code",
             description: "",
             type: "string",
             required: true
           },
           {
-            name: "Official Name Local Government Area",
+            names: ["Name Local Government Area", "Official Name Local Government Area"],
             alias: "level_2_name",
             description: "",
             type: "string",
@@ -208,5 +220,7 @@
       }
     }
 
-  ]
+  ],
+
+
 }
