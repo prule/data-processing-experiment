@@ -9,7 +9,7 @@ Data Processing Experiment - Part 8
 >
 > - [Github repository for this project](https://github.com/prule/data-processing-experiment/)
 > - [Pull requests for each part](https://github.com/prule/data-processing-experiment/pulls?q=is%3Apr+is%3Aclosed) 
-> - [Branch for part-8](https://github.com/prule/data-processing-experiment/tree/part-7)
+> - [Branch for part-8](https://github.com/prule/data-processing-experiment/tree/part-8)
 
 Pipelines
 ---
@@ -93,7 +93,7 @@ So this has been refactored now. Instead what I have is a PipelineConfiguration 
 
 For this:
 - Each task gets a definition class so the configuration can be read into a class that represents its configuration eg JoinTaskDefinition, LiteralTaskDefinition... (extending AbstractTaskDefinition)
-- Use polymorphic serialization to read the configuration into the right classes during deserialization.
+- Use [polymorphic serialization](https://github.com/Kotlin/kotlinx.serialization/blob/master/docs/polymorphism.md) to read the configuration into the right classes during deserialization.
   - This needs the serializers module configuring with a mapping of class to serializer
 ```kotlin
 val pipelineConfigurationRepository = PipelineConfigurationRepository(
