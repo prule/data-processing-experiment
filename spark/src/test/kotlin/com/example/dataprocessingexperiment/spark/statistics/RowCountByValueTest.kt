@@ -1,21 +1,21 @@
 package com.example.dataprocessingexperiment.spark.statistics
 
 import com.example.dataprocessingexperiment.Date
+import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import com.example.dataprocessingexperiment.spark.statistics.collectors.StatisticItem
 import com.example.dataprocessingexperiment.spark.statistics.collectors.StatisticItemCollector
 import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import io.kotest.matchers.ints.shouldBeExactly
-import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.Row
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
 import org.apache.spark.sql.types.*
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 
-class CountByValueTest {
+class RowCountByValueTest {
     private val columnName = "value"
+    private val dataHelper = SparkDataHelper(sparkSession, true)
 
     @Test
     fun `should calculate row count by value`() {
@@ -31,8 +31,12 @@ class CountByValueTest {
             GenericRow(arrayOf(Date(2020, 3, 1).toSqlDate())),
             GenericRow(arrayOf(null)),
         )
+        val dataframe = dataHelper.asDataFrame(
+            data, listOf(
+                Pair(columnName, DataTypes.DateType),
+            )
+        )
 
-        val dataframe = asDataFrame(data, DataTypes.DateType)
         val statistic = CountByValue(columnName)
         val collector = StatisticItemCollector()
 
@@ -59,8 +63,12 @@ class CountByValueTest {
             GenericRow(arrayOf("x")),
             GenericRow(arrayOf(" x")),
         )
+        val dataframe = dataHelper.asDataFrame(
+            data, listOf(
+                Pair(columnName, DataTypes.StringType),
+            )
+        )
 
-        val dataframe = asDataFrame(data, DataTypes.StringType)
         val statistic = CountByValue(columnName)
         val collector = StatisticItemCollector()
 
@@ -72,19 +80,6 @@ class CountByValueTest {
         result.size shouldBeExactly 1
         result[0] shouldBeEqualToComparingFields StatisticItem("CountByValue", "x", 2)
 
-    }
-
-
-    private fun asDataFrame(data: List<GenericRow>, type: DataType): Dataset<Row> {
-        return sparkSession.createDataFrame(
-            data, StructType(
-                arrayOf(
-                    StructField(
-                        columnName, type, true, Metadata.empty(),
-                    ),
-                )
-            )
-        )
     }
 
     companion object {

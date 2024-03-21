@@ -7,7 +7,10 @@
       description: "Statistics configuration for the transactions table",
       values: [
         {
-          id: "count"
+          id: "rowCount"
+        },
+        {
+          id: "colCount"
         },
         {
           id: "duplicateCount"
@@ -32,7 +35,10 @@
       description: "Statistics configuration for the lga-1 table",
       values: [
         {
-          id: "count"
+          id: "rowCount"
+        },
+        {
+          id: "colCount"
         },
         {
           id: "duplicateCount"
@@ -45,7 +51,10 @@
       description: "Statistics configuration for the lga-2 table",
       values: [
         {
-          id: "count"
+          id: "rowCount"
+        },
+        {
+          id: "colCount"
         },
         {
           id: "duplicateCount"
@@ -58,7 +67,10 @@
       description: "Statistics configuration for the lga-3 table",
       values: [
         {
-          id: "count"
+          id: "rowCount"
+        },
+        {
+          id: "colCount"
         },
         {
           id: "duplicateCount"

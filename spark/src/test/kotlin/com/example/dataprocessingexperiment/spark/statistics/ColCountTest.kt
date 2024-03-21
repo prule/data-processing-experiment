@@ -12,39 +12,37 @@ import org.apache.spark.sql.types.DataTypes
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 
-class BoundsTest {
-    private val columnName = "value"
+class ColCountTest {
     private val dataHelper = SparkDataHelper(sparkSession)
 
     @Test
-    fun `should calculate bounds`() {
+    fun `should calculate column count`() {
 
         // prepare
 
         val data = listOf(
-            GenericRow(arrayOf(-1)),
-            GenericRow(arrayOf(10)),
-            GenericRow(arrayOf(5)),
-            GenericRow(arrayOf(null)),
+            GenericRow(arrayOf(-1, 0, 1, 2)),
         )
 
         val dataframe = dataHelper.asDataFrame(
             data, listOf(
-                Pair(columnName, DataTypes.IntegerType),
+                Pair("col1", DataTypes.IntegerType),
+                Pair("col2", DataTypes.IntegerType),
+                Pair("col3", DataTypes.IntegerType),
+                Pair("col4", DataTypes.IntegerType),
             )
         )
-
-        val bounds = Bounds(columnName)
+        val statistic = ColCount()
         val collector = StatisticItemCollector()
 
         // perform
-        bounds.run(dataframe, collector)
+        statistic.run(dataframe, collector)
 
         // verify
         val result = collector.values()
-        result.size shouldBeExactly 2
-        result[0] shouldBeEqualToComparingFields StatisticItem("min", "", -1)
-        result[1] shouldBeEqualToComparingFields StatisticItem("max", "", 10)
+        result.size shouldBeExactly 1
+        result[0] shouldBeEqualToComparingFields StatisticItem("column count", "", 4)
+
     }
 
     companion object {

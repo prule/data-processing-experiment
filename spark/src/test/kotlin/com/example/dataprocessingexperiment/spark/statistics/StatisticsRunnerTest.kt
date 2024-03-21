@@ -1,26 +1,20 @@
 package com.example.dataprocessingexperiment.spark.statistics
 
+import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import com.example.dataprocessingexperiment.spark.statistics.collectors.StatisticItem
 import com.example.dataprocessingexperiment.spark.statistics.collectors.StatisticItemCollector
 import io.kotest.matchers.collections.shouldContain
-import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import io.kotest.matchers.ints.shouldBeExactly
-import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.Row
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
 import org.apache.spark.sql.types.DataTypes
-import org.apache.spark.sql.types.Metadata
-import org.apache.spark.sql.types.StructField
-import org.apache.spark.sql.types.StructType
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 
 class StatisticsRunnerTest {
     private val columnName = "value"
+    private val dataHelper = SparkDataHelper(sparkSession)
 
     @Test
     fun `should calculate statistics`() {
@@ -33,8 +27,11 @@ class StatisticsRunnerTest {
             GenericRow(arrayOf(5)),
             GenericRow(arrayOf(null)),
         )
-
-        val dataframe = asDataFrame(data)
+        val dataframe = dataHelper.asDataFrame(
+            data, listOf(
+                Pair(columnName, DataTypes.IntegerType),
+            )
+        )
         val collector = StatisticItemCollector()
 
         // perform
@@ -42,7 +39,7 @@ class StatisticsRunnerTest {
             dataframe,
             listOf(
                 Bounds(columnName),
-                Count()
+                RowCount()
             ),
             collector
         )
@@ -53,18 +50,6 @@ class StatisticsRunnerTest {
         result shouldContain (StatisticItem("min", "", -1))
         result shouldContain (StatisticItem("max", "", 10))
         result shouldContain (StatisticItem("row count", "", 4L))
-    }
-
-    private fun asDataFrame(data: List<GenericRow>): Dataset<Row> {
-        return sparkSession.createDataFrame(
-            data, StructType(
-                arrayOf(
-                    StructField(
-                        columnName, DataTypes.IntegerType, false, Metadata.empty()
-                    )
-                )
-            )
-        )
     }
 
     companion object {

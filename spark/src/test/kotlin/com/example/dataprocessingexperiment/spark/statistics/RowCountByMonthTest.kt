@@ -1,24 +1,21 @@
 package com.example.dataprocessingexperiment.spark.statistics
 
 import com.example.dataprocessingexperiment.Date
+import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import com.example.dataprocessingexperiment.spark.statistics.collectors.StatisticItem
 import com.example.dataprocessingexperiment.spark.statistics.collectors.StatisticItemCollector
 import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import io.kotest.matchers.ints.shouldBeExactly
-import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.Row
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
 import org.apache.spark.sql.types.DataTypes
-import org.apache.spark.sql.types.Metadata
-import org.apache.spark.sql.types.StructField
-import org.apache.spark.sql.types.StructType
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 
-class CountByMonthTest {
+class RowCountByMonthTest {
     private val columnName = "value"
+    private val dataHelper = SparkDataHelper(sparkSession, true)
 
     @Test
     fun `should calculate row count by month`() {
@@ -35,7 +32,11 @@ class CountByMonthTest {
             GenericRow(arrayOf(null)),
         )
 
-        val dataframe = asDataFrame(data)
+        val dataframe = dataHelper.asDataFrame(
+            data, listOf(
+                Pair(columnName, DataTypes.DateType),
+            )
+        )
 
         dataframe.show()
 
@@ -54,19 +55,6 @@ class CountByMonthTest {
         result[++i] shouldBeEqualToComparingFields StatisticItem("CountByMonth", "2020-02", 1)
         result[++i] shouldBeEqualToComparingFields StatisticItem("CountByMonth", "2020-03", 2)
 
-    }
-
-    private fun asDataFrame(data: List<GenericRow>): Dataset<Row> {
-        return sparkSession.createDataFrame(
-            data, StructType(
-                arrayOf(
-                    StructField(
-                        // if we use nullable=false here, a null will be converted to "1970-01-01"
-                        columnName, DataTypes.DateType, true, Metadata.empty(),
-                    ),
-                )
-            )
-        )
     }
 
     companion object {

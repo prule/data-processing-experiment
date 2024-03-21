@@ -11,7 +11,7 @@ import org.apache.spark.sql.Row
  * - if we are receiving data at regular intervals we can set how its growing each time new data is delivered.
  * - can be used to compare between raw and valid datasets so we know the magnitude of invalid rows.
  */
-class Count(): Statistic {
+class RowCount(): Statistic {
 
     override fun run(data: Dataset<Row>, collector: Collector) {
         val value = data.count()
@@ -19,6 +19,6 @@ class Count(): Statistic {
     }
 
     override fun of(col: String): Statistic {
-        return Count()
+        return RowCount()
     }
 }
