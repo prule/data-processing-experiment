@@ -1,12 +1,14 @@
 package com.example.dataprocessingexperiment.spark.statistics
 
 import com.example.dataprocessingexperiment.spark.statistics.collectors.Collector
+import kotlinx.serialization.Serializable
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
 
 /**
  * Column count for the dataset.
  */
+@Serializable
 class ColCount(): Statistic {
 
     override fun run(data: Dataset<Row>, collector: Collector) {
@@ -14,7 +16,4 @@ class ColCount(): Statistic {
         collector.add("column count", "", "", value)
     }
 
-    override fun of(col: String): Statistic {
-        return ColCount()
-    }
 }

@@ -6,11 +6,11 @@ import com.example.dataprocessingexperiment.spark.data.types.Types
 import com.example.dataprocessingexperiment.spark.pipeline.OutputProcessor
 import com.example.dataprocessingexperiment.spark.pipeline.PipelineConfigurationRepository
 import com.example.dataprocessingexperiment.spark.pipeline.PipelineProcessor
-import com.example.dataprocessingexperiment.spark.statistics.StatisticsRunner
-import com.example.dataprocessingexperiment.spark.statistics.StatisticRepository
+import com.example.dataprocessingexperiment.spark.statistics.*
 import com.example.dataprocessingexperiment.spark.statistics.collectors.SparkCollector
 import com.example.dataprocessingexperiment.tables.Tables
 import com.example.dataprocessingexperiment.tables.pipeline.*
+import com.example.dataprocessingexperiment.tables.statistics.StatisticDefinition
 import com.example.dataprocessingexperiment.tables.statistics.Statistics
 import com.example.dataprocessingexperiment.tables.statistics.StatisticsConfiguration
 import io.github.xn32.json5k.Json5
@@ -43,7 +43,19 @@ class App {
             this::class.java.getResourceAsStream("/sample1.tables.json5")!!
         )
 
-        val statisticConfiguration = Json5.decodeFromStream<StatisticsConfiguration>(
+        val module = SerializersModule {
+            polymorphic(StatisticDefinition::class, Bounds::class, Bounds.serializer())
+            polymorphic(StatisticDefinition::class, ColCount::class, ColCount.serializer())
+            polymorphic(StatisticDefinition::class, CountByMonth::class, CountByMonth.serializer())
+            polymorphic(StatisticDefinition::class, CountByValue::class, CountByValue.serializer())
+            polymorphic(StatisticDefinition::class, DuplicateCount::class, DuplicateCount.serializer())
+            polymorphic(StatisticDefinition::class, Maximum::class, Maximum.serializer())
+            polymorphic(StatisticDefinition::class, Minimum::class, Minimum.serializer())
+            polymorphic(StatisticDefinition::class, RowCount::class, RowCount.serializer())
+        }
+        val format = Json5 { serializersModule = module }
+
+        val statisticConfiguration = format.decodeFromStream<StatisticsConfiguration>(
             this::class.java.getResourceAsStream("/sample1.statistics.json5")!!
         )
 

@@ -1,10 +1,12 @@
 package com.example.dataprocessingexperiment.spark.statistics
 
 import com.example.dataprocessingexperiment.spark.statistics.collectors.Collector
+import kotlinx.serialization.Serializable
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.functions.*
 
+@Serializable
 class Minimum(private val col: String) :
     Statistic {
 
@@ -14,9 +16,4 @@ class Minimum(private val col: String) :
         collector.add("min", col, "", value)
 
     }
-
-    override fun of(col: String): Statistic {
-        return Minimum(col)
-    }
-
 }

@@ -7,24 +7,24 @@
       description: "Statistics configuration for the transactions table",
       values: [
         {
-          id: "rowCount"
+          type: "com.example.dataprocessingexperiment.spark.statistics.RowCount",
         },
         {
-          id: "colCount"
+          type: "com.example.dataprocessingexperiment.spark.statistics.ColCount",
         },
         {
-          id: "duplicateCount"
+          type: "com.example.dataprocessingexperiment.spark.statistics.DuplicateCount",
         },
         {
-          id: "countByMonth",
+          type: "com.example.dataprocessingexperiment.spark.statistics.CountByMonth",
           column: "date"
         },
         {
-          id: "countByValue",
+          type: "com.example.dataprocessingexperiment.spark.statistics.CountByValue",
           column: "account"
         },
         {
-          id: "bounds",
+          type: "com.example.dataprocessingexperiment.spark.statistics.Bounds",
           column: "amount"
         }
       ],
@@ -35,13 +35,13 @@
       description: "Statistics configuration for the lga-1 table",
       values: [
         {
-          id: "rowCount"
+          type: "com.example.dataprocessingexperiment.spark.statistics.RowCount",
         },
         {
-          id: "colCount"
+          type: "com.example.dataprocessingexperiment.spark.statistics.ColCount",
         },
         {
-          id: "duplicateCount"
+          type: "com.example.dataprocessingexperiment.spark.statistics.DuplicateCount",
         }
       ],
     },
@@ -51,13 +51,13 @@
       description: "Statistics configuration for the lga-2 table",
       values: [
         {
-          id: "rowCount"
+          type: "com.example.dataprocessingexperiment.spark.statistics.RowCount",
         },
         {
-          id: "colCount"
+          type: "com.example.dataprocessingexperiment.spark.statistics.ColCount",
         },
         {
-          id: "duplicateCount"
+          type: "com.example.dataprocessingexperiment.spark.statistics.DuplicateCount",
         }
       ],
     },
@@ -67,13 +67,13 @@
       description: "Statistics configuration for the lga-3 table",
       values: [
         {
-          id: "rowCount"
+          type: "com.example.dataprocessingexperiment.spark.statistics.RowCount",
         },
         {
-          id: "colCount"
+          type: "com.example.dataprocessingexperiment.spark.statistics.ColCount",
         },
         {
-          id: "duplicateCount"
+          type: "com.example.dataprocessingexperiment.spark.statistics.DuplicateCount",
         }
       ],
     }
