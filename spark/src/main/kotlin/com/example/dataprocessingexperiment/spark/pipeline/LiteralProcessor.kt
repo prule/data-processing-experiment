@@ -1,26 +1,35 @@
 package com.example.dataprocessingexperiment.spark.pipeline
 
 import com.example.dataprocessingexperiment.spark.SparkContext
-import com.example.dataprocessingexperiment.tables.pipeline.AbstractTaskDefinition
-import com.example.dataprocessingexperiment.tables.pipeline.LiteralTaskDefinition
+import kotlinx.serialization.Serializable
 import org.apache.spark.sql.functions
 
 /**
  *
  */
-class LiteralProcessor : Processor {
-    fun process(context: SparkContext, literalDefinition: LiteralTaskDefinition) {
+@Serializable
+class LiteralProcessor(
+    override val id: String,
+    override  val name: String,
+    override  val description: String,
+    val table: String,
+    val columns: Map<String, String>
+) : Processor {
 
-        var table = context.get(literalDefinition.table)
+    override fun process(context: SparkContext) {
 
-        literalDefinition.columns.map {
-            table = table.withColumn(it.key, functions.lit(it.value))
+        var dataSet = context.get(table)
+
+        columns.map {
+            dataSet = dataSet.withColumn(it.key, functions.lit(it.value))
         }
 
-        context.set(literalDefinition.table, table)
+        context.set(table, dataSet)
     }
 
-    override fun process(context: SparkContext, task: AbstractTaskDefinition) {
-        process(context, task as LiteralTaskDefinition)
+    override fun toString(): String {
+        return "LiteralProcessor(id='$id', name='$name', description='$description', table='$table', columns=$columns)"
     }
+
+
 }

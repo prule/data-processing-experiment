@@ -1,4 +1,4 @@
-10:56:47 pm: Executing 'run --stacktrace'...
+12:59:56 pm: Executing 'run --stacktrace'...
 
 > Task :app:checkKotlinGradlePluginConfigurationErrors
 > Task :spark:checkKotlinGradlePluginConfigurationErrors
@@ -8,19 +8,19 @@
 > Task :tables:processResources NO-SOURCE
 > Task :tables:classes UP-TO-DATE
 > Task :tables:jar UP-TO-DATE
-> Task :spark:processResources NO-SOURCE
-> Task :app:processResources UP-TO-DATE
-> Task :spark:compileKotlin
+> Task :spark:compileKotlin UP-TO-DATE
 > Task :spark:compileJava NO-SOURCE
+> Task :spark:processResources NO-SOURCE
 > Task :spark:classes UP-TO-DATE
-> Task :spark:jar
-> Task :app:compileKotlin
+> Task :spark:jar UP-TO-DATE
+> Task :app:compileKotlin UP-TO-DATE
 > Task :app:compileJava NO-SOURCE
-> Task :app:classes UP-TO-DATE
+> Task :app:processResources
+> Task :app:classes
 
 > Task :app:run
 Starting...
-22:56:49.104 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+12:59:57.044 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 SLF4J: Class path contains multiple SLF4J providers.
 SLF4J: Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@6236eb5f]
 SLF4J: Found provider [org.apache.logging.slf4j.SLF4JServiceProvider@7c1e2a9e]
@@ -72,25 +72,31 @@ root
  |-- discriminator: string (nullable = true)
  |-- value: string (nullable = true)
 
-+-------------------+-------+-------------+-----+
-|                key| column|discriminator|value|
-+-------------------+-------+-------------+-----+
-|       CountByMonth|   date|         NULL|    8|
-|       CountByMonth|   date|      2020-01|    5|
-|       CountByMonth|   date|      2020-02|    5|
-|       CountByMonth|   date|      2020-12|    2|
-|       CountByValue|account|         NULL|    1|
-|       CountByValue|account|            1|    8|
-|       CountByValue|account|            2|    5|
-|       CountByValue|account|            x|    6|
-|       column count|   NULL|         NULL|    6|
-|duplicate row count|   NULL|         NULL|    4|
-|                max| amount|         NULL|    x|
-|                min| amount|         NULL| 0.01|
-|          row count|   NULL|         NULL|   20|
-+-------------------+-------+-------------+-----+
++-------------------+-----------+-------------+-----+
+|                key|     column|discriminator|value|
++-------------------+-----------+-------------+-----+
+|       CountByMonth|       date|         NULL|    8|
+|       CountByMonth|       date|      2020-01|    5|
+|       CountByMonth|       date|      2020-02|    5|
+|       CountByMonth|       date|      2020-12|    2|
+|       CountByValue|    account|         NULL|    1|
+|       CountByValue|    account|            1|    8|
+|       CountByValue|    account|            2|    5|
+|       CountByValue|    account|            x|    6|
+|          NullCount|       date|         NULL|    1|
+|          NullCount|    account|         NULL|    0|
+|          NullCount|description|         NULL|    0|
+|          NullCount|     amount|         NULL|    0|
+|          NullCount|   location|         NULL|    6|
+|          NullCount|    comment|         NULL|   10|
+|       column count|       NULL|         NULL|    6|
+|duplicate row count|       NULL|         NULL|    4|
+|                max|     amount|         NULL|    x|
+|                min|     amount|         NULL| 0.01|
+|          row count|       NULL|         NULL|   20|
++-------------------+-----------+-------------+-----+
 
-row count = 13
+row count = 19
 
 SELECTED dataset
 
@@ -200,22 +206,27 @@ root
  |-- discriminator: string (nullable = true)
  |-- value: string (nullable = true)
 
-+-------------------+-------+-------------+------+
-|                key| column|discriminator| value|
-+-------------------+-------+-------------+------+
-|       CountByMonth|   date|      2020-01|     4|
-|       CountByMonth|   date|      2020-02|     5|
-|       CountByMonth|   date|      2020-03|     3|
-|       CountByValue|account|            1|     8|
-|       CountByValue|account|            2|     4|
-|       column count|   NULL|         NULL|     5|
-|duplicate row count|   NULL|         NULL|     0|
-|                max| amount|         NULL|300.47|
-|                min| amount|         NULL| 15.45|
-|          row count|   NULL|         NULL|    12|
-+-------------------+-------+-------------+------+
++-------------------+-----------+-------------+------+
+|                key|     column|discriminator| value|
++-------------------+-----------+-------------+------+
+|       CountByMonth|       date|      2020-01|     4|
+|       CountByMonth|       date|      2020-02|     5|
+|       CountByMonth|       date|      2020-03|     3|
+|       CountByValue|    account|            1|     8|
+|       CountByValue|    account|            2|     4|
+|          NullCount|       date|         NULL|     0|
+|          NullCount|    account|         NULL|     0|
+|          NullCount|description|         NULL|     0|
+|          NullCount|   location|         NULL|     1|
+|          NullCount|     amount|         NULL|     0|
+|       column count|       NULL|         NULL|     5|
+|duplicate row count|       NULL|         NULL|     0|
+|                max|     amount|         NULL|300.47|
+|                min|     amount|         NULL| 15.45|
+|          row count|       NULL|         NULL|    12|
++-------------------+-----------+-------------+------+
 
-row count = 10
+row count = 15
 
 Raw dataset
 
@@ -634,19 +645,15 @@ root
 +-------------------+------+-------------+-----+
 
 row count = 3
-22:56:56.515 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting pipeline id=p1 name=name
-22:56:56.515 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Applying task id=t1 name=name
-22:56:56.515 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor com.example.dataprocessingexperiment.spark.pipeline.UnionProcessor@15c2ea37
-22:56:56.520 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor com.example.dataprocessingexperiment.spark.pipeline.UnionProcessor@15c2ea37
-22:56:56.520 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Applying task id=t2 name=name
-22:56:56.521 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor com.example.dataprocessingexperiment.spark.pipeline.LiteralProcessor@3bd66c90
-22:56:56.522 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor com.example.dataprocessingexperiment.spark.pipeline.LiteralProcessor@3bd66c90
-22:56:56.522 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Applying task id=t3 name=name
-22:56:56.522 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor com.example.dataprocessingexperiment.spark.pipeline.JoinProcessor@32cdb22f
-22:56:56.529 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor com.example.dataprocessingexperiment.spark.pipeline.JoinProcessor@32cdb22f
-22:56:56.529 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Applying task id=t4 name=name
-22:56:56.529 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor com.example.dataprocessingexperiment.spark.pipeline.OutputProcessor@c0a9376
-22:56:56.863 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor com.example.dataprocessingexperiment.spark.pipeline.OutputProcessor@c0a9376
+13:00:06.207 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting pipeline id=p1 name=name
+13:00:06.207 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor com.example.dataprocessingexperiment.spark.pipeline.UnionProcessor@5e0d0946
+13:00:06.212 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor com.example.dataprocessingexperiment.spark.pipeline.UnionProcessor@5e0d0946
+13:00:06.212 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor com.example.dataprocessingexperiment.spark.pipeline.LiteralProcessor@24220d7a
+13:00:06.214 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor com.example.dataprocessingexperiment.spark.pipeline.LiteralProcessor@24220d7a
+13:00:06.214 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor com.example.dataprocessingexperiment.spark.pipeline.JoinProcessor@2441a8b9
+13:00:06.221 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor com.example.dataprocessingexperiment.spark.pipeline.JoinProcessor@2441a8b9
+13:00:06.221 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor com.example.dataprocessingexperiment.spark.pipeline.OutputProcessor@1f74a719
+13:00:06.551 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor com.example.dataprocessingexperiment.spark.pipeline.OutputProcessor@1f74a719
 ==============================================
 Context
 transactions
@@ -772,6 +779,6 @@ transactionsWithLGAs
 ==============================================
 Finished...
 
-BUILD SUCCESSFUL in 9s
-10 actionable tasks: 7 executed, 3 up-to-date
-10:56:57 pm: Execution finished 'run --stacktrace'.
+BUILD SUCCESSFUL in 10s
+10 actionable tasks: 5 executed, 5 up-to-date
+1:00:07 pm: Execution finished 'run --stacktrace'.

@@ -1,5 +1,6 @@
 package com.example.dataprocessingexperiment.spark.data.types
 
+import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.ints.shouldBeExactly
@@ -22,6 +23,7 @@ import java.math.BigDecimal
 
 class DecimalTypeTest {
     private val columnName = "value"
+    private val dataHelper = SparkDataHelper(sparkSession)
 
     @Test
     fun `should convert valid numbers`() {
@@ -33,7 +35,11 @@ class DecimalTypeTest {
             GenericRow(arrayOf("1.12")),
         )
 
-        val dataframe = asDataFrame(data)
+        val dataframe = dataHelper.asDataFrame(
+            data, listOf(
+                Pair(columnName, DataTypes.StringType),
+            )
+        )
 
         val column = DecimalType().process(columnName, listOf("10","3"))
 
@@ -55,7 +61,11 @@ class DecimalTypeTest {
             GenericRow(arrayOf("1.12x")),
         )
 
-        val dataframe = asDataFrame(data)
+        val dataframe = dataHelper.asDataFrame(
+            data, listOf(
+                Pair(columnName, DataTypes.StringType),
+            )
+        )
 
         val column = DecimalType().process(columnName, listOf("10","3"))
 
@@ -78,7 +88,11 @@ class DecimalTypeTest {
             GenericRow(arrayOf("12.123")),
         )
 
-        val dataframe = asDataFrame(data)
+        val dataframe = dataHelper.asDataFrame(
+            data, listOf(
+                Pair(columnName, DataTypes.StringType),
+            )
+        )
 
         val column = DecimalType().process(columnName, listOf("10"))
 
@@ -100,7 +114,11 @@ class DecimalTypeTest {
             GenericRow(arrayOf("12.123")),
         )
 
-        val dataframe = asDataFrame(data)
+        val dataframe = dataHelper.asDataFrame(
+            data, listOf(
+                Pair(columnName, DataTypes.StringType),
+            )
+        )
 
         val column = DecimalType().process(columnName, listOf("10", "x"))
 
@@ -122,8 +140,11 @@ class DecimalTypeTest {
             GenericRow(arrayOf("12.123")),
         )
 
-        val dataframe = asDataFrame(data)
-
+        val dataframe = dataHelper.asDataFrame(
+            data, listOf(
+                Pair(columnName, DataTypes.StringType),
+            )
+        )
         val column = DecimalType().process(columnName, listOf("x", "2"))
 
         // perform
@@ -133,18 +154,6 @@ class DecimalTypeTest {
         result shouldContainExactlyInAnyOrder (listOf(
             BigDecimal.valueOf(12),
         ))
-    }
-
-    private fun asDataFrame(data: List<GenericRow>): Dataset<Row> {
-        return sparkSession.createDataFrame(
-            data, StructType(
-                arrayOf(
-                    StructField(
-                        columnName, DataTypes.StringType, false, Metadata.empty()
-                    )
-                )
-            )
-        )
     }
 
     companion object {

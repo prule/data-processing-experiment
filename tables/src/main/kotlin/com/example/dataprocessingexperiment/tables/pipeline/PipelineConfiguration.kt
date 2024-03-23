@@ -7,7 +7,7 @@ class PipelineConfiguration(
     val id: String,
     val name: String,
     val description: String,
-    val tasks: List<AbstractTaskDefinition>
+    val tasks: List<ProcessorDefinition>
     ) {
 
 }

@@ -3,9 +3,7 @@ package com.example.dataprocessingexperiment.app
 import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.data.DataFrameBuilder
 import com.example.dataprocessingexperiment.spark.data.types.Types
-import com.example.dataprocessingexperiment.spark.pipeline.OutputProcessor
-import com.example.dataprocessingexperiment.spark.pipeline.PipelineConfigurationRepository
-import com.example.dataprocessingexperiment.spark.pipeline.PipelineProcessor
+import com.example.dataprocessingexperiment.spark.pipeline.*
 import com.example.dataprocessingexperiment.spark.statistics.*
 import com.example.dataprocessingexperiment.spark.statistics.collectors.SparkCollector
 import com.example.dataprocessingexperiment.tables.Tables
@@ -52,6 +50,7 @@ class App {
             polymorphic(StatisticDefinition::class, Maximum::class, Maximum.serializer())
             polymorphic(StatisticDefinition::class, Minimum::class, Minimum.serializer())
             polymorphic(StatisticDefinition::class, RowCount::class, RowCount.serializer())
+            polymorphic(StatisticDefinition::class, NullCount::class, NullCount.serializer())
         }
         val format = Json5 { serializersModule = module }
 
@@ -131,10 +130,10 @@ class App {
 
             val pipelineConfigurationRepository = PipelineConfigurationRepository(
                 SerializersModule {
-                    polymorphic(AbstractTaskDefinition::class, JoinTaskDefinition::class, JoinTaskDefinition.serializer())
-                    polymorphic(AbstractTaskDefinition::class, UnionTaskDefinition::class, UnionTaskDefinition.serializer())
-                    polymorphic(AbstractTaskDefinition::class, LiteralTaskDefinition::class, LiteralTaskDefinition.serializer())
-                    polymorphic(AbstractTaskDefinition::class, OutputTaskDefinition::class, OutputTaskDefinition.serializer())
+                    polymorphic(ProcessorDefinition::class, JoinProcessor::class, JoinProcessor.serializer())
+                    polymorphic(ProcessorDefinition::class, UnionProcessor::class, UnionProcessor.serializer())
+                    polymorphic(ProcessorDefinition::class, LiteralProcessor::class, LiteralProcessor.serializer())
+                    polymorphic(ProcessorDefinition::class, OutputProcessor::class, OutputProcessor.serializer())
                 }
             )
 

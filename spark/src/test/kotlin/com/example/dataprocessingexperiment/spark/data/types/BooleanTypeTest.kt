@@ -1,6 +1,8 @@
 package com.example.dataprocessingexperiment.spark.data.types
 
+import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
+import com.example.dataprocessingexperiment.spark.statistics.BoundsTest
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.Test
 
 class BooleanTypeTest {
     private val columnName = "value"
+    private val dataHelper = SparkDataHelper(sparkSession)
 
     @Test
     fun `should convert valid booleans`() {
@@ -30,7 +33,11 @@ class BooleanTypeTest {
             GenericRow(arrayOf("t")),
         )
 
-        val dataframe = asDataFrame(data)
+        val dataframe = dataHelper.asDataFrame(
+            data, listOf(
+                Pair(columnName, DataTypes.StringType),
+            )
+        )
 
         val column = BooleanType().process(columnName, listOf())
 
@@ -55,7 +62,11 @@ class BooleanTypeTest {
             GenericRow(arrayOf("x")),
         )
 
-        val dataframe = asDataFrame(data)
+        val dataframe = dataHelper.asDataFrame(
+            data, listOf(
+                Pair(columnName, DataTypes.StringType),
+            )
+        )
 
         val column = BooleanType().process(columnName, listOf())
 
@@ -67,18 +78,6 @@ class BooleanTypeTest {
             null,
             null,
         ))
-    }
-
-    private fun asDataFrame(data: List<GenericRow>): Dataset<Row> {
-        return sparkSession.createDataFrame(
-            data, StructType(
-                arrayOf(
-                    StructField(
-                        columnName, DataTypes.StringType, false, Metadata.empty()
-                    )
-                )
-            )
-        )
     }
 
     companion object {

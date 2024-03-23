@@ -1,5 +1,6 @@
 package com.example.dataprocessingexperiment.spark.data.types
 
+import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import mu.KotlinLogging
@@ -23,6 +24,7 @@ import java.time.ZoneId
 class DateTypeTest {
     private val logger = KotlinLogging.logger {}
     private val columnName = "date"
+    private val dataHelper = SparkDataHelper(sparkSession)
 
     @Test
     fun `should convert valid dates`() {
@@ -34,7 +36,11 @@ class DateTypeTest {
             GenericRow(arrayOf("2020-01-02")),
         )
 
-        val dataframe = asDataFrame(data)
+        val dataframe = dataHelper.asDataFrame(
+            data, listOf(
+                Pair(columnName, DataTypes.StringType),
+            )
+        )
 
         val column = DateType().process(columnName, listOf("yyyy-MM-dd", "dd-MM-yyyy"))
 
@@ -60,7 +66,11 @@ class DateTypeTest {
             GenericRow(arrayOf("Jan-2000")),
         )
 
-        val dataframe = asDataFrame(data)
+        val dataframe = dataHelper.asDataFrame(
+            data, listOf(
+                Pair(columnName, DataTypes.StringType),
+            )
+        )
 
         val column = DateType().process(columnName, listOf("yyyy-MM-dd"))
 
@@ -74,18 +84,6 @@ class DateTypeTest {
             null,
         ))
 
-    }
-
-    private fun asDataFrame(data: List<GenericRow>): Dataset<Row> {
-        return sparkSession.createDataFrame(
-            data, StructType(
-                arrayOf(
-                    StructField(
-                        columnName, DataTypes.StringType, false, Metadata.empty()
-                    )
-                )
-            )
-        )
     }
 
     private fun asDate(year: Int, month: Int, dayOfMonth: Int): Date {

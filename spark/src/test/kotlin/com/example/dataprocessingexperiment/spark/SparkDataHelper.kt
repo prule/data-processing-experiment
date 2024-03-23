@@ -11,6 +11,18 @@ import org.apache.spark.sql.types.StructType
 
 class SparkDataHelper(private val sparkSession: SparkSession, private val isNullable: Boolean = false) {
 
+    /**
+     * Example use:
+     * ```
+     * private val dataHelper = SparkDataHelper(sparkSession)
+     *
+     * val dataframe = dataHelper.asDataFrame(
+     *     data, listOf(
+     *         Pair(columnName, DataTypes.IntegerType),
+     *     )
+     * )
+     * ```
+     */
     fun asDataFrame(data: List<GenericRow>, cols: List<Pair<String, DataType>>): Dataset<Row> {
         return sparkSession.createDataFrame(
             data, StructType(

@@ -1,5 +1,9 @@
 package com.example.dataprocessingexperiment.app
 
+import com.example.dataprocessingexperiment.spark.pipeline.JoinProcessor
+import com.example.dataprocessingexperiment.spark.pipeline.LiteralProcessor
+import com.example.dataprocessingexperiment.spark.pipeline.OutputProcessor
+import com.example.dataprocessingexperiment.spark.pipeline.UnionProcessor
 import com.example.dataprocessingexperiment.tables.pipeline.*
 import io.github.xn32.json5k.Json5
 import kotlinx.serialization.decodeFromString
@@ -10,16 +14,17 @@ import org.junit.jupiter.api.Test
 class ConfigTest {
 
     @Test
-    fun `should work`() {
+    fun `should serialize`() {
 
         val module = SerializersModule {
-            polymorphic(AbstractTaskDefinition::class, JoinTaskDefinition::class, JoinTaskDefinition.serializer())
-            polymorphic(AbstractTaskDefinition::class, UnionTaskDefinition::class, UnionTaskDefinition.serializer())
-            polymorphic(AbstractTaskDefinition::class, LiteralTaskDefinition::class, LiteralTaskDefinition.serializer())
+            polymorphic(ProcessorDefinition::class, JoinProcessor::class, JoinProcessor.serializer())
+            polymorphic(ProcessorDefinition::class, UnionProcessor::class, UnionProcessor.serializer())
+            polymorphic(ProcessorDefinition::class, LiteralProcessor::class, LiteralProcessor.serializer())
+            polymorphic(ProcessorDefinition::class, OutputProcessor::class, OutputProcessor.serializer())
         }
         val format = Json5 { serializersModule = module }
 
-        val joinTask: AbstractTaskDefinition = JoinTaskDefinition(
+        val joinTask: ProcessorDefinition = JoinProcessor(
 //            "com.example.dataprocessingexperiment.tables.pipeline.JoinTask",
             "id",
             "name",
@@ -31,47 +36,25 @@ class ConfigTest {
             mapOf("a" to "1", "b" to "2"),
             listOf("z")
         )
-        val string = format.encodeToString<AbstractTaskDefinition>(joinTask)
+        val string = format.encodeToString<ProcessorDefinition>(joinTask)
         println(string)
-        val joinTask1 = format.decodeFromString<AbstractTaskDefinition>(string)
+        val joinTask1 = format.decodeFromString<ProcessorDefinition>(string)
 
         println(joinTask1)
 
     }
 
     @Test
-    fun `should work too`() {
-//        val module = SerializersModule {
-//            listOf(JoinTask::class,UnionTask::class).forEach {
-//                val method = it.members.find { it2-> it2.name == "serializer" }!!
-//                val result = method.call()
-//                polymorphic(AbstractTask::class, it, it.serializer())
-//            }
-//            polymorphic(AbstractTask::class, JoinTask::class, JoinTask.serializer())
-//            polymorphic(AbstractTask::class, UnionTask::class, UnionTask.serializer())
-//        }
-//
-//        val map: Map<T: AbstractTask, KSerializer<T>> = mapOf(
-//            JoinTask::class to JoinTask.serializer(),
-//            UnionTask::class to UnionTask.serializer(),
-//            LiteralTask::class to LiteralTask.serializer()
-//        )
+    fun `should serialize pipeline`() {
 
         val module = SerializersModule {
-//            map.forEach { entry ->
-//                polymorphic(AbstractTask::class, JoinTask::class, entry.value as KSerializer<out AbstractTask>)
-//            }
-
-            polymorphic(AbstractTaskDefinition::class, JoinTaskDefinition::class, JoinTaskDefinition.serializer())
-            polymorphic(AbstractTaskDefinition::class, UnionTaskDefinition::class, UnionTaskDefinition.serializer())
-            polymorphic(AbstractTaskDefinition::class, LiteralTaskDefinition::class, LiteralTaskDefinition.serializer())
+            polymorphic(ProcessorDefinition::class, JoinProcessor::class, JoinProcessor.serializer())
+            polymorphic(ProcessorDefinition::class, UnionProcessor::class, UnionProcessor.serializer())
+            polymorphic(ProcessorDefinition::class, LiteralProcessor::class, LiteralProcessor.serializer())
+            polymorphic(ProcessorDefinition::class, OutputProcessor::class, OutputProcessor.serializer())
         }
 
-//        SerializersModuleBuilder().polymorphic(AbstractTask::class)
-
-
-        val joinTask: AbstractTaskDefinition = JoinTaskDefinition(
-//            "com.example.dataprocessingexperiment.tables.pipeline.JoinTask",
+        val joinTask: ProcessorDefinition = JoinProcessor(
             "id",
             "name",
             "description",
@@ -83,8 +66,7 @@ class ConfigTest {
             listOf("z")
         )
 
-        val unionTask: AbstractTaskDefinition = UnionTaskDefinition(
-//            "com.example.dataprocessingexperiment.tables.pipeline.UnionTask",
+        val unionTask: ProcessorDefinition = UnionProcessor(
             "id",
             "name",
             "description",
@@ -92,8 +74,7 @@ class ConfigTest {
             listOf("a", "b")
         )
 
-        val literalTask: AbstractTaskDefinition = LiteralTaskDefinition(
-//            "com.example.dataprocessingexperiment.tables.pipeline.LiteralTask",
+        val literalTask: ProcessorDefinition = LiteralProcessor(
             "id",
             "name",
             "description",

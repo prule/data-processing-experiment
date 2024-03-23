@@ -7,8 +7,7 @@ import org.apache.spark.sql.Row
 import org.apache.spark.sql.functions.*
 
 @Serializable
-class Minimum(private val col: String) :
-    Statistic {
+class Minimum(private val col: String) : Statistic {
 
     override fun run(data: Dataset<Row>, collector: Collector) {
 

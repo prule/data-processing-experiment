@@ -1,9 +1,9 @@
 package com.example.dataprocessingexperiment.spark.pipeline
 
 import com.example.dataprocessingexperiment.spark.SparkContext
+import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import com.example.dataprocessingexperiment.tables.Tables
-import com.example.dataprocessingexperiment.tables.pipeline.UnionTaskDefinition
 import io.kotest.matchers.shouldBe
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
@@ -17,6 +17,7 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 
 class UnionProcessorTest {
+    private val dataHelper = SparkDataHelper(sparkSession)
 
     @Test
     fun `should join tables`() {
@@ -32,41 +33,38 @@ class UnionProcessorTest {
             GenericRow(arrayOf(4, "d")),
         )
 
-        val dataframe1 = asDataFrame(data1)
-        val dataframe2 = asDataFrame(data2)
+        val dataframe1 = dataHelper.asDataFrame(
+            data1, listOf(
+                Pair("val1", DataTypes.IntegerType),
+                Pair("val2", DataTypes.StringType),
+            )
+        )
+
+        val dataframe2 = dataHelper.asDataFrame(
+            data2, listOf(
+                Pair("val1", DataTypes.IntegerType),
+                Pair("val2", DataTypes.StringType),
+            )
+        )
 
         val context = SparkContext(Tables("test", "test", "test", listOf()))
         context.set("dataFrame1", dataframe1)
         context.set("dataFrame2", dataframe2)
 
-        val task = UnionTaskDefinition(
+        // perform
+        UnionProcessor(
             "id",
             "name",
             "description",
             "unioned",
             listOf("dataFrame1","dataFrame2")
-        )
-
-        // perform
-        UnionProcessor().process(context, task)
+        ).process(context)
 
         // verify
         val result = context.get("unioned")
 
         result.count() shouldBe 4
         result.columns().size shouldBe 2
-    }
-
-
-    private fun asDataFrame(data: List<GenericRow>): Dataset<Row> {
-        return sparkSession.createDataFrame(
-            data, StructType(
-                arrayOf(
-                    StructField("val1", DataTypes.IntegerType, false, Metadata.empty()),
-                    StructField("val2", DataTypes.StringType, false, Metadata.empty())
-                )
-            )
-        )
     }
 
     companion object {

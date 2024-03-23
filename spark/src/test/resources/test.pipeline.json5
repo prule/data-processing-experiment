@@ -4,7 +4,7 @@
   description: "description",
   tasks: [
     {
-      type: "com.example.dataprocessingexperiment.tables.pipeline.JoinTaskDefinition",
+      type: "com.example.dataprocessingexperiment.spark.pipeline.JoinProcessor",
       id: "t1",
       name: "name",
       description: "description",
@@ -23,7 +23,7 @@
       ]
     },
     {
-      type: "com.example.dataprocessingexperiment.tables.pipeline.UnionTaskDefinition",
+      type: "com.example.dataprocessingexperiment.spark.pipeline.UnionProcessor",
       id: "t2",
       name: "name",
       description: "description",
@@ -35,7 +35,7 @@
       ]
     },
     {
-      type: "com.example.dataprocessingexperiment.tables.pipeline.LiteralTaskDefinition",
+      type: "com.example.dataprocessingexperiment.spark.pipeline.LiteralProcessor",
       id: "id",
       name: "name",
       description: "description",

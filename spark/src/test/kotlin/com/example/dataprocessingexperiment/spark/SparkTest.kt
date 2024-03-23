@@ -1,5 +1,6 @@
 package com.example.dataprocessingexperiment.spark
 
+import io.kotest.matchers.shouldBe
 import org.apache.spark.sql.Encoders
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
@@ -8,6 +9,7 @@ import org.apache.spark.sql.types.StructField
 import org.apache.spark.sql.types.StructType
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
+import scala.Tuple2
 
 data class Item(
     val id: Int,
@@ -59,6 +61,26 @@ class Item2(
 
 
 class SparkTest {
+
+    @Test
+    fun `should list types`() {
+        val data = listOf(
+            Item(1, "a"),
+            Item(2, "b")
+        )
+
+        val dataframe = sparkSession.createDataFrame(
+            data,
+            Item::class.java
+        )
+
+        val dtypes = dataframe.dtypes()
+
+        dtypes[0] shouldBe Tuple2("id","IntegerType")
+        dtypes[1] shouldBe Tuple2("name","StringType")
+
+        
+    }
 
     @Test
     fun `should create dataframe from class`() {

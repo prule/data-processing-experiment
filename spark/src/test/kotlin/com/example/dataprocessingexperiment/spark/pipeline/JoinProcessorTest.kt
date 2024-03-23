@@ -1,9 +1,10 @@
 package com.example.dataprocessingexperiment.spark.pipeline
 
 import com.example.dataprocessingexperiment.spark.SparkContext
+import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
+import com.example.dataprocessingexperiment.spark.data.types.BooleanTypeTest
 import com.example.dataprocessingexperiment.tables.Tables
-import com.example.dataprocessingexperiment.tables.pipeline.JoinTaskDefinition
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
 import org.apache.spark.sql.Dataset
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 
 class JoinProcessorTest {
+    private val dataHelper = SparkDataHelper(sparkSession)
 
     @Test
     fun `should join tables`() {
@@ -37,14 +39,25 @@ class JoinProcessorTest {
             GenericRow(arrayOf(null, "d")),
         )
 
-        val dataframe1 = asDataFrame(data1)
-        val dataframe2 = asDataFrame(data2)
+        val dataframe1 = dataHelper.asDataFrame(
+            data1, listOf(
+                Pair("val1", DataTypes.IntegerType),
+                Pair("val2", DataTypes.StringType),
+            )
+        )
+
+        val dataframe2 = dataHelper.asDataFrame(
+            data2, listOf(
+                Pair("val1", DataTypes.IntegerType),
+                Pair("val2", DataTypes.StringType),
+            )
+        )
 
         val context = SparkContext(Tables("test", "test", "test", listOf()))
         context.set("dataFrame1", dataframe1)
         context.set("dataFrame2", dataframe2)
 
-        val joinTask = JoinTaskDefinition(
+        JoinProcessor(
             "id",
             "name",
             "description",
@@ -54,9 +67,7 @@ class JoinProcessorTest {
             "inner",
             mapOf("val1" to "val1"),
             listOf("val1")
-        )
-
-        JoinProcessor().process(context, joinTask)
+        ).process(context)
 
         val result = context.get("joinedTable")
 
@@ -67,18 +78,6 @@ class JoinProcessorTest {
             "val2",
             "dataFrame2_val1"
         ))
-    }
-
-
-    private fun asDataFrame(data: List<GenericRow>): Dataset<Row> {
-        return sparkSession.createDataFrame(
-            data, StructType(
-                arrayOf(
-                    StructField("val1", DataTypes.IntegerType, false, Metadata.empty()),
-                    StructField("val2", DataTypes.StringType, false, Metadata.empty())
-                )
-            )
-        )
     }
 
     companion object {
