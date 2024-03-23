@@ -6,6 +6,7 @@ import com.example.dataprocessingexperiment.spark.statistics.collectors.Statisti
 import com.example.dataprocessingexperiment.spark.statistics.collectors.StatisticItemCollector
 import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import io.kotest.matchers.ints.shouldBeExactly
+import io.kotest.matchers.shouldBe
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
 import org.apache.spark.sql.types.DataTypes
@@ -41,7 +42,7 @@ class RowCountTest {
         // verify
         val result = collector.values()
         result.size shouldBeExactly 1
-        result[0] shouldBeEqualToComparingFields StatisticItem("row count", "", 4)
+        result[0] shouldBe StatisticItem("row count", "", "", 4L)
 
     }
 

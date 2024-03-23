@@ -47,9 +47,9 @@ class StatisticsRunnerTest {
         // verify
         val result = collector.values()
         result.size shouldBeExactly 3
-        result shouldContain (StatisticItem("min", "", -1))
-        result shouldContain (StatisticItem("max", "", 10))
-        result shouldContain (StatisticItem("row count", "", 4L))
+        result shouldContain (StatisticItem("min", columnName, "", -1))
+        result shouldContain (StatisticItem("max", columnName, "", 10))
+        result shouldContain (StatisticItem("row count", "", "", 4L))
     }
 
     companion object {

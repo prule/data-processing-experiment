@@ -6,6 +6,7 @@ import com.example.dataprocessingexperiment.spark.statistics.collectors.Statisti
 import com.example.dataprocessingexperiment.spark.statistics.collectors.StatisticItemCollector
 import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import io.kotest.matchers.ints.shouldBeExactly
+import io.kotest.matchers.shouldBe
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
 import org.apache.spark.sql.types.DataTypes
@@ -43,8 +44,9 @@ class BoundsTest {
         // verify
         val result = collector.values()
         result.size shouldBeExactly 2
-        result[0] shouldBeEqualToComparingFields StatisticItem("min", "", -1)
-        result[1] shouldBeEqualToComparingFields StatisticItem("max", "", 10)
+        result[0] shouldBe StatisticItem("min", columnName, "", -1)
+        result[1] shouldBe StatisticItem("max", columnName, "", 10)
+
     }
 
     companion object {

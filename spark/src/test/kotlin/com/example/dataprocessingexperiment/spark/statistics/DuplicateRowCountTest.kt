@@ -43,7 +43,7 @@ class DuplicateRowCountTest {
         // verify
         val result = collector.values()
         result.size shouldBeExactly 1
-        result[0] shouldBeEqualToComparingFields StatisticItem("duplicate row count", "", 4)
+        result[0] shouldBeEqualToComparingFields StatisticItem("duplicate row count", "", "", 4)
 
     }
 
@@ -73,7 +73,7 @@ class DuplicateRowCountTest {
         // verify
         val result = collector.values()
         result.size shouldBeExactly 1
-        result[0] shouldBeEqualToComparingFields StatisticItem("duplicate row count", "", 0)
+        result[0] shouldBeEqualToComparingFields StatisticItem("duplicate row count", "", "", 0)
 
     }
 

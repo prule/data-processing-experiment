@@ -7,6 +7,7 @@ import com.example.dataprocessingexperiment.spark.statistics.collectors.Statisti
 import com.example.dataprocessingexperiment.spark.statistics.collectors.StatisticItemCollector
 import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import io.kotest.matchers.ints.shouldBeExactly
+import io.kotest.matchers.shouldBe
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
 import org.apache.spark.sql.types.DataTypes
@@ -50,10 +51,10 @@ class RowCountByMonthTest {
         val result = collector.values()
         result.size shouldBeExactly 4
         var i = 0
-        result[i] shouldBeEqualToComparingFields StatisticItem("CountByMonth", "", 1)
-        result[++i] shouldBeEqualToComparingFields StatisticItem("CountByMonth", "2020-01", 3)
-        result[++i] shouldBeEqualToComparingFields StatisticItem("CountByMonth", "2020-02", 1)
-        result[++i] shouldBeEqualToComparingFields StatisticItem("CountByMonth", "2020-03", 2)
+        result[i] shouldBe  StatisticItem("CountByMonth", columnName, "", 1L)
+        result[++i] shouldBe StatisticItem("CountByMonth", columnName, "2020-01", 3L)
+        result[++i] shouldBe StatisticItem("CountByMonth", columnName, "2020-02", 1L)
+        result[++i] shouldBe StatisticItem("CountByMonth", columnName, "2020-03", 2L)
 
     }
 

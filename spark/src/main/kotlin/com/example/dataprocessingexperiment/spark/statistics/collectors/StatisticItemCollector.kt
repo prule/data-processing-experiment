@@ -10,6 +10,7 @@ class StatisticItemCollector : Collector {
         values.add(
             StatisticItem(
                 key,
+                column,
                 discriminator,
                 value
             )

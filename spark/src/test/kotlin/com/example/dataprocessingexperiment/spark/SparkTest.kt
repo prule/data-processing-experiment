@@ -4,7 +4,14 @@ import io.kotest.matchers.shouldBe
 import org.apache.spark.sql.Encoders
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
+import org.apache.spark.sql.functions
+import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.functions.sum
+import org.apache.spark.sql.types.BinaryType
+import org.apache.spark.sql.types.BooleanType
 import org.apache.spark.sql.types.DataTypes
+import org.apache.spark.sql.types.NumericType
+import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.types.StructField
 import org.apache.spark.sql.types.StructType
 import org.junit.jupiter.api.AfterAll
@@ -63,6 +70,35 @@ class Item2(
 class SparkTest {
 
     @Test
+    fun `count nulls`() {
+        val dataHelper = SparkDataHelper(sparkSession, true)
+
+        val data = listOf(
+            GenericRow(arrayOf(-1, "A")),
+            GenericRow(arrayOf(10, null)),
+            GenericRow(arrayOf(5, "B")),
+            GenericRow(arrayOf(null, null)),
+        )
+
+        val dataframe = dataHelper.asDataFrame(
+            data, listOf(
+                Pair("col1", DataTypes.IntegerType),
+                Pair("col2", DataTypes.StringType),
+            )
+        )
+
+        dataframe.show()
+
+        dataframe.select(functions.count(col("col1").isNull)).show()
+
+        dataframe.select(
+            functions.count_if(col("col1").isNull).alias("col1"),
+            functions.count_if(col("col2").isNull).alias("col2")
+        ).show()
+
+    }
+
+    @Test
     fun `should list types`() {
         val data = listOf(
             Item(1, "a"),
@@ -76,10 +112,23 @@ class SparkTest {
 
         val dtypes = dataframe.dtypes()
 
-        dtypes[0] shouldBe Tuple2("id","IntegerType")
-        dtypes[1] shouldBe Tuple2("name","StringType")
+        dtypes[0] shouldBe Tuple2("id", "IntegerType")
+        dtypes[1] shouldBe Tuple2("name", "StringType")
 
-        
+        val schema = dataframe.schema().toList()
+        schema.foreach {
+            if (it.dataType() is NumericType) {
+                println("${it.name()} is numeric")
+            }
+            if (it.dataType() is BooleanType) {
+                println("${it.name()} is boolean")
+            }
+            if (it.dataType() is StringType) {
+                println("${it.name()} is binary")
+            }
+
+        }
+
     }
 
     @Test

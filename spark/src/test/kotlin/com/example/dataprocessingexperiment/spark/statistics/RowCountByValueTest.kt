@@ -7,6 +7,7 @@ import com.example.dataprocessingexperiment.spark.statistics.collectors.Statisti
 import com.example.dataprocessingexperiment.spark.statistics.collectors.StatisticItemCollector
 import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import io.kotest.matchers.ints.shouldBeExactly
+import io.kotest.matchers.shouldBe
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
 import org.apache.spark.sql.types.*
@@ -47,10 +48,10 @@ class RowCountByValueTest {
         val result = collector.values()
         result.size shouldBeExactly 4
         var i=0
-        result[i] shouldBeEqualToComparingFields StatisticItem("CountByValue", "", 1)
-        result[++i] shouldBeEqualToComparingFields StatisticItem("CountByValue", "2020-01-01", 3)
-        result[++i] shouldBeEqualToComparingFields StatisticItem("CountByValue", "2020-02-01", 1)
-        result[++i] shouldBeEqualToComparingFields StatisticItem("CountByValue", "2020-03-01", 2)
+        result[i] shouldBe StatisticItem("CountByValue", columnName, "", 1L)
+        result[++i] shouldBe StatisticItem("CountByValue", columnName, "2020-01-01", 3L)
+        result[++i] shouldBe StatisticItem("CountByValue", columnName, "2020-02-01", 1L)
+        result[++i] shouldBe StatisticItem("CountByValue", columnName, "2020-03-01", 2L)
 
     }
 
@@ -78,7 +79,7 @@ class RowCountByValueTest {
         // verify
         val result = collector.values()
         result.size shouldBeExactly 1
-        result[0] shouldBeEqualToComparingFields StatisticItem("CountByValue", "x", 2)
+        result[0] shouldBe StatisticItem("CountByValue", columnName, "x", 2L)
 
     }
 

@@ -41,7 +41,7 @@ class ColCountTest {
         // verify
         val result = collector.values()
         result.size shouldBeExactly 1
-        result[0] shouldBeEqualToComparingFields StatisticItem("column count", "", 4)
+        result[0] shouldBeEqualToComparingFields StatisticItem("column count", "", "", 4)
 
     }
 
