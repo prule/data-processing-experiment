@@ -32,8 +32,10 @@ class NullCount(private val columns: List<String>) : Statistic {
         val fields: List<StructField> = ScalaToKotlin.toList(data.schema().toList())
 
         // columns we want to select with null count criteria
-        val colsToSelect: List<Column> = fields.filter { cols.contains(it.name()) }
+        val colsToSelect = fields.filter { cols.contains(it.name()) }
             .filter { sparkDataTypes.type(it.dataType()) != null }
+
+        val colsWithConstraints: List<Column> = colsToSelect
             .map {
                 functions.count_if(
                     sparkDataTypes.type(it.dataType())?.nullPredicate?.invoke(
@@ -44,9 +46,9 @@ class NullCount(private val columns: List<String>) : Statistic {
             }
 
         // result set contains null count for each column in a column of the same name
-        val result = data.select(*colsToSelect.map { it }.toTypedArray())
+        val result = data.select(*colsWithConstraints.map { it }.toTypedArray())
 
-        fields.forEach {
+        colsToSelect.forEach {
             collector.add(
                 "NullCount", it.name(), "", result.select(it.name()).first()[0]
             )
