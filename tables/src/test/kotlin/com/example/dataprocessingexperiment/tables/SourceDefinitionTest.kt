@@ -6,15 +6,15 @@ import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.matchers.shouldNotBe
 import kotlin.test.Test
 
-class FileSourceTest {
+class SourceDefinitionTest {
     @Test
     fun file_should_load() {
-        val fileSource = Json5.decodeFromStream<FileSource>(
+        val sourceDefinition = Json5.decodeFromStream<SourceDefinition>(
             this::class.java.getResourceAsStream("/tables/file-source-1.json5")!!
         )
 
-        fileSource.table shouldNotBe null
-        fileSource.table.columns shouldNotBe null
-        fileSource.table.columns.size shouldBeExactly 4
+        sourceDefinition.table shouldNotBe null
+        sourceDefinition.table.columns shouldNotBe null
+        sourceDefinition.table.columns.size shouldBeExactly 4
     }
 }

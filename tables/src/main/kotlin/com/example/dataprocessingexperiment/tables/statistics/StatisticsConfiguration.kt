@@ -1,6 +1,5 @@
 package com.example.dataprocessingexperiment.tables.statistics
 
-import com.example.dataprocessingexperiment.tables.FileSource
 import kotlinx.serialization.Serializable
 
 @Serializable

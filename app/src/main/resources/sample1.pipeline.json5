@@ -1,0 +1,66 @@
+{
+  id: "p1",
+  name: "name",
+  description: "description",
+  tasks: [
+    {
+      type: "com.example.dataprocessingexperiment.tables.pipeline.UnionTaskDefinition",
+      id: "t1",
+      name: "name",
+      description: "description",
+      destination: "lgas",
+      // Union tables "lga-1" and "lga-2" and "lga-3" together into table "lgas"
+      tables: [
+        "lga-1",
+        "lga-2",
+        "lga-3",
+      ]
+    },
+    {
+      type: "com.example.dataprocessingexperiment.tables.pipeline.LiteralTaskDefinition",
+      id: "t2",
+      name: "name",
+      description: "description",
+      table: "transactions",
+      // add literal columns with name -> value mapping
+      columns: {
+        // add a column "type" with literal value "TRANSACTION"
+        "type": "TRANSACTION"
+      },
+    },
+    {
+      type: "com.example.dataprocessingexperiment.tables.pipeline.JoinTaskDefinition",
+      id: "t3",
+      name: "name",
+      description: "description",
+      // join table "transactions" to "lgas" using transactions.location=lgas.level_2_name
+      // include columns from t1, add lgas.level_1_name and store this in "transactionsWithLGAs" (we could store as transactions if we want to override the original transactions dataframe with the joined result)
+      table1: "transactions",
+      table2: "lgas",
+      destination: "transactionsWithLGAs",
+      // join "on" definition
+      on: {
+        "location": "level_2_name"
+      },
+      // include these columns from lgas
+      columns: [
+        "level_1_name"
+      ],
+      joinType: "left"
+    },
+    {
+      type: "com.example.dataprocessingexperiment.tables.pipeline.OutputTaskDefinition",
+      id: "t4",
+      name: "name",
+      description: "description",
+      table: "transactionsWithLGAs",
+      path: "./build/output/sample1/transactions",
+      format: "csv",
+      mode: "overwrite",
+      options: {
+        "header": "true",
+      }
+      // TODO add partition capability
+    }
+  ]
+}

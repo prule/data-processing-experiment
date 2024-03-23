@@ -1,0 +1,50 @@
+{
+  id: "p1",
+  name: "name",
+  description: "description",
+  tasks: [
+    {
+      type: "com.example.dataprocessingexperiment.tables.pipeline.JoinTaskDefinition",
+      id: "t1",
+      name: "name",
+      description: "description",
+      // join table "t1" to "t2" using t1.a=t2.aa and t1.b=t2.bb
+      // include columns from t1, only add t2.z and store this in "t3" (we could store as t1 if we want to override the original t1 dataframe with the joined result)
+      table1: "t1",
+      table2: "t2",
+      destination: "t3",
+      joinType: "inner",
+      on: {
+        "a": "aa",
+        "b": "bb"
+      },
+      columns: [
+        "z"
+      ]
+    },
+    {
+      type: "com.example.dataprocessingexperiment.tables.pipeline.UnionTaskDefinition",
+      id: "t2",
+      name: "name",
+      description: "description",
+      destination: "xyz",
+      // Union tables "a" and "b" together into table "xyz"
+      tables: [
+        "a",
+        "b"
+      ]
+    },
+    {
+      type: "com.example.dataprocessingexperiment.tables.pipeline.LiteralTaskDefinition",
+      id: "id",
+      name: "name",
+      description: "description",
+      table: "xyz",
+      // add literal columns with name -> value mapping
+      columns: {
+        // add a column "type" with literal value "TRANSACTION"
+        "type": "TRANSACTION"
+      },
+    }
+  ]
+}

@@ -1,9 +1,9 @@
 package com.example.dataprocessingexperiment.spark.data
 
 import com.example.dataprocessingexperiment.spark.data.types.Types
-import com.example.dataprocessingexperiment.tables.Column
-import com.example.dataprocessingexperiment.tables.FileSource
-import com.example.dataprocessingexperiment.tables.Table
+import com.example.dataprocessingexperiment.tables.ColumnDefinition
+import com.example.dataprocessingexperiment.tables.SourceDefinition
+import com.example.dataprocessingexperiment.tables.TableDefinition
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldBe
 import mu.KotlinLogging
@@ -27,26 +27,25 @@ class DataFrameBuilderTypeTest {
         val sparkSession = SparkSession.builder().config(config).orCreate
 
         // define our input source
-        val fileSource = FileSource(
+        val sourceDefinition = SourceDefinition(
             "test1",
             "test1",
             "test csv file",
             "../data/sample1/types",
             "csv",
-            null,
             // table structure
-            Table(
+            TableDefinition(
                 "test1",
                 "test csv file",
                 false,
                 ",",
                 listOf(
-                    Column(listOf("boolean"), "boolean", "boolean", "boolean"),
-                    Column(listOf("date"), "date", "date", "date", listOf("d/M/yyyy", "yyyy-MM-dd")),
-                    Column(listOf("decimal"), "decimal", "decimal", "decimal", listOf("10", "2")),
-                    Column(listOf("integer"), "integer", "integer", "integer"),
-                    Column(listOf("string"), "string", "string", "string"),
-                    Column(
+                    ColumnDefinition(listOf("boolean"), "boolean", "boolean", "boolean"),
+                    ColumnDefinition(listOf("date"), "date", "date", "date", listOf("d/M/yyyy", "yyyy-MM-dd")),
+                    ColumnDefinition(listOf("decimal"), "decimal", "decimal", "decimal", listOf("10", "2")),
+                    ColumnDefinition(listOf("integer"), "integer", "integer", "integer"),
+                    ColumnDefinition(listOf("string"), "string", "string", "string"),
+                    ColumnDefinition(
                         listOf("unknown"),
                         "unknown",
                         "unknown",
@@ -57,7 +56,7 @@ class DataFrameBuilderTypeTest {
         )
 
         // build the dataframe
-        val dataFrameBuilder = DataFrameBuilder(sparkSession, fileSource, Types.all())
+        val dataFrameBuilder = DataFrameBuilder(sparkSession, sourceDefinition, Types.all())
 
         // typed dataset, only columns specified
         val typedDataset = dataFrameBuilder.typed()

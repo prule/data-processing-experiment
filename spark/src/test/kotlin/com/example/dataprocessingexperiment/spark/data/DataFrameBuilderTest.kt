@@ -1,9 +1,9 @@
 package com.example.dataprocessingexperiment.spark.data
 
 import com.example.dataprocessingexperiment.spark.data.types.Types
-import com.example.dataprocessingexperiment.tables.Column
-import com.example.dataprocessingexperiment.tables.FileSource
-import com.example.dataprocessingexperiment.tables.Table
+import com.example.dataprocessingexperiment.tables.ColumnDefinition
+import com.example.dataprocessingexperiment.tables.SourceDefinition
+import com.example.dataprocessingexperiment.tables.TableDefinition
 import io.kotest.matchers.shouldBe
 import mu.KotlinLogging
 import org.apache.spark.SparkConf
@@ -25,29 +25,28 @@ class DataFrameBuilderTest {
 
         // define our input source
         // code version of app/src/main/resources/sample1.statements.json5
-        val fileSource = FileSource(
+        val sourceDefinition = SourceDefinition(
             "test1",
             "test1",
             "test csv file",
             "../data/sample1/transactions",
             "csv",
-            null,
             // table structure
-            Table(
+            TableDefinition(
                 "test1",
                 "test csv file",
                 true,
                 ",",
                 listOf(
-                    Column(listOf("date"), "date", "date", "date", listOf("yyyy-MM-dd", "dd-MM-yyyy"), required = true),
-                    Column(listOf("account"), "account", "account", "string", required = true),
-                    Column(listOf("description"), "description", "description", "string"),
-                    Column(listOf("amount"), "amount", "amount", "decimal", listOf("10", "2"), required = true),
+                    ColumnDefinition(listOf("date"), "date", "date", "date", listOf("yyyy-MM-dd", "dd-MM-yyyy"), required = true),
+                    ColumnDefinition(listOf("account"), "account", "account", "string", required = true),
+                    ColumnDefinition(listOf("description"), "description", "description", "string"),
+                    ColumnDefinition(listOf("amount"), "amount", "amount", "decimal", listOf("10", "2"), required = true),
                 )
             ),
         )
 
-        val dataFrameBuilder = DataFrameBuilder(sparkSession, fileSource, Types.all())
+        val dataFrameBuilder = DataFrameBuilder(sparkSession, sourceDefinition, Types.all())
 
         // raw dataset, no typing, all columns
         val rawDataset = dataFrameBuilder.raw

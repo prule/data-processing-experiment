@@ -2,7 +2,7 @@ package com.example.dataprocessingexperiment.spark.data
 
 import com.example.dataprocessingexperiment.spark.data.types.StringType
 import com.example.dataprocessingexperiment.spark.data.types.Types
-import com.example.dataprocessingexperiment.tables.FileSource
+import com.example.dataprocessingexperiment.tables.SourceDefinition
 import org.apache.spark.sql.*
 import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.functions.trim
@@ -16,7 +16,7 @@ import org.apache.spark.sql.functions.trim
  */
 class DataFrameBuilder(
     private val sparkSession: SparkSession,
-    private val fileSource: FileSource,
+    private val sourceDefinition: SourceDefinition,
     private val types: Types,
     private val rootPath: String = ""
 ) {
@@ -28,11 +28,11 @@ class DataFrameBuilder(
      */
     val raw: Dataset<Row> by lazy {
         sparkSession.read()
-            .format(fileSource.type)
+            .format(sourceDefinition.type)
             .option("header", true) // headers are always required at this point
-            .option("delimiter", fileSource.table.delimiter)
-            .load(rootPath + fileSource.path)
-            .alias(fileSource.name)
+            .option("delimiter", sourceDefinition.table.delimiter)
+            .load(rootPath + sourceDefinition.path)
+            .alias(sourceDefinition.name)
     }
 
     /**
@@ -40,7 +40,7 @@ class DataFrameBuilder(
      */
     fun selected(): Dataset<Row> {
         val columns: List<Column> =
-            fileSource.table.columns.map { column ->
+            sourceDefinition.table.columns.map { column ->
                 // find the first column that exists with the given names
                 var c: Column? = null
                 for (name in column.names) {
@@ -51,7 +51,7 @@ class DataFrameBuilder(
                 }
                 // if we can't find a column then throw exception
                 if (c == null) {
-                    throw RuntimeException("Could not find any of the columns ${fileSource.table.columns} on table ${fileSource.id} at ${fileSource.path}")
+                    throw RuntimeException("Could not find any of the columns ${sourceDefinition.table.columns} on table ${sourceDefinition.id} at ${sourceDefinition.path}")
                 }
                 // rename column to alias
                 c.`as`(column.alias)
@@ -71,7 +71,7 @@ class DataFrameBuilder(
     fun typed(): Dataset<Row> {
         // build a list of Columns to select with the casting or transforms to achieve the required type
         val typedColumns: List<Column> =
-            fileSource.table.columns.map { column ->
+            sourceDefinition.table.columns.map { column ->
                 // convert to type
                 types.get(column.type).process(column.alias, column.formats)
             }
@@ -85,7 +85,7 @@ class DataFrameBuilder(
     fun valid(deduplicate: Boolean = true): Dataset<Row> {
 
         // required columns != null conditions
-        val requiredColumns: List<Column> = fileSource.table.columns
+        val requiredColumns: List<Column> = sourceDefinition.table.columns
             .filter { column -> column.required }
             .map { column ->
                 // for strings, check for null and empty strings

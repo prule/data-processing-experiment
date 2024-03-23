@@ -1,17 +1,21 @@
 package com.example.dataprocessingexperiment.app
 
 import com.example.dataprocessingexperiment.spark.SparkContext
-import com.example.dataprocessingexperiment.spark.UnionProcessor
 import com.example.dataprocessingexperiment.spark.data.DataFrameBuilder
 import com.example.dataprocessingexperiment.spark.data.types.Types
+import com.example.dataprocessingexperiment.spark.pipeline.OutputProcessor
+import com.example.dataprocessingexperiment.spark.pipeline.PipelineConfigurationRepository
+import com.example.dataprocessingexperiment.spark.pipeline.PipelineProcessor
 import com.example.dataprocessingexperiment.spark.statistics.StatisticsRunner
 import com.example.dataprocessingexperiment.spark.statistics.StatisticRepository
 import com.example.dataprocessingexperiment.spark.statistics.collectors.SparkCollector
 import com.example.dataprocessingexperiment.tables.Tables
+import com.example.dataprocessingexperiment.tables.pipeline.*
 import com.example.dataprocessingexperiment.tables.statistics.Statistics
 import com.example.dataprocessingexperiment.tables.statistics.StatisticsConfiguration
 import io.github.xn32.json5k.Json5
 import io.github.xn32.json5k.decodeFromStream
+import kotlinx.serialization.modules.SerializersModule
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
@@ -50,12 +54,13 @@ class App {
         //  generate statistics if configured
         sparkSession.use {
 
-            tables.sources.forEach { fileSource ->
+            // populate context with tables
+            tables.sources.forEach { source ->
 
                 // set up the dataframe
                 val dataFrameBuilder = DataFrameBuilder(
                     sparkSession,
-                    fileSource,
+                    source,
                     Types.all(),
                     "../data/"
                 )
@@ -69,9 +74,9 @@ class App {
                 display("Raw dataset", rawDataset, "date")
 
                 // statistics
-                val stats = statisticConfiguration.statisticsById(fileSource.id)
+                val stats = statisticConfiguration.statisticsById(source.id)
                 stats?.let {
-                    val rawStatisticsPath = "$outputPath/${fileSource.id}/raw"
+                    val rawStatisticsPath = "$outputPath/${source.id}/raw"
                     generateStatistics(stats, rawDataset, rawStatisticsPath, sparkSession)
                     display("RAW Statistics", rawStatisticsPath, "key", sparkSession)
                 }
@@ -97,28 +102,40 @@ class App {
                 // ------------
 
                 // get the valid version of the dataset, de-duplicating if required
-                val validDataset = dataFrameBuilder.valid(fileSource.table.deduplicate)
+                val validDataset = dataFrameBuilder.valid(source.table.deduplicate)
                 display("Valid dataset", validDataset, "date")
 
                 // statistics
                 stats?.let {
-                    val validStatisticsPath = "$outputPath/${fileSource.id}/valid"
+                    val validStatisticsPath = "$outputPath/${source.id}/valid"
                     generateStatistics(stats, validDataset, validStatisticsPath, sparkSession)
                     display("VALID Statistics", validStatisticsPath, "key", sparkSession)
                 }
 
                 // update the context
-                context.add(fileSource.id, validDataset)
+                context.set(source.id, validDataset)
 
             }
 
-            // process union directives
-            UnionProcessor(context).process()
+            val pipelineConfigurationRepository = PipelineConfigurationRepository(
+                SerializersModule {
+                    polymorphic(AbstractTaskDefinition::class, JoinTaskDefinition::class, JoinTaskDefinition.serializer())
+                    polymorphic(AbstractTaskDefinition::class, UnionTaskDefinition::class, UnionTaskDefinition.serializer())
+                    polymorphic(AbstractTaskDefinition::class, LiteralTaskDefinition::class, LiteralTaskDefinition.serializer())
+                    polymorphic(AbstractTaskDefinition::class, OutputTaskDefinition::class, OutputTaskDefinition.serializer())
+                }
+            )
+
+            val pipelineConfiguration = pipelineConfigurationRepository.load(
+                File("./src/main/resources/sample1.pipeline.json5").inputStream()
+            )
+
+            PipelineProcessor(pipelineConfiguration).process(context)
 
             // display result
             context.show()
-
         }
+
 
     }
 

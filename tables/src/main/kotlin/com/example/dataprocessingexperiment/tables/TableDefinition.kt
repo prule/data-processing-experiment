@@ -16,14 +16,14 @@ import kotlinx.serialization.Serializable
  * ```
  */
 @Serializable
-data class Table(
+data class TableDefinition(
     val name: String,
     val description: String,
     val deduplicate: Boolean = false,
     val delimiter: String = ",",
-    val columns: List<Column>
+    val columns: List<ColumnDefinition>
 ) {
-    fun colByName(name: String): Column {
+    fun colByName(name: String): ColumnDefinition {
         return columns.first { col -> col.names.contains(name) }
     }
 }
