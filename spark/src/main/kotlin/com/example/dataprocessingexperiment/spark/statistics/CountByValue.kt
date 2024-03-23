@@ -1,9 +1,9 @@
 package com.example.dataprocessingexperiment.spark.statistics
 
 import com.example.dataprocessingexperiment.spark.statistics.collectors.Collector
+import kotlinx.serialization.Serializable
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
-import org.apache.spark.sql.functions
 import org.apache.spark.sql.functions.*
 
 /**
@@ -14,28 +14,24 @@ import org.apache.spark.sql.functions.*
  * The key will be CountByValue, the discriminator is the value and the value is the row count.
  */
 
-class CountByValue(private val col: String) : Statistic {
+@Serializable
+class CountByValue(private val column: String) : Statistic {
 
     override fun run(data: Dataset<Row>, collector: Collector) {
 
-        val alias = "value(${col})"
+        val alias = "value(${column})"
 
         val count = data.groupBy(
-            trim(col(col)).alias(alias)
+            trim(col(column)).alias(alias)
         ).count().orderBy(alias)
 
         count.toLocalIterator().forEach { row ->
             collector.add(
                 "CountByValue",
-                col,
+                column,
                 if (row.get(0) != null) row.get(0).toString() else "",
                 row.get(1)
             )
         }
     }
-
-    override fun of(col: String): Statistic {
-        return CountByValue(col)
-    }
-
 }

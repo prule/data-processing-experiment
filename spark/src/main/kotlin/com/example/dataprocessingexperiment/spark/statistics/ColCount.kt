@@ -1,19 +1,19 @@
 package com.example.dataprocessingexperiment.spark.statistics
 
 import com.example.dataprocessingexperiment.spark.statistics.collectors.Collector
-import com.example.dataprocessingexperiment.tables.statistics.StatisticDefinition
 import kotlinx.serialization.Serializable
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
 
 /**
- * Calculates the MAX and MIN values for the given column.
+ * Column count for the dataset.
  */
 @Serializable
-class Bounds(private val column: String) : Statistic, StatisticDefinition {
+class ColCount(): Statistic {
 
     override fun run(data: Dataset<Row>, collector: Collector) {
-        Minimum(column).run(data, collector)
-        Maximum(column).run(data, collector)
+        val value = data.columns().size
+        collector.add("column count", "", "", value)
     }
+
 }

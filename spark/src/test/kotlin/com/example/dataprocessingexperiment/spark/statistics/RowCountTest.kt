@@ -4,20 +4,21 @@ import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import com.example.dataprocessingexperiment.spark.statistics.collectors.StatisticItem
 import com.example.dataprocessingexperiment.spark.statistics.collectors.StatisticItemCollector
-import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import io.kotest.matchers.ints.shouldBeExactly
+import io.kotest.matchers.shouldBe
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
 import org.apache.spark.sql.types.DataTypes
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 
-class StatisticsRunnerTest {
+class RowCountTest {
     private val columnName = "value"
     private val dataHelper = SparkDataHelper(sparkSession)
 
     @Test
-    fun `should calculate statistics`() {
+    fun `should calculate row count`() {
 
         // prepare
 
@@ -32,24 +33,17 @@ class StatisticsRunnerTest {
                 Pair(columnName, DataTypes.IntegerType),
             )
         )
+        val statistic = RowCount()
         val collector = StatisticItemCollector()
 
         // perform
-        StatisticsRunner().process(
-            dataframe,
-            listOf(
-                Bounds(columnName),
-                RowCount()
-            ),
-            collector
-        )
+        statistic.run(dataframe, collector)
 
         // verify
         val result = collector.values()
-        result.size shouldBeExactly 3
-        result shouldContain (StatisticItem("min", columnName, "", -1))
-        result shouldContain (StatisticItem("max", columnName, "", 10))
-        result shouldContain (StatisticItem("row count", "", "", 4L))
+        result.size shouldBeExactly 1
+        result[0] shouldBe StatisticItem("row count", "", "", 4L)
+
     }
 
     companion object {

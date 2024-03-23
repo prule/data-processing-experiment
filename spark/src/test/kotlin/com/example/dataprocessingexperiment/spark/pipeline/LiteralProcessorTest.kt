@@ -1,9 +1,9 @@
 package com.example.dataprocessingexperiment.spark.pipeline
 
 import com.example.dataprocessingexperiment.spark.SparkContext
+import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import com.example.dataprocessingexperiment.tables.Tables
-import com.example.dataprocessingexperiment.tables.pipeline.LiteralTaskDefinition
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
 import org.apache.spark.sql.Dataset
@@ -18,6 +18,7 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 
 class LiteralProcessorTest {
+    private val dataHelper = SparkDataHelper(sparkSession)
 
     @Test
     fun `should add literal columns`() {
@@ -28,21 +29,22 @@ class LiteralProcessorTest {
             GenericRow(arrayOf(null, "d")),
         )
 
-        val dataframe1 = asDataFrame(data1)
+        val dataframe1 = dataHelper.asDataFrame(
+            data1, listOf(
+                Pair("val1", DataTypes.IntegerType),
+                Pair("val2", DataTypes.StringType),
+            )
+        )
 
         val context = SparkContext(Tables("test", "test", "test", listOf()))
         context.set("dataFrame1", dataframe1)
 
-        val literalTask = LiteralTaskDefinition(
-//            "com.example.dataprocessingexperiment.tables.pipeline.LiteralTask",
+        LiteralProcessor(//            "com.example.dataprocessingexperiment.tables.pipeline.LiteralTask",
             "id",
             "name",
             "description",
             "dataFrame1",
-            mapOf("a" to "1", "b" to "2"),
-        )
-
-        LiteralProcessor().process(context, literalTask)
+            mapOf("a" to "1", "b" to "2"),).process(context)
 
         val result = context.get("dataFrame1")
         result.count() shouldBe 4
@@ -55,17 +57,6 @@ class LiteralProcessorTest {
         ))
         result.select("a").distinct().collectAsList()[0][0] shouldBe "1"
         result.select("b").distinct().collectAsList()[0][0] shouldBe "2"
-    }
-
-    private fun asDataFrame(data: List<GenericRow>): Dataset<Row> {
-        return sparkSession.createDataFrame(
-            data, StructType(
-                arrayOf(
-                    StructField("val1", DataTypes.IntegerType, false, Metadata.empty()),
-                    StructField("val2", DataTypes.StringType, false, Metadata.empty())
-                )
-            )
-        )
     }
 
     companion object {

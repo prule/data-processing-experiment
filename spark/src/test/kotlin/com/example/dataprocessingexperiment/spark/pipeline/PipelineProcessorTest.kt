@@ -1,10 +1,9 @@
 package com.example.dataprocessingexperiment.spark.pipeline
 
 import com.example.dataprocessingexperiment.spark.SparkContext
+import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import com.example.dataprocessingexperiment.tables.Tables
-import com.example.dataprocessingexperiment.tables.pipeline.JoinTaskDefinition
-import com.example.dataprocessingexperiment.tables.pipeline.LiteralTaskDefinition
 import com.example.dataprocessingexperiment.tables.pipeline.PipelineConfiguration
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
@@ -20,6 +19,7 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 
 class PipelineProcessorTest {
+    private val dataHelper = SparkDataHelper(sparkSession)
 
     val data1 = listOf(
         GenericRow(arrayOf(-1, "a")),
@@ -35,9 +35,19 @@ class PipelineProcessorTest {
         GenericRow(arrayOf(null, "d")),
     )
 
-    val dataframe1 = asDataFrame(data1)
-    val dataframe2 = asDataFrame(data2)
+    val dataframe1 = dataHelper.asDataFrame(
+        data1, listOf(
+            Pair("val1", DataTypes.IntegerType),
+            Pair("val2", DataTypes.StringType),
+        )
+    )
 
+    val dataframe2 = dataHelper.asDataFrame(
+        data2, listOf(
+            Pair("val1", DataTypes.IntegerType),
+            Pair("val2", DataTypes.StringType),
+        )
+    )
     @Test
     fun `should process pipeline`() {
 
@@ -47,7 +57,7 @@ class PipelineProcessorTest {
         context.set("dataFrame1", dataframe1)
         context.set("dataFrame2", dataframe2)
 
-        val joinTask = JoinTaskDefinition(
+        val joinTask = JoinProcessor(
             "id",
             "name",
             "description",
@@ -59,7 +69,7 @@ class PipelineProcessorTest {
             listOf("val1")
         )
 
-        val literalTask = LiteralTaskDefinition(
+        val literalTask = LiteralProcessor(
             "id",
             "name",
             "description",
@@ -92,18 +102,6 @@ class PipelineProcessorTest {
         result2.columns() shouldContainAll (listOf("val1", "val2", "a", "b"))
         result2.show()
 
-    }
-
-
-    private fun asDataFrame(data: List<GenericRow>): Dataset<Row> {
-        return sparkSession.createDataFrame(
-            data, StructType(
-                arrayOf(
-                    StructField("val1", DataTypes.IntegerType, false, Metadata.empty()),
-                    StructField("val2", DataTypes.StringType, false, Metadata.empty())
-                )
-            )
-        )
     }
 
     companion object {
