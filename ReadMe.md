@@ -33,4 +33,40 @@ Tableau also have a good explanation of data cleaning in their article [Guide To
 
 So with this in mind, I've done the following:
 
+*Refactoring*
+
+- Some refactoring to remove the pipeline configuration classes and just directly instantiate the pipeline processors when loading the configuration (taking advantage of polymorphic serialization and removing a lot of unnecessary code!)
+
+*Empty count statistic*
+
 - Added EmptyCount statistic - This counts the empty values for each column (or just the columns you specify). "Empty" means different things depending on the data type of the column - For numbers it can be NULL or NaN. For strings it could be NULL, or a blank string, or whitespace.  
+
+*Trimming whitespace*
+
+- Added the capability to specify that a column should be trimmed when loading the "selected" dataset - both at the column level and at the table level.
+- Adding some spaces to the sample data shows how whitespace interferes 
+```
+|2020-01-01|      1|    burger  |            Gympie  | 15.45|TRANSACTION|        NULL|
+|2020-01-02|      1|      movie |      Southern Downs| 20.00|TRANSACTION|        NULL|
+|2020-01-03|      1|      tennis|            Banana  | 35.00|TRANSACTION|        NULL|
+|2020-01-04|      2|      petrol|   Central Highlands|150.45|TRANSACTION|        NULL|
+|2020-02-01|      1|      burger|            Yarrabah| 15.46|TRANSACTION|  Queensland|
+```
+- When adding `trim=true` to the description column we get
+```
+|2020-01-01|      1|     burger|            Gympie  | 15.45|TRANSACTION|        NULL|
+|2020-01-02|      1|      movie|      Southern Downs| 20.00|TRANSACTION|        NULL|
+|2020-01-03|      1|     tennis|            Banana  | 35.00|TRANSACTION|        NULL|
+|2020-01-04|      2|     petrol|   Central Highlands|150.45|TRANSACTION|  Queensland|
+|2020-02-01|      1|     burger|            Yarrabah| 15.46|TRANSACTION|  Queensland|
+```
+- When adding `trim=true` to the whole table we get
+```
+|2020-01-01|      1|     burger|           Gympie| 15.45|TRANSACTION|  Queensland|
+|2020-01-02|      1|      movie|   Southern Downs| 20.00|TRANSACTION|  Queensland|
+|2020-01-03|      1|     tennis|           Banana| 35.00|TRANSACTION|  Queensland|
+|2020-01-04|      2|     petrol|Central Highlands|150.45|TRANSACTION|  Queensland|
+|2020-02-01|      1|     burger|         Yarrabah| 15.46|TRANSACTION|  Queensland|
+```
+- Removing the whitespaces by trimming description and location now fixes the issue making the data cleaner and more consistent.
+
