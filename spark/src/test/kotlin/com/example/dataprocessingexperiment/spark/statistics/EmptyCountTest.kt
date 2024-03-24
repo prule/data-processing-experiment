@@ -42,8 +42,9 @@ class EmptyCountTest {
 
         // verify
         val result = collector.values()
-        result.size shouldBeExactly 1
+        result.size shouldBeExactly 2
         result[0] shouldBe StatisticItem("EmptyCount", "value", "", 2L)
+        result[1] shouldBe StatisticItem("EmptyPercentage", "", "", 50L)
 
     }
 
@@ -71,8 +72,9 @@ class EmptyCountTest {
 
         // verify
         val result = collector.values()
-        result.size shouldBeExactly 1
+        result.size shouldBeExactly 2
         result[0] shouldBe StatisticItem("EmptyCount", "value", "", 2L)
+        result[1] shouldBe StatisticItem("EmptyPercentage", "", "", 50L)
 
     }
 
@@ -105,8 +107,9 @@ class EmptyCountTest {
         dataframe.show()
         // verify
         val result = collector.values()
-        result.size shouldBeExactly 1
+        result.size shouldBeExactly 2
         result[0] shouldBe StatisticItem("EmptyCount", "value", "", 3L)
+        result[1] shouldBe StatisticItem("EmptyPercentage", "", "", 75L)
 
     }
 
@@ -138,8 +141,9 @@ class EmptyCountTest {
         dataframe.show()
         // verify
         val result = collector.values()
-        result.size shouldBeExactly 1
+        result.size shouldBeExactly 2
         result[0] shouldBe StatisticItem("EmptyCount", "value", "", 2L)
+        result[1] shouldBe StatisticItem("EmptyPercentage", "", "", 66L)
 
     }
 

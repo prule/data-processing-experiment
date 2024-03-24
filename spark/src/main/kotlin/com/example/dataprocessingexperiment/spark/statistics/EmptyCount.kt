@@ -19,6 +19,8 @@ import org.apache.spark.sql.types.StructField
  * For numbers, it can be NULL or NaN.
  * For strings, it could be NULL, or a blank string, or whitespace.
  *
+ * Also calculates the empty percentage = (empty count / rows * cols) * 100
+ *
  * @param columns If an empty list, all columns will be included - otherwise just the named columns will have this statistic applied.
  */
 @Serializable
@@ -53,11 +55,16 @@ class EmptyCount(private val columns: List<String>) : Statistic {
         // result set contains null count for each column in a column of the same name
         val result = data.select(*colsWithConstraints.map { it }.toTypedArray())
 
+        var totalNulls = 0L
         colsToSelect.forEach {
+            val count = result.select(it.name()).first()[0] as Long
+            totalNulls += count
             collector.add(
-                "EmptyCount", it.name(), "", result.select(it.name()).first()[0]
+                "EmptyCount", it.name(), "", count
             )
         }
+
+        collector.add("EmptyPercentage", "", "", totalNulls * 100 / (data.count() * data.columns().size))
 
     }
 }

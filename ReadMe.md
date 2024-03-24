@@ -40,6 +40,7 @@ So with this in mind, I've done the following:
 *Empty count statistic*
 
 - Added EmptyCount statistic - This counts the empty values for each column (or just the columns you specify). "Empty" means different things depending on the data type of the column - For numbers it can be NULL or NaN. For strings it could be NULL, or a blank string, or whitespace.  
+  - This also adds an "EmptyPercentage" statistic, calculated from the number of empty values as a percentage of the total number of values.
 
 *Trimming whitespace*
 
