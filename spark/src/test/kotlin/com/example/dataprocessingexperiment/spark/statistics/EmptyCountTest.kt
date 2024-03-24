@@ -5,19 +5,16 @@ import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import com.example.dataprocessingexperiment.spark.data.Types
 import com.example.dataprocessingexperiment.spark.statistics.collectors.StatisticItem
 import com.example.dataprocessingexperiment.spark.statistics.collectors.StatisticItemCollector
-import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.matchers.shouldBe
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
-import org.apache.spark.sql.functions
 import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.types.DataTypes
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
-import java.lang.Integer.parseInt
 
-class NullCountTest {
+class EmptyCountTest {
     private val columnName = "value"
     private val dataHelper = SparkDataHelper(sparkSession, true)
 
@@ -37,7 +34,7 @@ class NullCountTest {
                 Pair(columnName, DataTypes.IntegerType),
             )
         )
-        val statistic = NullCount(listOf())
+        val statistic = EmptyCount(listOf())
         val collector = StatisticItemCollector()
 
         // perform
@@ -46,7 +43,7 @@ class NullCountTest {
         // verify
         val result = collector.values()
         result.size shouldBeExactly 1
-        result[0] shouldBe StatisticItem("NullCount", "value", "", 2L)
+        result[0] shouldBe StatisticItem("EmptyCount", "value", "", 2L)
 
     }
 
@@ -66,7 +63,7 @@ class NullCountTest {
                 Pair(columnName, DataTypes.DoubleType),
             )
         )
-        val statistic = NullCount(listOf())
+        val statistic = EmptyCount(listOf())
         val collector = StatisticItemCollector()
 
         // perform
@@ -75,7 +72,7 @@ class NullCountTest {
         // verify
         val result = collector.values()
         result.size shouldBeExactly 1
-        result[0] shouldBe StatisticItem("NullCount", "value", "", 2L)
+        result[0] shouldBe StatisticItem("EmptyCount", "value", "", 2L)
 
     }
 
@@ -99,7 +96,7 @@ class NullCountTest {
 
         dataframe.select(Types.STRING.nullPredicate.invoke(col(columnName), false)).show()
 
-        val statistic = NullCount(listOf())
+        val statistic = EmptyCount(listOf())
         val collector = StatisticItemCollector()
 
         // perform
@@ -109,7 +106,7 @@ class NullCountTest {
         // verify
         val result = collector.values()
         result.size shouldBeExactly 1
-        result[0] shouldBe StatisticItem("NullCount", "value", "", 3L)
+        result[0] shouldBe StatisticItem("EmptyCount", "value", "", 3L)
 
     }
 
@@ -132,7 +129,7 @@ class NullCountTest {
         )
         dataframe.show()
 
-        val statistic = NullCount(listOf())
+        val statistic = EmptyCount(listOf())
         val collector = StatisticItemCollector()
 
         // perform
@@ -142,7 +139,7 @@ class NullCountTest {
         // verify
         val result = collector.values()
         result.size shouldBeExactly 1
-        result[0] shouldBe StatisticItem("NullCount", "value", "", 2L)
+        result[0] shouldBe StatisticItem("EmptyCount", "value", "", 2L)
 
     }
 

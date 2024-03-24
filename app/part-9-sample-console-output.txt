@@ -1,4 +1,4 @@
-9:06:49 am: Executing 'run --stacktrace'...
+11:13:47 am: Executing 'run --stacktrace'...
 
 > Task :app:checkKotlinGradlePluginConfigurationErrors
 > Task :spark:checkKotlinGradlePluginConfigurationErrors
@@ -9,18 +9,18 @@
 > Task :tables:classes UP-TO-DATE
 > Task :tables:jar UP-TO-DATE
 > Task :spark:processResources NO-SOURCE
-> Task :app:processResources UP-TO-DATE
+> Task :app:processResources
 > Task :spark:compileKotlin
 > Task :spark:compileJava NO-SOURCE
 > Task :spark:classes UP-TO-DATE
 > Task :spark:jar
 > Task :app:compileKotlin
 > Task :app:compileJava NO-SOURCE
-> Task :app:classes UP-TO-DATE
+> Task :app:classes
 
 > Task :app:run
 Starting...
-09:06:51.074 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+11:13:48.829 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 SLF4J: Class path contains multiple SLF4J providers.
 SLF4J: Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@6236eb5f]
 SLF4J: Found provider [org.apache.logging.slf4j.SLF4JServiceProvider@7c1e2a9e]
@@ -83,12 +83,12 @@ root
 |       CountByValue|    account|            1|    8|
 |       CountByValue|    account|            2|    5|
 |       CountByValue|    account|            x|    6|
-|          NullCount|       date|         NULL|    1|
-|          NullCount|    account|         NULL|    1|
-|          NullCount|description|         NULL|    0|
-|          NullCount|     amount|         NULL|    0|
-|          NullCount|   location|         NULL|    7|
-|          NullCount|    comment|         NULL|   10|
+|         EmptyCount|       date|         NULL|    1|
+|         EmptyCount|    account|         NULL|    1|
+|         EmptyCount|description|         NULL|    0|
+|         EmptyCount|     amount|         NULL|    0|
+|         EmptyCount|   location|         NULL|    7|
+|         EmptyCount|    comment|         NULL|   10|
 |       column count|       NULL|         NULL|    6|
 |duplicate row count|       NULL|         NULL|    4|
 |                max|     amount|         NULL|    x|
@@ -214,9 +214,11 @@ root
 |       CountByMonth|       date|      2020-03|     3|
 |       CountByValue|    account|            1|     8|
 |       CountByValue|    account|            2|     4|
-|          NullCount|    account|         NULL|     0|
-|          NullCount|description|         NULL|     0|
-|          NullCount|   location|         NULL|     1|
+|         EmptyCount|       date|         NULL|     0|
+|         EmptyCount|    account|         NULL|     0|
+|         EmptyCount|description|         NULL|     0|
+|         EmptyCount|   location|         NULL|     1|
+|         EmptyCount|     amount|         NULL|     0|
 |       column count|       NULL|         NULL|     5|
 |duplicate row count|       NULL|         NULL|     0|
 |                max|     amount|         NULL|300.47|
@@ -224,7 +226,7 @@ root
 |          row count|       NULL|         NULL|    12|
 +-------------------+-----------+-------------+------+
 
-row count = 13
+row count = 15
 
 Raw dataset
 
@@ -643,15 +645,15 @@ root
 +-------------------+------+-------------+-----+
 
 row count = 3
-09:07:00.762 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting pipeline id=sample-1 name=Sample Pipeline 1
-09:07:00.763 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
-09:07:00.768 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
-09:07:00.769 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
-09:07:00.770 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
-09:07:00.771 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
-09:07:00.786 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
-09:07:00.787 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/sample1/transactions', format='csv', mode='overwrite', options={header=true})
-09:07:01.120 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/sample1/transactions', format='csv', mode='overwrite', options={header=true})
+11:13:58.563 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting pipeline id=sample-1 name=Sample Pipeline 1
+11:13:58.565 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
+11:13:58.570 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
+11:13:58.570 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
+11:13:58.572 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
+11:13:58.573 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
+11:13:58.582 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
+11:13:58.583 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/sample1/transactions', format='csv', mode='overwrite', options={header=true})
+11:13:58.930 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/sample1/transactions', format='csv', mode='overwrite', options={header=true})
 ==============================================
 Context
 transactions
@@ -778,5 +780,5 @@ transactionsWithLGAs
 Finished...
 
 BUILD SUCCESSFUL in 12s
-10 actionable tasks: 7 executed, 3 up-to-date
-9:07:01 am: Execution finished 'run --stacktrace'.
+10 actionable tasks: 8 executed, 2 up-to-date
+11:13:59 am: Execution finished 'run --stacktrace'.

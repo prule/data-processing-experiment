@@ -15,4 +15,18 @@ class SparkDataTypesTest {
         val result = sparkDataTypes.type(DataTypes.IntegerType)
         result shouldBe Types.NUMERIC
     }
+
+    @Test
+    fun `should be string`() {
+        val sparkDataTypes = SparkDataTypes()
+        val result = sparkDataTypes.type(DataTypes.StringType)
+        result shouldBe Types.STRING
+    }
+
+    @Test
+    fun `should be other`() {
+        val sparkDataTypes = SparkDataTypes()
+        val result = sparkDataTypes.type(DataTypes.BinaryType)
+        result shouldBe Types.OTHER
+    }
 }

@@ -11,13 +11,13 @@ import org.apache.spark.sql.types.*
  */
 class SparkDataTypes {
 
-    fun type(dataType: DataType): Types? {
+    fun type(dataType: DataType): Types {
         for (value in Types.entries) {
             if (value.matches(dataType)) {
                 return value
             }
         }
-        return null
+        return Types.OTHER
     }
 }
 
@@ -52,14 +52,14 @@ enum class Types(private val types: List<DataType>, val nullPredicate: (Column, 
                 )
             }
         }
-    ), ;
+    ),
+    OTHER(listOf(),
+        { col: Column, nullable: Boolean -> col.isNull }
+    ),
+    ;
 
     fun matches(dataType: DataType): Boolean {
         return types.contains(dataType)
     }
-//    BINARY,
-//    BOOLEAN,
-//    DATETIME,
-//    INTERVAL,
-//    COMPLEX
+
 }

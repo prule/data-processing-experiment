@@ -14,9 +14,15 @@ import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.types.StructField
 
 /**
+ * This counts the empty values for each column (or just the columns you specify).
+ * "Empty" means different things depending on the data type of the column.
+ * For numbers, it can be NULL or NaN.
+ * For strings, it could be NULL, or a blank string, or whitespace.
+ *
+ * @param columns If an empty list, all columns will be included - otherwise just the named columns will have this statistic applied.
  */
 @Serializable
-class NullCount(private val columns: List<String>) : Statistic {
+class EmptyCount(private val columns: List<String>) : Statistic {
     private val logger = KotlinLogging.logger {}
 
     @Transient
@@ -33,12 +39,11 @@ class NullCount(private val columns: List<String>) : Statistic {
 
         // columns we want to select with null count criteria
         val colsToSelect = fields.filter { cols.contains(it.name()) }
-            .filter { sparkDataTypes.type(it.dataType()) != null }
 
         val colsWithConstraints: List<Column> = colsToSelect
             .map {
                 functions.count_if(
-                    sparkDataTypes.type(it.dataType())?.nullPredicate?.invoke(
+                    sparkDataTypes.type(it.dataType()).nullPredicate.invoke(
                         col(it.name()),
                         it.nullable()
                     )
@@ -50,7 +55,7 @@ class NullCount(private val columns: List<String>) : Statistic {
 
         colsToSelect.forEach {
             collector.add(
-                "NullCount", it.name(), "", result.select(it.name()).first()[0]
+                "EmptyCount", it.name(), "", result.select(it.name()).first()[0]
             )
         }
 

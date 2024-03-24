@@ -7,7 +7,7 @@
       description: "Statistics configuration for the transactions table",
       values: [
         {
-          type: "com.example.dataprocessingexperiment.spark.statistics.NullCount",
+          type: "com.example.dataprocessingexperiment.spark.statistics.EmptyCount",
           columns: []
         },
         {
