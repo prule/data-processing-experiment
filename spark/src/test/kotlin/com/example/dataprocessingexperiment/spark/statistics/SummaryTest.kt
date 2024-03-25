@@ -12,28 +12,28 @@ import org.apache.spark.sql.types.DataTypes
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 
-class DescribeTest {
+class SummaryTest {
 
     private val dataHelper = SparkDataHelper(sparkSession)
 
     @Test
-    fun `should describe`() {
+    fun `should summarise`() {
 
         // prepare
 
         val data = listOf(
-            GenericRow(arrayOf(-1, 2)),
-            GenericRow(arrayOf(10, 20)),
-            GenericRow(arrayOf(5, 7)),
-            GenericRow(arrayOf(null, 9)),
+            GenericRow(arrayOf(-1, "xyz")),
+            GenericRow(arrayOf(10, "ddd")),
+            GenericRow(arrayOf(5, "fff")),
+            GenericRow(arrayOf(null, "abc")),
         )
         val dataframe = dataHelper.asDataFrame(
             data, listOf(
                 Pair("val1", DataTypes.IntegerType),
-                Pair("val2", DataTypes.IntegerType),
+                Pair("val2", DataTypes.StringType),
             )
         )
-        val statistic = Describe(listOf())
+        val statistic = Summary(listOf(), listOf())
         val collector = StatisticItemCollector()
 
         // perform
@@ -41,12 +41,12 @@ class DescribeTest {
 
         // verify
         val result = collector.values()
-        result.size shouldBeExactly 10
-        result[0] shouldBe StatisticItem("describe", "val1", "count", "4")
-        result[1] shouldBe StatisticItem("describe", "val1", "mean", "3.5")
-        result[2] shouldBe StatisticItem("describe", "val1", "stddev", "5.066228051190222")
-        result[3] shouldBe StatisticItem("describe", "val1", "min", "-1")
-        result[4] shouldBe StatisticItem("describe", "val1", "max", "10")
+        result.size shouldBeExactly 16
+        result[0] shouldBe StatisticItem("Summary", "val1", "count", "4")
+        result[1] shouldBe StatisticItem("Summary", "val1", "mean", "3.5")
+        result[2] shouldBe StatisticItem("Summary", "val1", "stddev", "5.066228051190222")
+        result[3] shouldBe StatisticItem("Summary", "val1", "min", "-1")
+        result[4] shouldBe StatisticItem("Summary", "val1", "max", "10")
 
     }
 

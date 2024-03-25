@@ -25,7 +25,7 @@ import java.io.File
  */
 
 class App {
-    private val displayRows = 20
+    private val displayRows = 100
 
     fun go() {
         // spark setup
@@ -51,7 +51,7 @@ class App {
             polymorphic(StatisticDefinition::class, Minimum::class, Minimum.serializer())
             polymorphic(StatisticDefinition::class, RowCount::class, RowCount.serializer())
             polymorphic(StatisticDefinition::class, EmptyCount::class, EmptyCount.serializer())
-            polymorphic(StatisticDefinition::class, Describe::class, Describe.serializer())
+            polymorphic(StatisticDefinition::class, Summary::class, Summary.serializer())
         }
         val format = Json5 { serializersModule = module }
 

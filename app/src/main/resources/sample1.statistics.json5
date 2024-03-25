@@ -32,10 +32,22 @@
           column: "amount"
         },
         {
-          type: "com.example.dataprocessingexperiment.spark.statistics.Describe",
-          columns: ["amount", "description"]
+          type: "com.example.dataprocessingexperiment.spark.statistics.Summary",
+          columns: [
+            "amount",
+            "description"
+          ],
+          statistics: [
+            "count",
+            "mean",
+            "stddev",
+            "min",
+            "max",
+            "25%",
+            "50%",
+            "75%"
+          ]
         }
-
       ],
     },
     {

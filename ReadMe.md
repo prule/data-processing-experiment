@@ -42,6 +42,10 @@ So with this in mind, I've done the following:
 - Added EmptyCount statistic - This counts the empty values for each column (or just the columns you specify). "Empty" means different things depending on the data type of the column - For numbers it can be NULL or NaN. For strings it could be NULL, or a blank string, or whitespace.  
   - This also adds an "EmptyPercentage" statistic, calculated from the number of empty values as a percentage of the total number of values.
 
+*Summary statistic*
+
+- Added summary statistic - this is based off the spark dataset.summary() feature which return statistics like mean, min, max, stddev, count, percentiles etc.
+
 *Trimming whitespace*
 
 - Added the capability to specify that a column should be trimmed when loading the "selected" dataset - both at the column level and at the table level.

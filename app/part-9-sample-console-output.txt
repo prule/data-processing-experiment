@@ -1,4 +1,4 @@
-9:01:17 pm: Executing 'run --stacktrace'...
+10:42:11 pm: Executing 'run --stacktrace'...
 
 > Task :app:checkKotlinGradlePluginConfigurationErrors
 > Task :spark:checkKotlinGradlePluginConfigurationErrors
@@ -13,14 +13,14 @@
 > Task :spark:processResources NO-SOURCE
 > Task :spark:classes UP-TO-DATE
 > Task :spark:jar UP-TO-DATE
-> Task :app:compileKotlin UP-TO-DATE
-> Task :app:compileJava NO-SOURCE
 > Task :app:processResources UP-TO-DATE
+> Task :app:compileKotlin
+> Task :app:compileJava NO-SOURCE
 > Task :app:classes UP-TO-DATE
 
 > Task :app:run
 Starting...
-21:01:17.972 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+22:42:12.689 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 SLF4J: Class path contains multiple SLF4J providers.
 SLF4J: Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@6236eb5f]
 SLF4J: Found provider [org.apache.logging.slf4j.SLF4JServiceProvider@7c1e2a9e]
@@ -63,6 +63,19 @@ root
 +------------+-------+------------+-------+--------------------+--------------------+
 
 row count = 20
++-------+-----------------+-----------+
+|summary|           amount|description|
++-------+-----------------+-----------+
+|  count|               20|         20|
+|   mean|64.34294117647059|       NULL|
+| stddev|85.01729903119026|       NULL|
+|    min|             0.01|     petrol|
+|    max|                x|          x|
+|    25%|            15.45|       NULL|
+|    50%|            20.01|       NULL|
+|    75%|           150.45|       NULL|
++-------+-----------------+-----------+
+
 
 RAW Statistics
 
@@ -72,32 +85,48 @@ root
  |-- discriminator: string (nullable = true)
  |-- value: string (nullable = true)
 
-+-------------------+-----------+-------------+-----+
-|                key|     column|discriminator|value|
-+-------------------+-----------+-------------+-----+
-|       CountByMonth|       date|         NULL|    8|
-|       CountByMonth|       date|      2020-01|    5|
-|       CountByMonth|       date|      2020-02|    5|
-|       CountByMonth|       date|      2020-12|    2|
-|       CountByValue|    account|         NULL|    1|
-|       CountByValue|    account|            1|    8|
-|       CountByValue|    account|            2|    5|
-|       CountByValue|    account|            x|    6|
-|         EmptyCount|       date|         NULL|    1|
-|         EmptyCount|    account|         NULL|    1|
-|         EmptyCount|description|         NULL|    0|
-|         EmptyCount|     amount|         NULL|    0|
-|         EmptyCount|   location|         NULL|    7|
-|         EmptyCount|    comment|         NULL|   10|
-|    EmptyPercentage|       NULL|         NULL|   15|
-|       column count|       NULL|         NULL|    6|
-|duplicate row count|       NULL|         NULL|    2|
-|                max|     amount|         NULL|    x|
-|                min|     amount|         NULL| 0.01|
-|          row count|       NULL|         NULL|   20|
-+-------------------+-----------+-------------+-----+
++-------------------+-----------+-------------+-----------------+
+|                key|     column|discriminator|            value|
++-------------------+-----------+-------------+-----------------+
+|       CountByMonth|       date|         NULL|                8|
+|       CountByMonth|       date|      2020-01|                5|
+|       CountByMonth|       date|      2020-02|                5|
+|       CountByMonth|       date|      2020-12|                2|
+|       CountByValue|    account|         NULL|                1|
+|       CountByValue|    account|            1|                8|
+|       CountByValue|    account|            2|                5|
+|       CountByValue|    account|            x|                6|
+|         EmptyCount|       date|         NULL|                1|
+|         EmptyCount|    account|         NULL|                1|
+|         EmptyCount|description|         NULL|                0|
+|         EmptyCount|     amount|         NULL|                0|
+|         EmptyCount|   location|         NULL|                7|
+|         EmptyCount|    comment|         NULL|               10|
+|    EmptyPercentage|       NULL|         NULL|               15|
+|            Summary|     amount|        count|               20|
+|            Summary|     amount|         mean|64.34294117647059|
+|            Summary|     amount|       stddev|85.01729903119026|
+|            Summary|     amount|          min|             0.01|
+|            Summary|     amount|          max|                x|
+|            Summary|     amount|          25%|            15.45|
+|            Summary|     amount|          50%|            20.01|
+|            Summary|     amount|          75%|           150.45|
+|            Summary|description|        count|               20|
+|            Summary|description|         mean|             NULL|
+|            Summary|description|       stddev|             NULL|
+|            Summary|description|          min|           petrol|
+|            Summary|description|          max|                x|
+|            Summary|description|          25%|             NULL|
+|            Summary|description|          50%|             NULL|
+|            Summary|description|          75%|             NULL|
+|       column count|       NULL|         NULL|                6|
+|duplicate row count|       NULL|         NULL|                2|
+|                max|     amount|         NULL|                x|
+|                min|     amount|         NULL|             0.01|
+|          row count|       NULL|         NULL|               20|
++-------------------+-----------+-------------+-----------------+
 
-row count = 20
+row count = 36
 
 SELECTED dataset
 
@@ -198,6 +227,19 @@ root
 +----------+-------+-----------+-----------------+------+
 
 row count = 12
++-------+-----------------+-----------+
+|summary|           amount|description|
++-------+-----------------+-----------+
+|  count|               12|         12|
+|   mean|        78.606667|       NULL|
+| stddev|90.07269562397752|       NULL|
+|    min|            15.45|     burger|
+|    max|           300.47|     tennis|
+|    25%|            15.47|       NULL|
+|    50%|             35.0|       NULL|
+|    75%|           150.45|       NULL|
++-------+-----------------+-----------+
+
 
 VALID Statistics
 
@@ -207,28 +249,44 @@ root
  |-- discriminator: string (nullable = true)
  |-- value: string (nullable = true)
 
-+-------------------+-----------+-------------+------+
-|                key|     column|discriminator| value|
-+-------------------+-----------+-------------+------+
-|       CountByMonth|       date|      2020-01|     4|
-|       CountByMonth|       date|      2020-02|     5|
-|       CountByMonth|       date|      2020-03|     3|
-|       CountByValue|    account|            1|     8|
-|       CountByValue|    account|            2|     4|
-|         EmptyCount|       date|         NULL|     0|
-|         EmptyCount|    account|         NULL|     0|
-|         EmptyCount|description|         NULL|     0|
-|         EmptyCount|   location|         NULL|     1|
-|         EmptyCount|     amount|         NULL|     0|
-|    EmptyPercentage|       NULL|         NULL|     1|
-|       column count|       NULL|         NULL|     5|
-|duplicate row count|       NULL|         NULL|     0|
-|                max|     amount|         NULL|300.47|
-|                min|     amount|         NULL| 15.45|
-|          row count|       NULL|         NULL|    12|
-+-------------------+-----------+-------------+------+
++-------------------+-----------+-------------+-----------------+
+|                key|     column|discriminator|            value|
++-------------------+-----------+-------------+-----------------+
+|       CountByMonth|       date|      2020-01|                4|
+|       CountByMonth|       date|      2020-02|                5|
+|       CountByMonth|       date|      2020-03|                3|
+|       CountByValue|    account|            1|                8|
+|       CountByValue|    account|            2|                4|
+|         EmptyCount|       date|         NULL|                0|
+|         EmptyCount|    account|         NULL|                0|
+|         EmptyCount|description|         NULL|                0|
+|         EmptyCount|   location|         NULL|                1|
+|         EmptyCount|     amount|         NULL|                0|
+|    EmptyPercentage|       NULL|         NULL|                1|
+|            Summary|     amount|        count|               12|
+|            Summary|     amount|         mean|        78.606667|
+|            Summary|     amount|       stddev|90.07269562397752|
+|            Summary|     amount|          min|            15.45|
+|            Summary|     amount|          max|           300.47|
+|            Summary|     amount|          25%|            15.47|
+|            Summary|     amount|          50%|             35.0|
+|            Summary|     amount|          75%|           150.45|
+|            Summary|description|        count|               12|
+|            Summary|description|         mean|             NULL|
+|            Summary|description|       stddev|             NULL|
+|            Summary|description|          min|           burger|
+|            Summary|description|          max|           tennis|
+|            Summary|description|          25%|             NULL|
+|            Summary|description|          50%|             NULL|
+|            Summary|description|          75%|             NULL|
+|       column count|       NULL|         NULL|                5|
+|duplicate row count|       NULL|         NULL|                0|
+|                max|     amount|         NULL|           300.47|
+|                min|     amount|         NULL|            15.45|
+|          row count|       NULL|         NULL|               12|
++-------------------+-----------+-------------+-----------------+
 
-row count = 16
+row count = 32
 
 Raw dataset
 
@@ -647,15 +705,15 @@ root
 +-------------------+------+-------------+-----+
 
 row count = 3
-21:01:27.075 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting pipeline id=sample-1 name=Sample Pipeline 1
-21:01:27.077 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
-21:01:27.081 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
-21:01:27.081 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
-21:01:27.082 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
-21:01:27.084 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
-21:01:27.100 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
-21:01:27.101 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/sample1/transactions', format='csv', mode='overwrite', options={header=true})
-21:01:27.428 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/sample1/transactions', format='csv', mode='overwrite', options={header=true})
+22:42:21.264 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting pipeline id=sample-1 name=Sample Pipeline 1
+22:42:21.266 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
+22:42:21.271 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
+22:42:21.271 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
+22:42:21.272 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
+22:42:21.273 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
+22:42:21.280 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
+22:42:21.281 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/sample1/transactions', format='csv', mode='overwrite', options={header=true})
+22:42:21.594 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/sample1/transactions', format='csv', mode='overwrite', options={header=true})
 ==============================================
 Context
 transactions ordered by date
@@ -782,5 +840,5 @@ transactionsWithLGAs ordered by date
 Finished...
 
 BUILD SUCCESSFUL in 10s
-10 actionable tasks: 4 executed, 6 up-to-date
-9:01:28 pm: Execution finished 'run --stacktrace'.
+10 actionable tasks: 5 executed, 5 up-to-date
+10:42:22 pm: Execution finished 'run --stacktrace'.
