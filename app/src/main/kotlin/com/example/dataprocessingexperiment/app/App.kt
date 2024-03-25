@@ -51,6 +51,7 @@ class App {
             polymorphic(StatisticDefinition::class, Minimum::class, Minimum.serializer())
             polymorphic(StatisticDefinition::class, RowCount::class, RowCount.serializer())
             polymorphic(StatisticDefinition::class, EmptyCount::class, EmptyCount.serializer())
+            polymorphic(StatisticDefinition::class, Describe::class, Describe.serializer())
         }
         val format = Json5 { serializersModule = module }
 

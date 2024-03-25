@@ -30,7 +30,12 @@
         {
           type: "com.example.dataprocessingexperiment.spark.statistics.Bounds",
           column: "amount"
+        },
+        {
+          type: "com.example.dataprocessingexperiment.spark.statistics.Describe",
+          columns: ["amount", "description"]
         }
+
       ],
     },
     {
