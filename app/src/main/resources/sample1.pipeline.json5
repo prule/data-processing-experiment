@@ -4,6 +4,16 @@
   description: "A simple pipeline to exercise the capabilities of this framework and provide a reference implementation.",
   tasks: [
     {
+      type: "com.example.dataprocessingexperiment.spark.pipeline.ValueMappingJoinProcessor",
+      id: "t0",
+      name: "Value mappings",
+      description: "Update values for columns based on mappings",
+      // ids of mapping tables to process
+      tables: [
+        "mappings"
+      ]
+    },
+    {
       type: "com.example.dataprocessingexperiment.spark.pipeline.UnionProcessor",
       id: "t1",
       name: "Union LGAs",

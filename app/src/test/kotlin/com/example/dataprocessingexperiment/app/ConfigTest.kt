@@ -1,9 +1,6 @@
 package com.example.dataprocessingexperiment.app
 
-import com.example.dataprocessingexperiment.spark.pipeline.JoinProcessor
-import com.example.dataprocessingexperiment.spark.pipeline.LiteralProcessor
-import com.example.dataprocessingexperiment.spark.pipeline.OutputProcessor
-import com.example.dataprocessingexperiment.spark.pipeline.UnionProcessor
+import com.example.dataprocessingexperiment.spark.pipeline.*
 import com.example.dataprocessingexperiment.tables.pipeline.*
 import io.github.xn32.json5k.Json5
 import kotlinx.serialization.decodeFromString
@@ -21,6 +18,7 @@ class ConfigTest {
             polymorphic(ProcessorDefinition::class, UnionProcessor::class, UnionProcessor.serializer())
             polymorphic(ProcessorDefinition::class, LiteralProcessor::class, LiteralProcessor.serializer())
             polymorphic(ProcessorDefinition::class, OutputProcessor::class, OutputProcessor.serializer())
+            polymorphic(ProcessorDefinition::class, ValueMappingJoinProcessor::class, ValueMappingJoinProcessor.serializer())
         }
         val format = Json5 { serializersModule = module }
 

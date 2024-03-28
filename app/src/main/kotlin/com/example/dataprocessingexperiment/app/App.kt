@@ -53,6 +53,7 @@ class App {
             polymorphic(StatisticDefinition::class, EmptyCount::class, EmptyCount.serializer())
             polymorphic(StatisticDefinition::class, Summary::class, Summary.serializer())
         }
+
         val format = Json5 { serializersModule = module }
 
         val statisticConfiguration = format.decodeFromStream<StatisticsConfiguration>(
@@ -135,6 +136,7 @@ class App {
                     polymorphic(ProcessorDefinition::class, UnionProcessor::class, UnionProcessor.serializer())
                     polymorphic(ProcessorDefinition::class, LiteralProcessor::class, LiteralProcessor.serializer())
                     polymorphic(ProcessorDefinition::class, OutputProcessor::class, OutputProcessor.serializer())
+                    polymorphic(ProcessorDefinition::class, ValueMappingJoinProcessor::class, ValueMappingJoinProcessor.serializer())
                 }
             )
 

@@ -218,6 +218,49 @@
         ]
       }
     }
+,
+    {
+      id: "mappings",
+      name: "Mappings",
+      description: "Value mappings for all tables",
+      path: "sample1/value_mappings",
+      type: "csv",
+      table: {
+        name: "mappings",
+        description: "",
+        deduplicate: true,
+        columns: [
+          {
+            names: ["table"],
+            alias: "table",
+            description: "",
+            type: "string",
+            required: true
+          },
+          {
+            names: ["column"],
+            alias: "column",
+            description: "",
+            type: "string",
+            required: true
+          },
+          {
+            names: ["from"],
+            alias: "from",
+            description: "Value to replace",
+            type: "string",
+            required: true
+          },
+          {
+            names: ["to"],
+            alias: "to",
+            description: "Replacement value",
+            type: "string",
+            required: true
+          }
+        ]
+      }
+    }
 
   ],
 

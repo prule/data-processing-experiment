@@ -1,4 +1,4 @@
-10:42:11 pm: Executing 'run --stacktrace'...
+10:44:16 am: Executing 'run --stacktrace'...
 
 > Task :app:checkKotlinGradlePluginConfigurationErrors
 > Task :spark:checkKotlinGradlePluginConfigurationErrors
@@ -20,7 +20,7 @@
 
 > Task :app:run
 Starting...
-22:42:12.689 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+10:44:18.095 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 SLF4J: Class path contains multiple SLF4J providers.
 SLF4J: Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@6236eb5f]
 SLF4J: Found provider [org.apache.logging.slf4j.SLF4JServiceProvider@7c1e2a9e]
@@ -46,7 +46,7 @@ root
 |  01-03-2020|      1|      burger|  15.47|   Greater Dandenong|alternative date ...|
 |  03-03-2020|      1|      tennis|  35.03|           Maroondah|alternative date ...|
 |  04-03-2020|      2|      petrol| 150.47|                NULL|alternative date ...|
-| 2020-01-01 |      1|    burger  |  15.45|            Gympie  |                NULL|
+| 2020-01-01 |      1|   burgers  |  15.45|            Gympie  |                NULL|
 |  2020-01-02|      1|      movie |  20.00|      Southern Downs|                NULL|
 |  2020-01-04|      2|      petrol| 150.45|   Central Highlands|                NULL|
 |  2020-02-01|      1|      burger|  15.46|            Yarrabah|                NULL|
@@ -144,7 +144,7 @@ root
 |  01-03-2020|      1|     burger|Greater Dandenong| 15.47|
 |  03-03-2020|      1|     tennis|        Maroondah| 35.03|
 |  04-03-2020|      2|     petrol|             NULL|150.47|
-|  2020-01-01|      1|     burger|           Gympie| 15.45|
+|  2020-01-01|      1|    burgers|           Gympie| 15.45|
 |  2020-01-02|      1|      movie|   Southern Downs| 20.00|
 |  2020-01-03|      1|     tennis|           Banana| 35.00|
 |  2020-01-04|      2|     petrol|Central Highlands|150.45|
@@ -181,7 +181,7 @@ root
 |      NULL|      x|     tennis|             NULL|  0.03|
 |      NULL|      x|          x|             NULL|  NULL|
 |      NULL|      x|          x|             NULL|  NULL|
-|2020-01-01|      1|     burger|           Gympie| 15.45|
+|2020-01-01|      1|    burgers|           Gympie| 15.45|
 |2020-01-02|      1|      movie|   Southern Downs| 20.00|
 |2020-01-03|      1|     tennis|           Banana| 35.00|
 |2020-01-04|      2|     petrol|Central Highlands|150.45|
@@ -212,7 +212,7 @@ root
 +----------+-------+-----------+-----------------+------+
 |      date|account|description|         location|amount|
 +----------+-------+-----------+-----------------+------+
-|2020-01-01|      1|     burger|           Gympie| 15.45|
+|2020-01-01|      1|    burgers|           Gympie| 15.45|
 |2020-01-02|      1|      movie|   Southern Downs| 20.00|
 |2020-01-03|      1|     tennis|           Banana| 35.00|
 |2020-01-04|      2|     petrol|Central Highlands|150.45|
@@ -705,15 +705,81 @@ root
 +-------------------+------+-------------+-----+
 
 row count = 3
-22:42:21.264 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting pipeline id=sample-1 name=Sample Pipeline 1
-22:42:21.266 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
-22:42:21.271 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
-22:42:21.271 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
-22:42:21.272 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
-22:42:21.273 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
-22:42:21.280 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
-22:42:21.281 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/sample1/transactions', format='csv', mode='overwrite', options={header=true})
-22:42:21.594 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/sample1/transactions', format='csv', mode='overwrite', options={header=true})
+
+Raw dataset
+
+root
+ |-- table: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- from: string (nullable = true)
+ |-- to: string (nullable = true)
+
++------------+-----------+-------+------+
+|       table|     column|   from|    to|
++------------+-----------+-------+------+
+|transactions|description|burgers|burger|
++------------+-----------+-------+------+
+
+row count = 1
+
+SELECTED dataset
+
+root
+ |-- table: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- from: string (nullable = true)
+ |-- to: string (nullable = true)
+
++------------+-----------+-------+------+
+|       table|     column|   from|    to|
++------------+-----------+-------+------+
+|transactions|description|burgers|burger|
++------------+-----------+-------+------+
+
+row count = 1
+
+Typed dataset
+
+root
+ |-- table: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- from: string (nullable = true)
+ |-- to: string (nullable = true)
+
++------------+-----------+-------+------+
+|       table|     column|   from|    to|
++------------+-----------+-------+------+
+|transactions|description|burgers|burger|
++------------+-----------+-------+------+
+
+row count = 1
+
+Valid dataset
+
+root
+ |-- table: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- from: string (nullable = true)
+ |-- to: string (nullable = true)
+
++------------+-----------+-------+------+
+|       table|     column|   from|    to|
++------------+-----------+-------+------+
+|transactions|description|burgers|burger|
++------------+-----------+-------+------+
+
+row count = 1
+10:44:27.482 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting pipeline id=sample-1 name=Sample Pipeline 1
+10:44:27.482 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor ValueMappingProcessor(id='t0', name='Value mappings', description='Update values for columns based on mappings', tables=[mappings])
+10:44:27.622 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor ValueMappingProcessor(id='t0', name='Value mappings', description='Update values for columns based on mappings', tables=[mappings])
+10:44:27.624 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
+10:44:27.628 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
+10:44:27.628 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
+10:44:27.628 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
+10:44:27.630 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
+10:44:27.634 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
+10:44:27.635 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/sample1/transactions', format='csv', mode='overwrite', options={header=true})
+10:44:28.016 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/sample1/transactions', format='csv', mode='overwrite', options={header=true})
 ==============================================
 Context
 transactions ordered by date
@@ -782,6 +848,13 @@ lga-3 ordered by level_1_code
 |           3|  Queensland|       35300|        Mount Isa|
 +------------+------------+------------+-----------------+
 
+mappings ordered by table
++------------+-----------+-------+------+
+|       table|     column|   from|    to|
++------------+-----------+-------+------+
+|transactions|description|burgers|burger|
++------------+-----------+-------+------+
+
 lgas ordered by level_1_code
 +------------+---------------+------------+-----------------+
 |level_1_code|   level_1_name|level_2_code|     level_2_name|
@@ -839,6 +912,6 @@ transactionsWithLGAs ordered by date
 ==============================================
 Finished...
 
-BUILD SUCCESSFUL in 10s
+BUILD SUCCESSFUL in 11s
 10 actionable tasks: 5 executed, 5 up-to-date
-10:42:22 pm: Execution finished 'run --stacktrace'.
+10:44:28 am: Execution finished 'run --stacktrace'.
