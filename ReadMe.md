@@ -63,7 +63,7 @@ So with this in mind, I've done the following:
 
 *Empty count statistic*
 
-- Added EmptyCount statistic - This counts the empty values for each column (or just the columns you specify). "Empty" means different things depending on the data type of the column - For numbers it can be NULL or NaN. For strings it could be NULL, or a blank string, or whitespace.  
+- Added [EmptyCount](https://github.com/prule/data-processing-experiment/blob/part-9/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/statistics/EmptyCount.kt) statistic - This counts the empty values for each column (or just the columns you specify). "Empty" means different things depending on the data type of the column - For numbers it can be NULL or NaN. For strings it could be NULL, or a blank string, or whitespace.  
   - This also adds an "EmptyPercentage" statistic, calculated from the number of empty values as a percentage of the total number of values.
 ```text
 |         EmptyCount|       date|         NULL|                1|
@@ -77,7 +77,7 @@ So with this in mind, I've done the following:
 
 *Summary statistic*
 
-- Added summary statistic - this is based off the spark dataset.summary() feature which return statistics like mean, min, max, stddev, count, percentiles etc.
+- Added [summary](https://github.com/prule/data-processing-experiment/blob/part-9/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/statistics/Summary.kt) statistic - this is based off the spark dataset.summary() feature which return statistics like mean, min, max, stddev, count, percentiles etc.
 
 ```text
 |            Summary|     amount|        count|               20|
@@ -92,7 +92,7 @@ So with this in mind, I've done the following:
 
 *Trimming whitespace*
 
-- Added the capability to specify that a column should be trimmed when loading the "selected" dataset - both at the column level and at the table level.
+- Added the capability to specify that a [column should be trimmed](https://github.com/prule/data-processing-experiment/blob/c9dca17f23a489c90ee0ce626f8f224c791fc4ae/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/data/DataFrameBuilder.kt#L48) when loading the "selected" dataset - both at the column level and at the table level.
 - Adding some spaces to the sample data shows how whitespace interferes 
   - the 2 rows for "burger" have different values so wouldn't considered the same
   - the join on location isn't working for some values now and level_1_name is null for some rows
@@ -224,7 +224,7 @@ So with this in mind, I've done the following:
 - Note that this configuration could still be externalised rather than being part of the pipeline configuration. 
 - One difference with this implementation is by modelling the mapping classes the code becomes much cleaner.
   - See the mapping classes (TableMapping, ColumnMapping, ValueMapping) in [ValueMappingWhenProcessor](https://github.com/prule/data-processing-experiment/blob/e91dbe09d17931194561212e86841254f0882411/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/pipeline/ValueMappingWhenProcessor.kt#L87)
-- Hopefully the performance of this method is better, and it would be measure it at some point so I can detect potential problem implementations.
+- Hopefully the performance of this method is better, and it would be good to measure it at some point so I can detect potential problem implementations.
 
 The configuration for the reference application be seen here:
 - [tables](https://github.com/prule/data-processing-experiment/blob/part-9/app/src/main/resources/sample1.tables.json5)
