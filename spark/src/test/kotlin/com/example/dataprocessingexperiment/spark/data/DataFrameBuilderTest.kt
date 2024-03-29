@@ -73,19 +73,19 @@ class DataFrameBuilderTest {
         val rawDataset = dataFrameBuilder.raw
         display("raw", rawDataset)
 
-        rawDataset.count() shouldBe 20
+        rawDataset.count() shouldBe 22
 
         // typed dataset, only columns specified
         val typedDataset = dataFrameBuilder.typed()
         display("typed", typedDataset)
 
-        typedDataset.count() shouldBe 20
+        typedDataset.count() shouldBe 22
 
         // typed dataset, only columns specified
         val validDataset = dataFrameBuilder.valid(true)
         display("valid", validDataset)
 
-        validDataset.count() shouldBe 12
+        validDataset.count() shouldBe 14
 
     }
 

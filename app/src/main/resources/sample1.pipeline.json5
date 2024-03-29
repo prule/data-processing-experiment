@@ -3,6 +3,7 @@
   name: "Sample Pipeline 1",
   description: "A simple pipeline to exercise the capabilities of this framework and provide a reference implementation.",
   tasks: [
+    // one way to standard values (using join with external data driven configuration)
     {
       type: "com.example.dataprocessingexperiment.spark.pipeline.ValueMappingJoinProcessor",
       id: "t0.1",
@@ -10,9 +11,11 @@
       description: "Update values for columns based on mappings",
       // ids of mapping tables to process
       tables: [
+        // for this table there is an associated entry in sample1.tables.json5
         "mappings"
       ]
     },
+    // another way to standard values (using "when x then y else z" with configuration in the pipeline processor)
     {
       type: "com.example.dataprocessingexperiment.spark.pipeline.ValueMappingWhenProcessor",
       id: "t0.2",

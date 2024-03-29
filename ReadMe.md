@@ -1,6 +1,6 @@
 Data Processing Experiment - Part 9
 ---
-- The one where I try applying the framework to an external problem.
+- The one where I try applying the framework to an external use-case.
 
 ---
 
@@ -36,6 +36,30 @@ So with this in mind, I've done the following:
 *Refactoring*
 
 - Some refactoring to remove the pipeline configuration classes and just directly instantiate the pipeline processors when loading the configuration (taking advantage of polymorphic serialization and removing a lot of unnecessary code!). This simplifies the codebase and keeps it clean.
+
+*Parsing Dates*
+- This was already handled from the beginning since table definitions allowed multiple date formats to be specified:
+```json5
+      ...
+      table: {
+        name: "transactions",
+        description: "account transactions",
+        deduplicate: true,
+        trim: true,
+        columns: [
+          {
+            names: ["date"],
+            alias: "date",
+            description: "date of transaction",
+            type: "date",
+            formats: [
+              "yyyy-MM-dd",
+              "dd-MM-yyyy"
+            ],
+            required: true
+          },
+          ...
+```
 
 *Empty count statistic*
 
@@ -80,7 +104,7 @@ So with this in mind, I've done the following:
 |2020-01-04|      2|      petrol|   Central Highlands|150.45|TRANSACTION|        NULL|
 |2020-02-01|      1|      burger|            Yarrabah| 15.46|TRANSACTION|  Queensland|
 ```
-- When adding `trim=true` to the description column we get
+- When adding `trim=true` to the description column we see whitespace removed from the description column:
 ```
 |      date|account|description|            location|amount|       type|level_1_name|
 |2020-01-01|      1|     burger|            Gympie  | 15.45|TRANSACTION|        NULL|
@@ -89,7 +113,7 @@ So with this in mind, I've done the following:
 |2020-01-04|      2|     petrol|   Central Highlands|150.45|TRANSACTION|  Queensland|
 |2020-02-01|      1|     burger|            Yarrabah| 15.46|TRANSACTION|  Queensland|
 ```
-- When adding `trim=true` to the whole table we get
+- When adding `trim=true` to the whole table we see whitespace removed from both the description and location columns:
 ```
 |      date|account|description|         location|amount|       type|level_1_name|
 |2020-01-01|      1|     burger|           Gympie| 15.45|TRANSACTION|  Queensland|
@@ -98,13 +122,14 @@ So with this in mind, I've done the following:
 |2020-01-04|      2|     petrol|Central Highlands|150.45|TRANSACTION|  Queensland|
 |2020-02-01|      1|     burger|         Yarrabah| 15.46|TRANSACTION|  Queensland|
 ```
-- Removing the whitespaces by trimming description and location now fixes the issues and the join is working again making the data cleaner and more consistent.
+- Removing the whitespaces by trimming description and location now fixes the issues and the join to level_1_name is working again making the data cleaner and more consistent.
 
 *Fixing typos*
 
 - We want to standardise values - so that "burgers" would become "burger". If the values are consistently wrong we can create a mapping to map the incorrect value to the correct value and have this logic run in the pipeline. We could use statistics to alert us to new values that we might need to check. 
   - For this exercise I'll implement this as the simplest thing that would work by using a mapping of values to replace, but note there's a very interesting article [here](https://medium.com/analytics-vidhya/fuzzy-string-matching-with-spark-in-python-7fcd0c422f71) about fuzzy matching with spark in python.
-- Using this configuration:
+- For [ValueMappingJoinProcessor](https://github.com/prule/data-processing-experiment/blob/part-9/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/pipeline/ValueMappingJoinProcessor.kt) implementation:
+  - Using this configuration:
 ```json
   {
       type: "com.example.dataprocessingexperiment.spark.pipeline.ValueMappingJoinProcessor",
@@ -153,7 +178,8 @@ So with this in mind, I've done the following:
   - Cons
     - Implementation using joins may not perform well - it seems a bit heavy.
 - So lets try another implementation where instead of joining we use the `when col=X then Y otherwise Z` approach.
-- Using a configuration like the following we get the same outcome:
+- For [ValueMappingWhenProcessor](https://github.com/prule/data-processing-experiment/blob/part-9/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/pipeline/ValueMappingWhenProcessor.kt) implementation:
+  - Using a configuration like the following we get the same outcome:
 ```json
 {
   type: "com.example.dataprocessingexperiment.spark.pipeline.ValueMappingWhenProcessor",
@@ -197,8 +223,13 @@ So with this in mind, I've done the following:
 ```
 - Note that this configuration could still be externalised rather than being part of the pipeline configuration. 
 - One difference with this implementation is by modelling the mapping classes the code becomes much cleaner.
-  - See the mapping classes in 
+  - See the mapping classes (TableMapping, ColumnMapping, ValueMapping) in [ValueMappingWhenProcessor](https://github.com/prule/data-processing-experiment/blob/e91dbe09d17931194561212e86841254f0882411/spark/src/main/kotlin/com/example/dataprocessingexperiment/spark/pipeline/ValueMappingWhenProcessor.kt#L87)
 - Hopefully the performance of this method is better, and it would be measure it at some point so I can detect potential problem implementations.
+
+The configuration for the reference application be seen here:
+- [tables](https://github.com/prule/data-processing-experiment/blob/part-9/app/src/main/resources/sample1.tables.json5)
+- [statistics](https://github.com/prule/data-processing-experiment/blob/part-9/app/src/main/resources/sample1.statistics.json5)
+- [pipeline](https://github.com/prule/data-processing-experiment/blob/part-9/app/src/main/resources/sample1.pipeline.json5)
 
 Building this via components is working well, since it's easy to provide competing implementations and switch them out.
 That's all I've got time for this week!
