@@ -1,4 +1,4 @@
-10:44:16 am: Executing 'run --stacktrace'...
+3:20:02 pm: Executing 'run --stacktrace'...
 
 > Task :app:checkKotlinGradlePluginConfigurationErrors
 > Task :spark:checkKotlinGradlePluginConfigurationErrors
@@ -8,19 +8,19 @@
 > Task :tables:processResources NO-SOURCE
 > Task :tables:classes UP-TO-DATE
 > Task :tables:jar UP-TO-DATE
-> Task :spark:compileKotlin UP-TO-DATE
-> Task :spark:compileJava NO-SOURCE
 > Task :spark:processResources NO-SOURCE
-> Task :spark:classes UP-TO-DATE
-> Task :spark:jar UP-TO-DATE
 > Task :app:processResources UP-TO-DATE
+> Task :spark:compileKotlin
+> Task :spark:compileJava NO-SOURCE
+> Task :spark:classes UP-TO-DATE
+> Task :spark:jar
 > Task :app:compileKotlin
 > Task :app:compileJava NO-SOURCE
 > Task :app:classes UP-TO-DATE
 
 > Task :app:run
 Starting...
-10:44:18.095 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+15:20:04.342 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 SLF4J: Class path contains multiple SLF4J providers.
 SLF4J: Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@6236eb5f]
 SLF4J: Found provider [org.apache.logging.slf4j.SLF4JServiceProvider@7c1e2a9e]
@@ -46,11 +46,13 @@ root
 |  01-03-2020|      1|      burger|  15.47|   Greater Dandenong|alternative date ...|
 |  03-03-2020|      1|      tennis|  35.03|           Maroondah|alternative date ...|
 |  04-03-2020|      2|      petrol| 150.47|                NULL|alternative date ...|
+|  05-03-2020|      2|      petrol|  50.47|             Burwood|                NULL|
+|  05-03-2020|      2|      petrol|  50.48|            Berrigan|                NULL|
 | 2020-01-01 |      1|   burgers  |  15.45|            Gympie  |                NULL|
 |  2020-01-02|      1|      movie |  20.00|      Southern Downs|                NULL|
 |  2020-01-04|      2|      petrol| 150.45|   Central Highlands|                NULL|
 |  2020-02-01|      1|      burger|  15.46|            Yarrabah|                NULL|
-|  2020-02-02|      1|       movie|  20.01|          Barcaldine|                NULL|
+|  2020-02-02|      1|      movies|  20.01|          Barcaldine|                NULL|
 |  2020-02-03|      1|      tennis|  35.01|           Maroondah|                NULL|
 |  2020-02-04|      2|      petrol| 150.46|          Gannawarra|                NULL|
 |  2020-02-04|      2| electricity| 300.47|             Hepburn|                NULL|
@@ -62,17 +64,17 @@ root
 |           x|      x|           x|      x|                NULL| row with multipl...|
 +------------+-------+------------+-------+--------------------+--------------------+
 
-row count = 20
+row count = 22
 +-------+-----------------+-----------+
 |summary|           amount|description|
 +-------+-----------------+-----------+
-|  count|               20|         20|
-|   mean|64.34294117647059|       NULL|
-| stddev|85.01729903119026|       NULL|
+|  count|               22|         22|
+|   mean|62.88315789473684|       NULL|
+| stddev|80.27425538964889|       NULL|
 |    min|             0.01|     petrol|
 |    max|                x|          x|
 |    25%|            15.45|       NULL|
-|    50%|            20.01|       NULL|
+|    50%|             35.0|       NULL|
 |    75%|           150.45|       NULL|
 +-------+-----------------+-----------+
 
@@ -88,30 +90,30 @@ root
 +-------------------+-----------+-------------+-----------------+
 |                key|     column|discriminator|            value|
 +-------------------+-----------+-------------+-----------------+
-|       CountByMonth|       date|         NULL|                8|
+|       CountByMonth|       date|         NULL|               10|
 |       CountByMonth|       date|      2020-01|                5|
 |       CountByMonth|       date|      2020-02|                5|
 |       CountByMonth|       date|      2020-12|                2|
 |       CountByValue|    account|         NULL|                1|
 |       CountByValue|    account|            1|                8|
-|       CountByValue|    account|            2|                5|
+|       CountByValue|    account|            2|                7|
 |       CountByValue|    account|            x|                6|
 |         EmptyCount|       date|         NULL|                1|
 |         EmptyCount|    account|         NULL|                1|
 |         EmptyCount|description|         NULL|                0|
 |         EmptyCount|     amount|         NULL|                0|
 |         EmptyCount|   location|         NULL|                7|
-|         EmptyCount|    comment|         NULL|               10|
+|         EmptyCount|    comment|         NULL|               12|
 |    EmptyPercentage|       NULL|         NULL|               15|
-|            Summary|     amount|        count|               20|
-|            Summary|     amount|         mean|64.34294117647059|
-|            Summary|     amount|       stddev|85.01729903119026|
+|            Summary|     amount|        count|               22|
+|            Summary|     amount|         mean|62.88315789473684|
+|            Summary|     amount|       stddev|80.27425538964889|
 |            Summary|     amount|          min|             0.01|
 |            Summary|     amount|          max|                x|
 |            Summary|     amount|          25%|            15.45|
-|            Summary|     amount|          50%|            20.01|
+|            Summary|     amount|          50%|             35.0|
 |            Summary|     amount|          75%|           150.45|
-|            Summary|description|        count|               20|
+|            Summary|description|        count|               22|
 |            Summary|description|         mean|             NULL|
 |            Summary|description|       stddev|             NULL|
 |            Summary|description|          min|           petrol|
@@ -123,7 +125,7 @@ root
 |duplicate row count|       NULL|         NULL|                2|
 |                max|     amount|         NULL|                x|
 |                min|     amount|         NULL|             0.01|
-|          row count|       NULL|         NULL|               20|
+|          row count|       NULL|         NULL|               22|
 +-------------------+-----------+-------------+-----------------+
 
 row count = 36
@@ -144,13 +146,15 @@ root
 |  01-03-2020|      1|     burger|Greater Dandenong| 15.47|
 |  03-03-2020|      1|     tennis|        Maroondah| 35.03|
 |  04-03-2020|      2|     petrol|             NULL|150.47|
+|  05-03-2020|      2|     petrol|          Burwood| 50.47|
+|  05-03-2020|      2|     petrol|         Berrigan| 50.48|
 |  2020-01-01|      1|    burgers|           Gympie| 15.45|
 |  2020-01-02|      1|      movie|   Southern Downs| 20.00|
 |  2020-01-03|      1|     tennis|           Banana| 35.00|
 |  2020-01-04|      2|     petrol|Central Highlands|150.45|
 |  2020-01-04|      2|     petrol|Central Highlands|150.45|
 |  2020-02-01|      1|     burger|         Yarrabah| 15.46|
-|  2020-02-02|      1|      movie|       Barcaldine| 20.01|
+|  2020-02-02|      1|     movies|       Barcaldine| 20.01|
 |  2020-02-03|      1|     tennis|        Maroondah| 35.01|
 |  2020-02-04|      2|     petrol|       Gannawarra|150.46|
 |  2020-02-04|      2|electricity|          Hepburn|300.47|
@@ -162,7 +166,7 @@ root
 |           x|      x|          x|             NULL|     x|
 +------------+-------+-----------+-----------------+------+
 
-row count = 20
+row count = 22
 
 Typed dataset
 
@@ -187,18 +191,20 @@ root
 |2020-01-04|      2|     petrol|Central Highlands|150.45|
 |2020-01-04|      2|     petrol|Central Highlands|150.45|
 |2020-02-01|      1|     burger|         Yarrabah| 15.46|
-|2020-02-02|      1|      movie|       Barcaldine| 20.01|
+|2020-02-02|      1|     movies|       Barcaldine| 20.01|
 |2020-02-03|      1|     tennis|        Maroondah| 35.01|
 |2020-02-04|      2|     petrol|       Gannawarra|150.46|
 |2020-02-04|      2|electricity|          Hepburn|300.47|
 |2020-03-01|      1|     burger|Greater Dandenong| 15.47|
 |2020-03-03|      1|     tennis|        Maroondah| 35.03|
 |2020-03-04|      2|     petrol|             NULL|150.47|
+|2020-03-05|      2|     petrol|          Burwood| 50.47|
+|2020-03-05|      2|     petrol|         Berrigan| 50.48|
 |2020-12-01|       |     tennis|             NULL|  0.04|
 |2020-12-01|      x|     petrol|             NULL|  NULL|
 +----------+-------+-----------+-----------------+------+
 
-row count = 20
+row count = 22
 
 Valid dataset
 
@@ -217,26 +223,28 @@ root
 |2020-01-03|      1|     tennis|           Banana| 35.00|
 |2020-01-04|      2|     petrol|Central Highlands|150.45|
 |2020-02-01|      1|     burger|         Yarrabah| 15.46|
-|2020-02-02|      1|      movie|       Barcaldine| 20.01|
+|2020-02-02|      1|     movies|       Barcaldine| 20.01|
 |2020-02-03|      1|     tennis|        Maroondah| 35.01|
 |2020-02-04|      2|electricity|          Hepburn|300.47|
 |2020-02-04|      2|     petrol|       Gannawarra|150.46|
 |2020-03-01|      1|     burger|Greater Dandenong| 15.47|
 |2020-03-03|      1|     tennis|        Maroondah| 35.03|
 |2020-03-04|      2|     petrol|             NULL|150.47|
+|2020-03-05|      2|     petrol|         Berrigan| 50.48|
+|2020-03-05|      2|     petrol|          Burwood| 50.47|
 +----------+-------+-----------+-----------------+------+
 
-row count = 12
+row count = 14
 +-------+-----------------+-----------+
 |summary|           amount|description|
 +-------+-----------------+-----------+
-|  count|               12|         12|
-|   mean|        78.606667|       NULL|
-| stddev|90.07269562397752|       NULL|
+|  count|               14|         14|
+|   mean|        74.587857|       NULL|
+| stddev|83.48222530101118|       NULL|
 |    min|            15.45|     burger|
 |    max|           300.47|     tennis|
-|    25%|            15.47|       NULL|
-|    50%|             35.0|       NULL|
+|    25%|             20.0|       NULL|
+|    50%|            35.01|       NULL|
 |    75%|           150.45|       NULL|
 +-------+-----------------+-----------+
 
@@ -254,24 +262,24 @@ root
 +-------------------+-----------+-------------+-----------------+
 |       CountByMonth|       date|      2020-01|                4|
 |       CountByMonth|       date|      2020-02|                5|
-|       CountByMonth|       date|      2020-03|                3|
+|       CountByMonth|       date|      2020-03|                5|
 |       CountByValue|    account|            1|                8|
-|       CountByValue|    account|            2|                4|
+|       CountByValue|    account|            2|                6|
 |         EmptyCount|       date|         NULL|                0|
 |         EmptyCount|    account|         NULL|                0|
 |         EmptyCount|description|         NULL|                0|
 |         EmptyCount|   location|         NULL|                1|
 |         EmptyCount|     amount|         NULL|                0|
 |    EmptyPercentage|       NULL|         NULL|                1|
-|            Summary|     amount|        count|               12|
-|            Summary|     amount|         mean|        78.606667|
-|            Summary|     amount|       stddev|90.07269562397752|
+|            Summary|     amount|        count|               14|
+|            Summary|     amount|         mean|        74.587857|
+|            Summary|     amount|       stddev|83.48222530101118|
 |            Summary|     amount|          min|            15.45|
 |            Summary|     amount|          max|           300.47|
-|            Summary|     amount|          25%|            15.47|
-|            Summary|     amount|          50%|             35.0|
+|            Summary|     amount|          25%|             20.0|
+|            Summary|     amount|          50%|            35.01|
 |            Summary|     amount|          75%|           150.45|
-|            Summary|description|        count|               12|
+|            Summary|description|        count|               14|
 |            Summary|description|         mean|             NULL|
 |            Summary|description|       stddev|             NULL|
 |            Summary|description|          min|           burger|
@@ -283,7 +291,7 @@ root
 |duplicate row count|       NULL|         NULL|                0|
 |                max|     amount|         NULL|           300.47|
 |                min|     amount|         NULL|            15.45|
-|          row count|       NULL|         NULL|               12|
+|          row count|       NULL|         NULL|               14|
 +-------------------+-----------+-------------+-----------------+
 
 row count = 32
@@ -303,13 +311,13 @@ root
 +----------+---------------+----+--------------------------+--------------------+--------------------------+--------------------+-------------------------------+
 |Code State|     Name State|Year|Code Local Government Area|Iso 3166-3 Area Code|Name Local Government Area|                Type|Long Name Local Government Area|
 +----------+---------------+----+--------------------------+--------------------+--------------------------+--------------------+-------------------------------+
-|         1|New South Wales|2021|                     10650|                 AUS|                  Berrigan|local government ...|                       Berrigan|
-|         1|New South Wales|2021|                     10650|                 AUS|                  Berrigan|local government ...|                       Berrigan|
-|         1|New South Wales|2021|                     10850|                 AUS|                   Blayney|local government ...|                        Blayney|
-|         1|New South Wales|2021|                     11500|                 AUS|              Campbelltown|local government ...|             Campbelltown (NSW)|
+|         1|            NSW|2021|                     10650|                 AUS|                  Berrigan|local government ...|                       Berrigan|
+|        01|            NSW|2021|                     10650|                 AUS|                  Berrigan|local government ...|                       Berrigan|
+|       001|         N.S.W.|2021|                     10850|                  AU|                   Blayney|local government ...|                        Blayney|
+|       001|New South Wales|2021|                     11500|                 AUS|              Campbelltown|local government ...|             Campbelltown (NSW)|
 |         1|New South Wales|2021|                     11700|                 AUS|           Central Darling|local government ...|                Central Darling|
 |         1|New South Wales|2021|                     15990|                 AUS|          Northern Beaches|local government ...|               Northern Beaches|
-|         1|New South Wales|2021|                     11300|                 AUS|                   Burwood|local government ...|                        Burwood|
+|         1|            NSW|2021|                     11300|                 AUS|                   Burwood|local government ...|                        Burwood|
 |         1|New South Wales|2021|                     11750|                 AUS|                     Cobar|local government ...|                          Cobar|
 |         1|New South Wales|2021|                     14000|                 AUS|                   Hornsby|local government ...|                        Hornsby|
 |         1|New South Wales|2021|                     14750|                 AUS|                    Leeton|local government ...|                         Leeton|
@@ -330,7 +338,7 @@ root
 |                key|column|discriminator|value|
 +-------------------+------+-------------+-----+
 |       column count|  NULL|         NULL|    8|
-|duplicate row count|  NULL|         NULL|    2|
+|duplicate row count|  NULL|         NULL|    0|
 |          row count|  NULL|         NULL|   11|
 +-------------------+------+-------------+-----+
 
@@ -347,13 +355,13 @@ root
 +------------+---------------+------------+----------------+
 |level_1_code|   level_1_name|level_2_code|    level_2_name|
 +------------+---------------+------------+----------------+
-|           1|New South Wales|       10650|        Berrigan|
-|           1|New South Wales|       10650|        Berrigan|
-|           1|New South Wales|       10850|         Blayney|
-|           1|New South Wales|       11500|    Campbelltown|
+|           1|            NSW|       10650|        Berrigan|
+|          01|            NSW|       10650|        Berrigan|
+|         001|         N.S.W.|       10850|         Blayney|
+|         001|New South Wales|       11500|    Campbelltown|
 |           1|New South Wales|       11700| Central Darling|
 |           1|New South Wales|       15990|Northern Beaches|
-|           1|New South Wales|       11300|         Burwood|
+|           1|            NSW|       11300|         Burwood|
 |           1|New South Wales|       11750|           Cobar|
 |           1|New South Wales|       14000|         Hornsby|
 |           1|New South Wales|       14750|          Leeton|
@@ -373,13 +381,13 @@ root
 +------------+---------------+------------+----------------+
 |level_1_code|   level_1_name|level_2_code|    level_2_name|
 +------------+---------------+------------+----------------+
-|           1|New South Wales|       10650|        Berrigan|
-|           1|New South Wales|       10650|        Berrigan|
-|           1|New South Wales|       10850|         Blayney|
-|           1|New South Wales|       11500|    Campbelltown|
+|           1|            NSW|       10650|        Berrigan|
+|          01|            NSW|       10650|        Berrigan|
+|         001|         N.S.W.|       10850|         Blayney|
+|         001|New South Wales|       11500|    Campbelltown|
 |           1|New South Wales|       11700| Central Darling|
 |           1|New South Wales|       15990|Northern Beaches|
-|           1|New South Wales|       11300|         Burwood|
+|           1|            NSW|       11300|         Burwood|
 |           1|New South Wales|       11750|           Cobar|
 |           1|New South Wales|       14000|         Hornsby|
 |           1|New South Wales|       14750|          Leeton|
@@ -399,19 +407,20 @@ root
 +------------+---------------+------------+----------------+
 |level_1_code|   level_1_name|level_2_code|    level_2_name|
 +------------+---------------+------------+----------------+
+|         001|         N.S.W.|       10850|         Blayney|
 |           1|New South Wales|       11700| Central Darling|
-|           1|New South Wales|       11500|    Campbelltown|
+|         001|New South Wales|       11500|    Campbelltown|
+|          01|            NSW|       10650|        Berrigan|
 |           1|New South Wales|       17200|          Sydney|
+|           1|            NSW|       11300|         Burwood|
 |           1|New South Wales|       11750|           Cobar|
 |           1|New South Wales|       15990|Northern Beaches|
-|           1|New South Wales|       10650|        Berrigan|
-|           1|New South Wales|       11300|         Burwood|
+|           1|            NSW|       10650|        Berrigan|
 |           1|New South Wales|       14750|          Leeton|
-|           1|New South Wales|       10850|         Blayney|
 |           1|New South Wales|       14000|         Hornsby|
 +------------+---------------+------------+----------------+
 
-row count = 10
+row count = 11
 
 VALID Statistics
 
@@ -426,7 +435,7 @@ root
 +-------------------+------+-------------+-----+
 |       column count|  NULL|         NULL|    4|
 |duplicate row count|  NULL|         NULL|    0|
-|          row count|  NULL|         NULL|   10|
+|          row count|  NULL|         NULL|   11|
 +-------------------+------+-------------+-----+
 
 row count = 3
@@ -769,17 +778,19 @@ root
 +------------+-----------+-------+------+
 
 row count = 1
-10:44:27.482 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting pipeline id=sample-1 name=Sample Pipeline 1
-10:44:27.482 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor ValueMappingProcessor(id='t0', name='Value mappings', description='Update values for columns based on mappings', tables=[mappings])
-10:44:27.622 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor ValueMappingProcessor(id='t0', name='Value mappings', description='Update values for columns based on mappings', tables=[mappings])
-10:44:27.624 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
-10:44:27.628 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
-10:44:27.628 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
-10:44:27.628 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
-10:44:27.630 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
-10:44:27.634 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
-10:44:27.635 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/sample1/transactions', format='csv', mode='overwrite', options={header=true})
-10:44:28.016 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/sample1/transactions', format='csv', mode='overwrite', options={header=true})
+15:20:13.525 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting pipeline id=sample-1 name=Sample Pipeline 1
+15:20:13.525 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor ValueMappingJoinProcessor(id='t0.1', name='Value mappings', description='Update values for columns based on mappings', tables=[mappings])
+15:20:13.639 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor ValueMappingJoinProcessor(id='t0.1', name='Value mappings', description='Update values for columns based on mappings', tables=[mappings])
+15:20:13.640 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor ValueMappingWhenProcessor(id='t0.2', name='Value mappings', description='Update values for columns based on mappings', mappings='[TableMapping(tableId=transactions, deduplicate=false, columns=[ColumnMapping(columnName=description, mapping=ValueMapping(value=movie, alternatives=[movies]))]), TableMapping(tableId=lga-1, deduplicate=true, columns=[ColumnMapping(columnName=level_1_name, mapping=ValueMapping(value=New South Wales, alternatives=[NSW, N.S.W.])), ColumnMapping(columnName=level_1_code, mapping=ValueMapping(value=1, alternatives=[01, 001]))])]')
+15:20:13.643 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor ValueMappingWhenProcessor(id='t0.2', name='Value mappings', description='Update values for columns based on mappings', mappings='[TableMapping(tableId=transactions, deduplicate=false, columns=[ColumnMapping(columnName=description, mapping=ValueMapping(value=movie, alternatives=[movies]))]), TableMapping(tableId=lga-1, deduplicate=true, columns=[ColumnMapping(columnName=level_1_name, mapping=ValueMapping(value=New South Wales, alternatives=[NSW, N.S.W.])), ColumnMapping(columnName=level_1_code, mapping=ValueMapping(value=1, alternatives=[01, 001]))])]')
+15:20:13.644 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
+15:20:13.651 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
+15:20:13.651 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
+15:20:13.652 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
+15:20:13.654 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
+15:20:13.658 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
+15:20:13.659 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/sample1/transactions', format='csv', mode='overwrite', options={header=true})
+15:20:14.059 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/sample1/transactions', format='csv', mode='overwrite', options={header=true})
 ==============================================
 Context
 transactions ordered by date
@@ -798,6 +809,8 @@ transactions ordered by date
 |2020-03-01|      1|     burger|Greater Dandenong| 15.47|TRANSACTION|
 |2020-03-03|      1|     tennis|        Maroondah| 35.03|TRANSACTION|
 |2020-03-04|      2|     petrol|             NULL|150.47|TRANSACTION|
+|2020-03-05|      2|     petrol|         Berrigan| 50.48|TRANSACTION|
+|2020-03-05|      2|     petrol|          Burwood| 50.47|TRANSACTION|
 +----------+-------+-----------+-----------------+------+-----------+
 
 lga-1 ordered by level_1_code
@@ -892,26 +905,28 @@ lgas ordered by level_1_code
 +------------+---------------+------------+-----------------+
 
 transactionsWithLGAs ordered by date
-+----------+-------+-----------+-----------------+------+-----------+------------+
-|      date|account|description|         location|amount|       type|level_1_name|
-+----------+-------+-----------+-----------------+------+-----------+------------+
-|2020-01-01|      1|     burger|           Gympie| 15.45|TRANSACTION|  Queensland|
-|2020-01-02|      1|      movie|   Southern Downs| 20.00|TRANSACTION|  Queensland|
-|2020-01-03|      1|     tennis|           Banana| 35.00|TRANSACTION|  Queensland|
-|2020-01-04|      2|     petrol|Central Highlands|150.45|TRANSACTION|  Queensland|
-|2020-02-01|      1|     burger|         Yarrabah| 15.46|TRANSACTION|  Queensland|
-|2020-02-02|      1|      movie|       Barcaldine| 20.01|TRANSACTION|  Queensland|
-|2020-02-03|      1|     tennis|        Maroondah| 35.01|TRANSACTION|    Victoria|
-|2020-02-04|      2|electricity|          Hepburn|300.47|TRANSACTION|    Victoria|
-|2020-02-04|      2|     petrol|       Gannawarra|150.46|TRANSACTION|    Victoria|
-|2020-03-01|      1|     burger|Greater Dandenong| 15.47|TRANSACTION|    Victoria|
-|2020-03-03|      1|     tennis|        Maroondah| 35.03|TRANSACTION|    Victoria|
-|2020-03-04|      2|     petrol|             NULL|150.47|TRANSACTION|        NULL|
-+----------+-------+-----------+-----------------+------+-----------+------------+
++----------+-------+-----------+-----------------+------+-----------+---------------+
+|      date|account|description|         location|amount|       type|   level_1_name|
++----------+-------+-----------+-----------------+------+-----------+---------------+
+|2020-01-01|      1|     burger|           Gympie| 15.45|TRANSACTION|     Queensland|
+|2020-01-02|      1|      movie|   Southern Downs| 20.00|TRANSACTION|     Queensland|
+|2020-01-03|      1|     tennis|           Banana| 35.00|TRANSACTION|     Queensland|
+|2020-01-04|      2|     petrol|Central Highlands|150.45|TRANSACTION|     Queensland|
+|2020-02-01|      1|     burger|         Yarrabah| 15.46|TRANSACTION|     Queensland|
+|2020-02-02|      1|      movie|       Barcaldine| 20.01|TRANSACTION|     Queensland|
+|2020-02-03|      1|     tennis|        Maroondah| 35.01|TRANSACTION|       Victoria|
+|2020-02-04|      2|electricity|          Hepburn|300.47|TRANSACTION|       Victoria|
+|2020-02-04|      2|     petrol|       Gannawarra|150.46|TRANSACTION|       Victoria|
+|2020-03-01|      1|     burger|Greater Dandenong| 15.47|TRANSACTION|       Victoria|
+|2020-03-03|      1|     tennis|        Maroondah| 35.03|TRANSACTION|       Victoria|
+|2020-03-04|      2|     petrol|             NULL|150.47|TRANSACTION|           NULL|
+|2020-03-05|      2|     petrol|         Berrigan| 50.48|TRANSACTION|New South Wales|
+|2020-03-05|      2|     petrol|          Burwood| 50.47|TRANSACTION|New South Wales|
++----------+-------+-----------+-----------------+------+-----------+---------------+
 
 ==============================================
 Finished...
 
 BUILD SUCCESSFUL in 11s
-10 actionable tasks: 5 executed, 5 up-to-date
-10:44:28 am: Execution finished 'run --stacktrace'.
+10 actionable tasks: 7 executed, 3 up-to-date
+3:20:14 pm: Execution finished 'run --stacktrace'.

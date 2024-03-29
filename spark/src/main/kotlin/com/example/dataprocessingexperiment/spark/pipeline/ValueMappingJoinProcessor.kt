@@ -12,15 +12,15 @@ import org.apache.spark.sql.functions.col
  * Maps column values as per a mapping table by joining the 2 tables.
  *
  * Given a mapping table:
- *
+ * ```
  * +------------+-----------+-------+------+
  * |       table|     column|   from|    to|
  * +------------+-----------+-------+------+
  * |transactions|description|burgers|burger|
  * +------------+-----------+-------+------+
- *
+ * ```
  * And a "transactions" table:
- *
+ * ```
  * +----+-----------+----+
  * |val1|description|val2|
  * +----+-----------+----+
@@ -29,9 +29,9 @@ import org.apache.spark.sql.functions.col
  * |   c|      apple|   3|
  * |   d|       NULL|   4|
  * +----+-----------+----+
- *
+ * ```
  * Mapping produces:
- *
+ * ```
  * +----+-----------+----+
  * |val1|description|val2|
  * +----+-----------+----+
@@ -40,13 +40,15 @@ import org.apache.spark.sql.functions.col
  * |   c|      apple|   3|
  * |   d|       NULL|   4|
  * +----+-----------+----+
+ * ```
  */
 @Serializable
 class ValueMappingJoinProcessor(
     override val id: String,
     override val name: String,
     override val description: String,
-    val tables: List<String>
+    private val tables: List<String>,
+    private val deduplicate: Boolean? = false
 ) : Processor {
     override fun process(context: SparkContext) {
 
@@ -58,14 +60,19 @@ class ValueMappingJoinProcessor(
             for (tableId in tablesWithMappings) {
 
                 val tableToMap = context.get(tableId).alias(tableId)
-                val mappingsForThisTable = mapping.select(col("column"), col("from"), col("to")).where(col("table").equalTo(tableId))
-                val columnsWithMappings = mappingsForThisTable.select("column").distinct().collectAsList().map { it.getString(0) }
+                val mappingsForThisTable =
+                    mapping.select(col("column"), col("from"), col("to")).where(col("table").equalTo(tableId))
+                val columnsWithMappings =
+                    mappingsForThisTable.select("column").distinct().collectAsList().map { it.getString(0) }
 
                 for (column in columnsWithMappings) {
-                    val mappingsForThisColumn = mappingsForThisTable.select(col("from"), col("to")).where(col("column").equalTo(column)).alias("mapping")
+                    val mappingsForThisColumn =
+                        mappingsForThisTable.select(col("from"), col("to")).where(col("column").equalTo(column))
+                            .alias("mapping")
                     val updatedTable = updateTable(tableToMap, mappingsForThisColumn, tableId, column)
+
                     // replace in context
-                    context.set(tableId, updatedTable)
+                    context.set(tableId, updatedTable.let { if (deduplicate == true) it.dropDuplicates() else it })
                 }
             }
 
@@ -75,7 +82,7 @@ class ValueMappingJoinProcessor(
 
     /**
      * Given a table:
-     *
+     * ```
      * +----+-----------+----+
      * |val1|description|val2|
      * +----+-----------+----+
@@ -84,17 +91,17 @@ class ValueMappingJoinProcessor(
      * |   c|      apple|   3|
      * |   d|       NULL|   4|
      * +----+-----------+----+
-     *
+     * ```
      * With mappings for the "description" column:
-     *
+     * ```
      * +-------+------+
      * |   from|    to|
      * +-------+------+
      * |burgers|burger|
      * +-------+------+
-     *
+     * ```
      * The joined table looks like:
-     *
+     * ```
      * +----+-----------+----+-------+------+
      * |val1|description|val2|   from|    to|
      * +----+-----------+----+-------+------+
@@ -103,9 +110,9 @@ class ValueMappingJoinProcessor(
      * |   c|      apple|   3|   NULL|  NULL|
      * |   d|       NULL|   4|   NULL|  NULL|
      * +----+-----------+----+-------+------+
-     *
+     * ```
      * Now select the first non-null value between "to" and "description" and select the remaining original columns to get the result
-     *
+     * ```
      * +----+-----------+----+
      * |val1|description|val2|
      * +----+-----------+----+
@@ -114,6 +121,7 @@ class ValueMappingJoinProcessor(
      * |   c|      apple|   3|
      * |   d|       NULL|   4|
      * +----+-----------+----+
+     * ```
      */
 
     private fun updateTable(
@@ -146,7 +154,7 @@ class ValueMappingJoinProcessor(
     }
 
     override fun toString(): String {
-        return "ValueMappingProcessor(id='$id', name='$name', description='$description', tables=$tables)"
+        return "ValueMappingJoinProcessor(id='$id', name='$name', description='$description', tables=$tables)"
     }
 
 }

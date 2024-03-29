@@ -4,14 +4,17 @@ import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import com.example.dataprocessingexperiment.tables.Tables
+import io.github.xn32.json5k.Json5
 import io.kotest.matchers.shouldBe
+import kotlinx.serialization.encodeToString
+import org.apache.hadoop.shaded.org.apache.avro.data.Json
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
 import org.apache.spark.sql.types.DataTypes
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 
-class ValueMappingJoinProcessorTest {
+class ValueMappingWhenProcessorTest {
     private val dataHelper = SparkDataHelper(sparkSession, true)
 
     @Test
@@ -19,27 +22,22 @@ class ValueMappingJoinProcessorTest {
         // prepare
         val tableName = "transactions"
         val columnName = "description"
-        
-        // mappings
-        // converts a description of "burgers" to "burger" in the transactions table
 
-        //        +------------+-----------+-------+------+
-        //        |       table|     column|   from|    to|
-        //        +------------+-----------+-------+------+
-        //        |transactions|description|burgers|burger|
-        //        +------------+-----------+-------+------+
-
-        val mappings = dataHelper.asDataFrame(
+        val tableMapping = ValueMappingWhenProcessor.TableMapping(
+            "transactions",
+            true,
             listOf(
-                GenericRow(arrayOf(tableName, columnName, "burgers", "burger")),
-            ),
-            listOf(
-                Pair("table", DataTypes.StringType),
-                Pair("column", DataTypes.StringType),
-                Pair("from", DataTypes.StringType),
-                Pair("to", DataTypes.StringType),
+                ValueMappingWhenProcessor.ColumnMapping(
+                    "description",
+                    ValueMappingWhenProcessor.ValueMapping(
+                        "burger",
+                        listOf("burgers")
+                    )
+                )
             )
         )
+
+        println(Json5.encodeToString(ValueMappingWhenProcessor.TableMapping.serializer(), tableMapping))
 
         // transactions
 
@@ -69,19 +67,23 @@ class ValueMappingJoinProcessorTest {
 
         // build context
         val context = SparkContext(Tables("test", "test", "test", listOf()))
-        context.set("mappings", mappings)
         context.set(tableName, transactions)
 
+        println("original")
+        context.get(tableName).show()
+
         // perform
-        ValueMappingJoinProcessor(
+        ValueMappingWhenProcessor(
             "id",
             "name",
-            "description goes here",
-            listOf("mappings"),
-            true
+            "description",
+            listOf(tableMapping),
         ).process(context)
 
-        // expect result
+        println("result")
+        context.get(tableName).show()
+
+        // expected result
         //        +----+-----------+----+
         //        |val1|description|val2|
         //        +----+-----------+----+
@@ -105,57 +107,41 @@ class ValueMappingJoinProcessorTest {
         )
 
         // verify
-        context.get(tableName).count() shouldBe 4
         context.get(tableName).except(expected).count() shouldBe 0
+        context.get(tableName).schema() shouldBe expected.schema()
 
-        /*
-updatedTable.explain(true)
+
+/*
+
+result.explain(true)
 
 == Parsed Logical Plan ==
-'Project ['val1, coalesce('to, 'transactions.description) AS description#35, 'val2]
-+- Join LeftOuter, (description#9 = from#2)
-   :- SubqueryAlias transactions
-   :  +- LocalRelation [val1#8, description#9, val2#10]
-   +- SubqueryAlias mapping
-      +- Project [from#2, to#3]
-         +- Filter (column#1 = description)
-            +- Project [from#2, to#3, column#1]
-               +- Project [column#1, from#2, to#3]
-                  +- Filter (table#0 = transactions)
-                     +- Project [column#1, from#2, to#3, table#0]
-                        +- LocalRelation [table#0, column#1, from#2, to#3]
+Deduplicate [val1#0, description#19, val2#2]
++- Project [val1#0, CASE WHEN (description#1 = burgers) THEN burger ELSE description#1 END AS description#19, val2#2]
+   +- SubqueryAlias transactions
+      +- LocalRelation [val1#0, description#1, val2#2]
 
 == Analyzed Logical Plan ==
 val1: string, description: string, val2: string
-Project [val1#8, coalesce(to#3, description#9) AS description#35, val2#10]
-+- Join LeftOuter, (description#9 = from#2)
-   :- SubqueryAlias transactions
-   :  +- LocalRelation [val1#8, description#9, val2#10]
-   +- SubqueryAlias mapping
-      +- Project [from#2, to#3]
-         +- Filter (column#1 = description)
-            +- Project [from#2, to#3, column#1]
-               +- Project [column#1, from#2, to#3]
-                  +- Filter (table#0 = transactions)
-                     +- Project [column#1, from#2, to#3, table#0]
-                        +- LocalRelation [table#0, column#1, from#2, to#3]
+Deduplicate [val1#0, description#19, val2#2]
++- Project [val1#0, CASE WHEN (description#1 = burgers) THEN burger ELSE description#1 END AS description#19, val2#2]
+   +- SubqueryAlias transactions
+      +- LocalRelation [val1#0, description#1, val2#2]
 
 == Optimized Logical Plan ==
-Project [val1#8, coalesce(to#3, description#9) AS description#35, val2#10]
-+- Join LeftOuter, (description#9 = from#2)
-   :- LocalRelation [val1#8, description#9, val2#10]
-   +- LocalRelation [from#2, to#3]
+Aggregate [val1#0, description#19, val2#2], [val1#0, description#19, val2#2]
++- LocalRelation [val1#0, description#19, val2#2]
 
 == Physical Plan ==
 AdaptiveSparkPlan isFinalPlan=false
-+- Project [val1#8, coalesce(to#3, description#9) AS description#35, val2#10]
-   +- BroadcastHashJoin [description#9], [from#2], LeftOuter, BuildRight, false
-      :- LocalTableScan [val1#8, description#9, val2#10]
-      +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, string, true]),false), [plan_id=22]
-         +- LocalTableScan [from#2, to#3]
++- HashAggregate(keys=[val1#0, description#19, val2#2], functions=[], output=[val1#0, description#19, val2#2])
+   +- Exchange hashpartitioning(val1#0, description#19, val2#2, 200), ENSURE_REQUIREMENTS, [plan_id=14]
+      +- HashAggregate(keys=[val1#0, description#19, val2#2], functions=[], output=[val1#0, description#19, val2#2])
+         +- LocalTableScan [val1#0, description#19, val2#2]
 
-         */
+ */
     }
+
 
     companion object {
         private val sparkSessionHelper = SparkSessionHelper()

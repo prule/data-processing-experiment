@@ -137,6 +137,7 @@ class App {
                     polymorphic(ProcessorDefinition::class, LiteralProcessor::class, LiteralProcessor.serializer())
                     polymorphic(ProcessorDefinition::class, OutputProcessor::class, OutputProcessor.serializer())
                     polymorphic(ProcessorDefinition::class, ValueMappingJoinProcessor::class, ValueMappingJoinProcessor.serializer())
+                    polymorphic(ProcessorDefinition::class, ValueMappingWhenProcessor::class, ValueMappingWhenProcessor.serializer())
                 }
             )
 

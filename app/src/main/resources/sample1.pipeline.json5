@@ -5,12 +5,68 @@
   tasks: [
     {
       type: "com.example.dataprocessingexperiment.spark.pipeline.ValueMappingJoinProcessor",
-      id: "t0",
+      id: "t0.1",
       name: "Value mappings",
       description: "Update values for columns based on mappings",
       // ids of mapping tables to process
       tables: [
         "mappings"
+      ]
+    },
+    {
+      type: "com.example.dataprocessingexperiment.spark.pipeline.ValueMappingWhenProcessor",
+      id: "t0.2",
+      name: "Value mappings",
+      description: "Update values for columns based on mappings",
+      // ids of mapping tables to process
+      mappings: [
+        {
+          tableId: "transactions",
+          deduplicate: false,
+          columns: [
+            {
+              columnName: "description",
+              mapping: {
+                // this is the value we want to see in the data
+                value: "movie",
+                // these are the values we want to replace
+                alternatives: [
+                  "movies"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          tableId: "lga-1",
+          deduplicate: true,
+          columns: [
+            {
+              columnName: "level_1_name",
+              mapping: {
+                // this is the value we want to see in the data
+                value: "New South Wales",
+                // these are the values we want to replace
+                alternatives: [
+                  "NSW",
+                  "N.S.W.",
+                ]
+              }
+            },
+            {
+              columnName: "level_1_code",
+              mapping: {
+                // this is the value we want to see in the data
+                value: "1",
+                // these are the values we want to replace
+                alternatives: [
+                  "01",
+                  "001"
+                ]
+              }
+            }
+          ]
+        }
       ]
     },
     {

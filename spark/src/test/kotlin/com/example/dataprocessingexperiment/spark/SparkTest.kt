@@ -5,8 +5,7 @@ import org.apache.spark.sql.Encoders
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
 import org.apache.spark.sql.functions
-import org.apache.spark.sql.functions.col
-import org.apache.spark.sql.functions.sum
+import org.apache.spark.sql.functions.*
 import org.apache.spark.sql.types.BinaryType
 import org.apache.spark.sql.types.BooleanType
 import org.apache.spark.sql.types.DataTypes
@@ -77,7 +76,7 @@ class SparkTest {
             GenericRow(arrayOf(-1, "A")),
             GenericRow(arrayOf(10, null)),
             GenericRow(arrayOf(5, "B")),
-            GenericRow(arrayOf(null, null)),
+            GenericRow(arrayOf(null, "c")),
         )
 
         val dataframe = dataHelper.asDataFrame(
@@ -89,12 +88,15 @@ class SparkTest {
 
         dataframe.show()
 
-        dataframe.select(functions.count(col("col1").isNull)).show()
-
-        dataframe.select(
-            functions.count_if(col("col1").isNull).alias("col1"),
-            functions.count_if(col("col2").isNull).alias("col2")
+        dataframe.withColumn(
+            "col3",
+            `when`(col("col2").equalTo("A"), "AA")
+                .`when`(col("col2").equalTo("B"), "BB")
+                .otherwise(
+                    col("col2")
+                )
         ).show()
+
 
     }
 
