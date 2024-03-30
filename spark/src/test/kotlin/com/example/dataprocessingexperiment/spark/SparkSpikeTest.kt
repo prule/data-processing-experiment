@@ -5,6 +5,7 @@ import org.apache.spark.SparkConf
 import org.apache.spark.sql.SaveMode
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions
+import org.apache.spark.sql.functions.*
 import org.junit.jupiter.api.Test
 
 /**
@@ -35,10 +36,10 @@ class SparkSpikeTest {
 
         // only select the columns needed so we can exclude data we don't need here
         val selectedDataFrame = statementsDataFrame.select(
-            functions.col("date"),
-            functions.col("account"),
-            functions.col("description"),
-            functions.col("amount"),
+            col("date"),
+            col("account"),
+            col("description"),
+            col("amount"),
         )
 
         println("Selected data frame")
@@ -47,10 +48,10 @@ class SparkSpikeTest {
 
         // convert to typed columns
         val typedDataFrame = selectedDataFrame.select(
-            functions.to_date(functions.col("date"), "yyyy-MM-dd").alias("amount"),
-            functions.col("account"),
-            functions.col("description"),
-            functions.col("amount").cast("double").alias("amount")
+            to_date(trim(col("date")), "yyyy-MM-dd").alias("amount"),
+            col("account"),
+            col("description"),
+            col("amount").cast("double").alias("amount")
         )
 
         println("Typed data frame")
@@ -108,7 +109,7 @@ class SparkSpikeTest {
             "Type",
             "Long Official Name Local Government Area"
         )
-            .filter(functions.col("Official Code State").equalTo(1))
+            .filter(col("Official Code State").equalTo(1))
             .limit(10)
             .write()
             .option("header", true)
@@ -126,7 +127,7 @@ class SparkSpikeTest {
             "Iso 3166-3 Area Code",
             "Official Name Local Government Area",
         )
-            .filter(functions.col("Official Code State").equalTo(2))
+            .filter(col("Official Code State").equalTo(2))
             .limit(10)
             .write()
             .option("header", true)
@@ -144,7 +145,7 @@ class SparkSpikeTest {
             "Iso 3166-3 Area Code",
             "Official Name Local Government Area",
         )
-            .filter(functions.col("Official Code State").equalTo(3))
+            .filter(col("Official Code State").equalTo(3))
             .limit(10)
             .write()
             .option("header", true)

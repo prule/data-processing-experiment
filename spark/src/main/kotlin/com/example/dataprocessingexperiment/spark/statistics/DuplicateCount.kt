@@ -1,6 +1,7 @@
 package com.example.dataprocessingexperiment.spark.statistics
 
 import com.example.dataprocessingexperiment.spark.statistics.collectors.Collector
+import kotlinx.serialization.Serializable
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.functions
@@ -8,6 +9,7 @@ import org.apache.spark.sql.functions
 /**
  * Counts the number of duplicate rows in the dataset
  */
+@Serializable
 class DuplicateCount() : Statistic {
 
     override fun run(data: Dataset<Row>, collector: Collector) {
@@ -23,9 +25,5 @@ class DuplicateCount() : Statistic {
             "duplicate row count", "", "", result.first().get(0) ?: 0
         )
 
-    }
-
-    override fun of(col: String): Statistic {
-        return DuplicateCount()
     }
 }

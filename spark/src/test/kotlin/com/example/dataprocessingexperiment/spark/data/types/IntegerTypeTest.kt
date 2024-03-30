@@ -1,5 +1,6 @@
 package com.example.dataprocessingexperiment.spark.data.types
 
+import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import org.apache.spark.sql.Dataset
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test
 
 class IntegerTypeTest {
     private val columnName = "value"
+    private val dataHelper = SparkDataHelper(sparkSession)
 
     @Test
     fun `should convert valid numbers`() {
@@ -28,7 +30,11 @@ class IntegerTypeTest {
             GenericRow(arrayOf("4.6")),
         )
 
-        val dataframe = asDataFrame(data)
+        val dataframe = dataHelper.asDataFrame(
+            data, listOf(
+                Pair(columnName, DataTypes.StringType),
+            )
+        )
 
         val column = IntegerType().process(columnName, null)
 
@@ -53,7 +59,11 @@ class IntegerTypeTest {
             GenericRow(arrayOf("zzz")),
         )
 
-        val dataframe = asDataFrame(data)
+        val dataframe = dataHelper.asDataFrame(
+            data, listOf(
+                Pair(columnName, DataTypes.StringType),
+            )
+        )
 
         val column = DecimalType().process(columnName, null)
 
@@ -64,18 +74,6 @@ class IntegerTypeTest {
         result shouldContainExactlyInAnyOrder (listOf(
             null,
         ))
-    }
-
-    private fun asDataFrame(data: List<GenericRow>): Dataset<Row> {
-        return sparkSession.createDataFrame(
-            data, StructType(
-                arrayOf(
-                    StructField(
-                        columnName, DataTypes.StringType, false, Metadata.empty()
-                    )
-                )
-            )
-        )
     }
 
     companion object {

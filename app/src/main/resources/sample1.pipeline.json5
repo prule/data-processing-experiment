@@ -1,13 +1,82 @@
 {
-  id: "p1",
-  name: "name",
-  description: "description",
+  id: "sample-1",
+  name: "Sample Pipeline 1",
+  description: "A simple pipeline to exercise the capabilities of this framework and provide a reference implementation.",
   tasks: [
+    // one way to standard values (using join with external data driven configuration)
     {
-      type: "com.example.dataprocessingexperiment.tables.pipeline.UnionTaskDefinition",
+      type: "com.example.dataprocessingexperiment.spark.pipeline.ValueMappingJoinProcessor",
+      id: "t0.1",
+      name: "Value mappings",
+      description: "Update values for columns based on mappings",
+      // ids of mapping tables to process
+      tables: [
+        // for this table there is an associated entry in sample1.tables.json5
+        "mappings"
+      ]
+    },
+    // another way to standard values (using "when x then y else z" with configuration in the pipeline processor)
+    {
+      type: "com.example.dataprocessingexperiment.spark.pipeline.ValueMappingWhenProcessor",
+      id: "t0.2",
+      name: "Value mappings",
+      description: "Update values for columns based on mappings",
+      // ids of mapping tables to process
+      mappings: [
+        {
+          tableId: "transactions",
+          deduplicate: false,
+          columns: [
+            {
+              columnName: "description",
+              mapping: {
+                // this is the value we want to see in the data
+                value: "movie",
+                // these are the values we want to replace
+                alternatives: [
+                  "movies"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          tableId: "lga-1",
+          deduplicate: true,
+          columns: [
+            {
+              columnName: "level_1_name",
+              mapping: {
+                // this is the value we want to see in the data
+                value: "New South Wales",
+                // these are the values we want to replace
+                alternatives: [
+                  "NSW",
+                  "N.S.W.",
+                ]
+              }
+            },
+            {
+              columnName: "level_1_code",
+              mapping: {
+                // this is the value we want to see in the data
+                value: "1",
+                // these are the values we want to replace
+                alternatives: [
+                  "01",
+                  "001"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      type: "com.example.dataprocessingexperiment.spark.pipeline.UnionProcessor",
       id: "t1",
-      name: "name",
-      description: "description",
+      name: "Union LGAs",
+      description: "Unions LGA tables together so we have one dataframe with all LGAs",
       destination: "lgas",
       // Union tables "lga-1" and "lga-2" and "lga-3" together into table "lgas"
       tables: [
@@ -17,10 +86,10 @@
       ]
     },
     {
-      type: "com.example.dataprocessingexperiment.tables.pipeline.LiteralTaskDefinition",
+      type: "com.example.dataprocessingexperiment.spark.pipeline.LiteralProcessor",
       id: "t2",
-      name: "name",
-      description: "description",
+      name: "Transaction type",
+      description: "Adds a literal column to the transactions table",
       table: "transactions",
       // add literal columns with name -> value mapping
       columns: {
@@ -29,10 +98,10 @@
       },
     },
     {
-      type: "com.example.dataprocessingexperiment.tables.pipeline.JoinTaskDefinition",
+      type: "com.example.dataprocessingexperiment.spark.pipeline.JoinProcessor",
       id: "t3",
-      name: "name",
-      description: "description",
+      name: "Denormalize transactions",
+      description: "Joins LGAs to transactions in order to add the level 1 LGA",
       // join table "transactions" to "lgas" using transactions.location=lgas.level_2_name
       // include columns from t1, add lgas.level_1_name and store this in "transactionsWithLGAs" (we could store as transactions if we want to override the original transactions dataframe with the joined result)
       table1: "transactions",
@@ -49,10 +118,10 @@
       joinType: "left"
     },
     {
-      type: "com.example.dataprocessingexperiment.tables.pipeline.OutputTaskDefinition",
+      type: "com.example.dataprocessingexperiment.spark.pipeline.OutputProcessor",
       id: "t4",
-      name: "name",
-      description: "description",
+      name: "Output transactions",
+      description: "Writes out the denormalized transactions",
       table: "transactionsWithLGAs",
       path: "./build/output/sample1/transactions",
       format: "csv",

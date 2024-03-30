@@ -31,8 +31,11 @@ class SparkContext(val tables: Tables) {
         println("==============================================")
         println("Context")
         tablesIds().forEach {
-            println(it)
-            get(it).show(100)
+            val dataset = get(it)
+            // order by first column
+            val firstColumn = dataset.columns().first()
+            println("$it ordered by $firstColumn")
+            dataset.orderBy(firstColumn).show(100)
         }
         println("==============================================")
     }

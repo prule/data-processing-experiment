@@ -3,14 +3,12 @@ package com.example.dataprocessingexperiment.app
 import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.data.DataFrameBuilder
 import com.example.dataprocessingexperiment.spark.data.types.Types
-import com.example.dataprocessingexperiment.spark.pipeline.OutputProcessor
-import com.example.dataprocessingexperiment.spark.pipeline.PipelineConfigurationRepository
-import com.example.dataprocessingexperiment.spark.pipeline.PipelineProcessor
-import com.example.dataprocessingexperiment.spark.statistics.StatisticsRunner
-import com.example.dataprocessingexperiment.spark.statistics.StatisticRepository
+import com.example.dataprocessingexperiment.spark.pipeline.*
+import com.example.dataprocessingexperiment.spark.statistics.*
 import com.example.dataprocessingexperiment.spark.statistics.collectors.SparkCollector
 import com.example.dataprocessingexperiment.tables.Tables
 import com.example.dataprocessingexperiment.tables.pipeline.*
+import com.example.dataprocessingexperiment.tables.statistics.StatisticDefinition
 import com.example.dataprocessingexperiment.tables.statistics.Statistics
 import com.example.dataprocessingexperiment.tables.statistics.StatisticsConfiguration
 import io.github.xn32.json5k.Json5
@@ -27,7 +25,7 @@ import java.io.File
  */
 
 class App {
-    private val displayRows = 20
+    private val displayRows = 100
 
     fun go() {
         // spark setup
@@ -43,7 +41,22 @@ class App {
             this::class.java.getResourceAsStream("/sample1.tables.json5")!!
         )
 
-        val statisticConfiguration = Json5.decodeFromStream<StatisticsConfiguration>(
+        val module = SerializersModule {
+            polymorphic(StatisticDefinition::class, Bounds::class, Bounds.serializer())
+            polymorphic(StatisticDefinition::class, ColCount::class, ColCount.serializer())
+            polymorphic(StatisticDefinition::class, CountByMonth::class, CountByMonth.serializer())
+            polymorphic(StatisticDefinition::class, CountByValue::class, CountByValue.serializer())
+            polymorphic(StatisticDefinition::class, DuplicateCount::class, DuplicateCount.serializer())
+            polymorphic(StatisticDefinition::class, Maximum::class, Maximum.serializer())
+            polymorphic(StatisticDefinition::class, Minimum::class, Minimum.serializer())
+            polymorphic(StatisticDefinition::class, RowCount::class, RowCount.serializer())
+            polymorphic(StatisticDefinition::class, EmptyCount::class, EmptyCount.serializer())
+            polymorphic(StatisticDefinition::class, Summary::class, Summary.serializer())
+        }
+
+        val format = Json5 { serializersModule = module }
+
+        val statisticConfiguration = format.decodeFromStream<StatisticsConfiguration>(
             this::class.java.getResourceAsStream("/sample1.statistics.json5")!!
         )
 
@@ -119,10 +132,12 @@ class App {
 
             val pipelineConfigurationRepository = PipelineConfigurationRepository(
                 SerializersModule {
-                    polymorphic(AbstractTaskDefinition::class, JoinTaskDefinition::class, JoinTaskDefinition.serializer())
-                    polymorphic(AbstractTaskDefinition::class, UnionTaskDefinition::class, UnionTaskDefinition.serializer())
-                    polymorphic(AbstractTaskDefinition::class, LiteralTaskDefinition::class, LiteralTaskDefinition.serializer())
-                    polymorphic(AbstractTaskDefinition::class, OutputTaskDefinition::class, OutputTaskDefinition.serializer())
+                    polymorphic(ProcessorDefinition::class, JoinProcessor::class, JoinProcessor.serializer())
+                    polymorphic(ProcessorDefinition::class, UnionProcessor::class, UnionProcessor.serializer())
+                    polymorphic(ProcessorDefinition::class, LiteralProcessor::class, LiteralProcessor.serializer())
+                    polymorphic(ProcessorDefinition::class, OutputProcessor::class, OutputProcessor.serializer())
+                    polymorphic(ProcessorDefinition::class, ValueMappingJoinProcessor::class, ValueMappingJoinProcessor.serializer())
+                    polymorphic(ProcessorDefinition::class, ValueMappingWhenProcessor::class, ValueMappingWhenProcessor.serializer())
                 }
             )
 

@@ -26,5 +26,6 @@ data class ColumnDefinition(
     val description: String,
     val type: String,
     val formats: List<String>? = listOf(),
-    val required: Boolean = false
+    val required: Boolean = false,
+    val trim: Boolean? = null
 )

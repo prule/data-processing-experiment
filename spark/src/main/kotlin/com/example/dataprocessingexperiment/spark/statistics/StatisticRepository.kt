@@ -1,5 +1,7 @@
 package com.example.dataprocessingexperiment.spark.statistics
 
+import mu.KotlinLogging
+
 /**
  * A registry for supported statistics.
  *
@@ -11,12 +13,14 @@ package com.example.dataprocessingexperiment.spark.statistics
  * val statistics = StatisticRepository().buildStatistics(statisticsConfiguration) // transform from configuration to implementation
  */
 class StatisticRepository {
+    private val logger = KotlinLogging.logger {}
     private val registry: MutableMap<String, Statistic> = mutableMapOf()
 
     init {
         add(Bounds(""))
         add(Bounds(""), "bounds")
-        add(Count(), "count")
+        add(RowCount(), "rowCount")
+        add(ColCount(), "colCount")
         add(CountByValue(""), "countByValue")
         add(CountByMonth(""), "countByMonth")
         add(Maximum(""), "maximum")
@@ -32,6 +36,13 @@ class StatisticRepository {
     }
 
     fun buildStatistics(statistics: com.example.dataprocessingexperiment.tables.statistics.Statistics): List<Statistic> {
-        return statistics.values.mapNotNull { insightDescriptor -> registry[insightDescriptor.id]?.of(insightDescriptor.column!!) }
+//        val missing = statistics.values.map { it.id }.filter { !registry.containsKey(it) }
+//        if (missing.isNotEmpty()) {
+//            logger.warn { "Could not find statistics for $missing" }
+//        }
+//        return statistics.values.mapNotNull { insightDescriptor ->
+//            registry[insightDescriptor.id]?.of(insightDescriptor.column!!)
+//        }
+        return statistics.values.map { it as Statistic }
     }
 }
