@@ -3,27 +3,25 @@ package com.example.dataprocessingexperiment.tables
 import kotlinx.serialization.Serializable
 
 /**
- * Table defines the name and columns.
- *
  * ```
  * {
  *   id: "sample1",
  *   name: "Sample 1",
  *   description: "Sample 1 is a basic dataset configuration to demonstrate capability",
- *   tables: [
+ *   sources: [
  *     ...
  *   ]
  * }
  * ```
  */
 @Serializable
-data class Tables(
+data class Sources(
     val id: String,
     val name: String,
     val description: String,
     val sources: List<SourceDefinition>
 ) {
-    fun tableById(id: String): SourceDefinition {
+    fun sourceById(id: String): SourceDefinition {
         return sources.first { source -> source.id == id }
     }
 }

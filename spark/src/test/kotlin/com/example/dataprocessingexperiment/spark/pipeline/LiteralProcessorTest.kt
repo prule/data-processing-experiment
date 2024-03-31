@@ -3,17 +3,12 @@ package com.example.dataprocessingexperiment.spark.pipeline
 import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
-import com.example.dataprocessingexperiment.tables.Tables
+import com.example.dataprocessingexperiment.tables.Sources
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
-import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.Row
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
 import org.apache.spark.sql.types.DataTypes
-import org.apache.spark.sql.types.Metadata
-import org.apache.spark.sql.types.StructField
-import org.apache.spark.sql.types.StructType
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 
@@ -36,7 +31,7 @@ class LiteralProcessorTest {
             )
         )
 
-        val context = SparkContext(Tables("test", "test", "test", listOf()))
+        val context = SparkContext(Sources("test", "test", "test", listOf()))
         context.set("dataFrame1", dataframe1)
 
         LiteralProcessor(//            "com.example.dataprocessingexperiment.tables.pipeline.LiteralTask",

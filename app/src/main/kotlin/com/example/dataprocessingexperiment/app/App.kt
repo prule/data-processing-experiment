@@ -6,7 +6,7 @@ import com.example.dataprocessingexperiment.spark.data.types.Types
 import com.example.dataprocessingexperiment.spark.pipeline.*
 import com.example.dataprocessingexperiment.spark.statistics.*
 import com.example.dataprocessingexperiment.spark.statistics.collectors.SparkCollector
-import com.example.dataprocessingexperiment.tables.Tables
+import com.example.dataprocessingexperiment.tables.Sources
 import com.example.dataprocessingexperiment.tables.pipeline.*
 import com.example.dataprocessingexperiment.tables.statistics.StatisticDefinition
 import com.example.dataprocessingexperiment.tables.statistics.Statistics
@@ -37,7 +37,7 @@ class App {
         File(outputPath).deleteRecursively()
 
         // load configuration
-        val tables = Json5.decodeFromStream<Tables>(
+        val sources = Json5.decodeFromStream<Sources>(
             this::class.java.getResourceAsStream("/sample1.tables.json5")!!
         )
 
@@ -60,7 +60,7 @@ class App {
             this::class.java.getResourceAsStream("/sample1.statistics.json5")!!
         )
 
-        val context = SparkContext(tables)
+        val context = SparkContext(sources)
 
         // run
         // load each table
@@ -68,7 +68,7 @@ class App {
         sparkSession.use {
 
             // populate context with tables
-            tables.sources.forEach { source ->
+            sources.sources.forEach { source ->
 
                 // set up the dataframe
                 val dataFrameBuilder = DataFrameBuilder(
@@ -136,8 +136,16 @@ class App {
                     polymorphic(ProcessorDefinition::class, UnionProcessor::class, UnionProcessor.serializer())
                     polymorphic(ProcessorDefinition::class, LiteralProcessor::class, LiteralProcessor.serializer())
                     polymorphic(ProcessorDefinition::class, OutputProcessor::class, OutputProcessor.serializer())
-                    polymorphic(ProcessorDefinition::class, ValueMappingJoinProcessor::class, ValueMappingJoinProcessor.serializer())
-                    polymorphic(ProcessorDefinition::class, ValueMappingWhenProcessor::class, ValueMappingWhenProcessor.serializer())
+                    polymorphic(
+                        ProcessorDefinition::class,
+                        ValueMappingJoinProcessor::class,
+                        ValueMappingJoinProcessor.serializer()
+                    )
+                    polymorphic(
+                        ProcessorDefinition::class,
+                        ValueMappingWhenProcessor::class,
+                        ValueMappingWhenProcessor.serializer()
+                    )
                 }
             )
 
@@ -186,9 +194,9 @@ class App {
         println()
         ds.printSchema()
         if (ds.columns().contains(sort)) {
-            ds.orderBy(sort).show(displayRows)
+            ds.orderBy(sort).show(displayRows, 10)
         } else {
-            ds.show(displayRows)
+            ds.show(displayRows, 10)
         }
         println("row count = ${ds.count()}")
     }

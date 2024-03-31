@@ -1,10 +1,10 @@
 package com.example.dataprocessingexperiment.spark
 
-import com.example.dataprocessingexperiment.tables.Tables
+import com.example.dataprocessingexperiment.tables.Sources
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
 
-class SparkContext(val tables: Tables) {
+class SparkContext(val sources: Sources) {
     private val data = mutableMapOf<String, Dataset<Row>>()
 
     fun set(id: String, dataset: Dataset<Row>) {
@@ -35,7 +35,7 @@ class SparkContext(val tables: Tables) {
             // order by first column
             val firstColumn = dataset.columns().first()
             println("$it ordered by $firstColumn")
-            dataset.orderBy(firstColumn).show(100)
+            dataset.orderBy(firstColumn).show(100, 9)
         }
         println("==============================================")
     }

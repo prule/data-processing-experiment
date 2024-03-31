@@ -3,11 +3,9 @@ package com.example.dataprocessingexperiment.spark.pipeline
 import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
-import com.example.dataprocessingexperiment.tables.Tables
+import com.example.dataprocessingexperiment.tables.Sources
 import io.github.xn32.json5k.Json5
 import io.kotest.matchers.shouldBe
-import kotlinx.serialization.encodeToString
-import org.apache.hadoop.shaded.org.apache.avro.data.Json
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
 import org.apache.spark.sql.types.DataTypes
@@ -66,7 +64,7 @@ class ValueMappingWhenProcessorTest {
         )
 
         // build context
-        val context = SparkContext(Tables("test", "test", "test", listOf()))
+        val context = SparkContext(Sources("test", "test", "test", listOf()))
         context.set(tableName, transactions)
 
         println("original")
