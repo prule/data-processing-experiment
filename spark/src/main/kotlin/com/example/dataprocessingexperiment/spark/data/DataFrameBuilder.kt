@@ -45,10 +45,10 @@ class DataFrameBuilder(
                 var c: Column? = null
                 for (name in column.names) {
                     if (raw.columns().contains(name)) {
-                        if (sourceDefinition.table.trim(name)) {
-                            c = trim(col(name))
+                        c = if (sourceDefinition.table.trim(name)) {
+                            trim(col(name))
                         } else {
-                            c = col(name)
+                            col(name)
                         }
                         break
                     }
