@@ -41,6 +41,27 @@ Here's the [output](https://github.com/prule/data-processing-experiment/tree/lat
 
 This week I haven't been able to add any new features, but I have done some clean up and refactoring. Since discovering how to use kotlin polymorphic serialization for the pipeline work, I now have an appreciation of how much it can simplify the codebase. Accordingly I've modified the table configuration to use this so it directly instantiates types instead of creating a generic type definition which then has to be transformed into the type - reducing code and complexity...
 
+Column configurations now have a type property which refers to a concrete class:
+
+```json5
+{
+  names: ["amount"],
+  alias: "amount",
+  description: "amount can be a positive (credit) or negative (debit) number representing dollars and cents",
+  type: {
+    type: "com.example.dataprocessingexperiment.spark.data.types.DecimalType",
+    precision: 10,
+    scale: 2
+  },
+  required: true
+}
+```
+Now the type classes can have specific fields:
+- DecimalType has `precision` and `scale`
+- DateType has `formats` 
+
+This is much better than before where there was just a generic column class covering all types - a single `formats` string list handled parameters.
+
 Next week I'm going to experiment with Notebooks to implement similar functionality...
 
 Some options I hope to look into over the next couple of weeks are:
