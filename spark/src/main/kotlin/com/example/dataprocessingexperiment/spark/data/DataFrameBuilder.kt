@@ -1,7 +1,7 @@
 package com.example.dataprocessingexperiment.spark.data
 
 import com.example.dataprocessingexperiment.spark.data.types.StringType
-import com.example.dataprocessingexperiment.spark.data.types.Types
+import com.example.dataprocessingexperiment.spark.data.types.Typer
 import com.example.dataprocessingexperiment.tables.SourceDefinition
 import org.apache.spark.sql.*
 import org.apache.spark.sql.functions.col
@@ -17,7 +17,6 @@ import org.apache.spark.sql.functions.trim
 class DataFrameBuilder(
     private val sparkSession: SparkSession,
     private val sourceDefinition: SourceDefinition,
-    private val types: Types,
     private val rootPath: String = ""
 ) {
 
@@ -45,10 +44,10 @@ class DataFrameBuilder(
                 var c: Column? = null
                 for (name in column.names) {
                     if (raw.columns().contains(name)) {
-                        if (sourceDefinition.table.trim(name)) {
-                            c = trim(col(name))
+                        c = if (sourceDefinition.table.trim(name)) {
+                            trim(col(name))
                         } else {
-                            c = col(name)
+                            col(name)
                         }
                         break
                     }
@@ -77,7 +76,7 @@ class DataFrameBuilder(
         val typedColumns: List<Column> =
             sourceDefinition.table.columns.map { column ->
                 // convert to type
-                types.get(column.type).process(column.alias, column.formats)
+                (column.type as Typer).process(column.alias)
             }
         // call var args function https://stackoverflow.com/a/65520425
         return selected().select(*typedColumns.map { it }.toTypedArray())
@@ -93,7 +92,7 @@ class DataFrameBuilder(
             .filter { column -> column.required }
             .map { column ->
                 // for strings, check for null and empty strings
-                if (string.key() == column.type)
+                if (column.type is StringType)
                     col(column.alias).isNotNull.and(
                         trim(col(column.alias)).notEqual(functions.lit(""))
                     )

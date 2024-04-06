@@ -20,42 +20,50 @@
             names: ["date"],
             alias: "date",
             description: "date of transaction",
-            type: "date",
-            formats: [
-              "yyyy-MM-dd",
-              "dd-MM-yyyy"
-            ],
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.DateType",
+              formats: [
+                "yyyy-MM-dd",
+                "dd-MM-yyyy"
+              ]
+            },
             required: true
           },
           {
             names: ["account"],
             alias: "account",
             description: "account",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           },
           {
             names: ["description"],
             alias: "description",
             description: "description",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             trim: true
           },
           {
             names: ["location"],
             alias: "location",
             description: "location",
-            type: "string"
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            }
           },
           {
             names: ["amount"],
             alias: "amount",
             description: "amount can be a positive (credit) or negative (debit) number representing dollars and cents",
-            type: "decimal",
-            formats: [
-              "10",
-              "2"
-            ],
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.DecimalType",
+              precision: 10,
+              scale: 2
+            },
             required: true
           }
         ]
@@ -88,28 +96,36 @@
             names: ["Code State","Official Code State"],
             alias: "level_1_code",
             description: "",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           },
           {
             names: ["Name State","Official Name State"],
             alias: "level_1_name",
             description: "",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           },
           {
             names: ["Code Local Government Area", "Official Code Local Government Area"],
             alias: "level_2_code",
             description: "",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           },
           {
             names: ["Name Local Government Area", "Official Name Local Government Area"],
             alias: "level_2_name",
             description: "",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           }
         ]
@@ -140,28 +156,36 @@
             names: ["Code State","Official Code State"],
             alias: "level_1_code",
             description: "",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           },
           {
             names: ["Name State","Official Name State"],
             alias: "level_1_name",
             description: "",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           },
           {
             names: ["Code Local Government Area", "Official Code Local Government Area"],
             alias: "level_2_code",
             description: "",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           },
           {
             names: ["Name Local Government Area", "Official Name Local Government Area"],
             alias: "level_2_name",
             description: "",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           }
         ]
@@ -191,28 +215,36 @@
             names: ["Code State","Official Code State"],
             alias: "level_1_code",
             description: "",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           },
           {
             names: ["Name State","Official Name State"],
             alias: "level_1_name",
             description: "",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           },
           {
             names: ["Code Local Government Area", "Official Code Local Government Area"],
             alias: "level_2_code",
             description: "",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           },
           {
             names: ["Name Local Government Area", "Official Name Local Government Area"],
             alias: "level_2_name",
             description: "",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           }
         ]
@@ -234,28 +266,36 @@
             names: ["table"],
             alias: "table",
             description: "",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           },
           {
             names: ["column"],
             alias: "column",
             description: "",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           },
           {
             names: ["from"],
             alias: "from",
             description: "Value to replace",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           },
           {
             names: ["to"],
             alias: "to",
             description: "Replacement value",
-            type: "string",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
             required: true
           }
         ]

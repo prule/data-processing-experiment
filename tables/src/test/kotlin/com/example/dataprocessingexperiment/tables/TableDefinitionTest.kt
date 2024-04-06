@@ -13,7 +13,7 @@ class TableDefinitionTest {
             false,
             ",",
             listOf(
-                ColumnDefinition(listOf("boolean"), "boolean", "boolean", "boolean"),
+                ColumnDefinition(listOf("boolean"), "boolean", "boolean", true, trim = false, type = SampleColType()),
             ),
             false,
         )
@@ -29,7 +29,7 @@ class TableDefinitionTest {
             false,
             ",",
             listOf(
-                ColumnDefinition(listOf("boolean"), "boolean", "boolean", "boolean"),
+                ColumnDefinition(listOf("boolean"), "boolean", "boolean", true, trim = null, type = SampleColType()),
             ),
             true,
         )
@@ -45,8 +45,8 @@ class TableDefinitionTest {
             false,
             ",",
             listOf(
-                ColumnDefinition(listOf("boolean1"), "boolean", "boolean", "boolean", trim = true),
-                ColumnDefinition(listOf("boolean2"), "boolean", "boolean", "boolean", trim = false),
+                ColumnDefinition(listOf("boolean1"), "boolean", "boolean", true, trim = true, type = SampleColType()),
+                ColumnDefinition(listOf("boolean2"), "boolean", "boolean", true, trim = false, type = SampleColType()),
             ),
             false,
         )
@@ -63,8 +63,8 @@ class TableDefinitionTest {
             false,
             ",",
             listOf(
-                ColumnDefinition(listOf("boolean1"), "boolean", "boolean", "boolean", trim = true),
-                ColumnDefinition(listOf("boolean2"), "boolean", "boolean", "boolean", trim = false),
+                ColumnDefinition(listOf("boolean1"), "boolean", "boolean", true, trim = true, type = SampleColType()),
+                ColumnDefinition(listOf("boolean2"), "boolean", "boolean", true, trim = false, type = SampleColType()),
             ),
             true,
         )
@@ -74,3 +74,5 @@ class TableDefinitionTest {
     }
 
 }
+
+class SampleColType : ColumnType

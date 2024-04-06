@@ -1,5 +1,6 @@
 package com.example.dataprocessingexperiment.spark.data.types
 
+import kotlinx.serialization.Serializable
 import mu.KotlinLogging
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions
@@ -23,29 +24,17 @@ import org.apache.spark.sql.functions
  *
  * @link https://spark.apache.org/docs/3.5.0/api/java/org/apache/spark/sql/types/DecimalType.html
  */
-class DecimalType : Typer {
+@Serializable
+class DecimalType(val precision: Int, val scale: Int) : Typer {
     private val logger = KotlinLogging.logger {}
 
     override fun key(): String {
         return "decimal"
     }
 
-    override fun process(name: String, formats: List<String>?): Column {
-        var typeCast = "decimal"
-        if (formats != null) {
-            if (formats.isNotEmpty()) {
-                val precision = formats[0].toIntOrNull()
-                val scale = if (formats.size > 1) formats[1].toIntOrNull() else null
-                if (precision != null && scale != null) {
-                    typeCast = "decimal(${precision},${scale})"
-                    logger.debug { "Using $typeCast for column $name" }
-                } else {
-                    logger.debug { "Invalid formats provided so using default $typeCast for column $name" }
-                }
-            } else {
-                logger.debug { "No formats provided so using default $typeCast for column $name" }
-            }
-        }
+    override fun process(name: String): Column {
+        val typeCast = "decimal(${precision},${scale})"
+        logger.debug { "Using $typeCast for column $name" }
         return functions.col(name).cast(typeCast).alias(name)
     }
 }

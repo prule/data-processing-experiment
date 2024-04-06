@@ -3,7 +3,7 @@ package com.example.dataprocessingexperiment.spark.pipeline
 import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
-import com.example.dataprocessingexperiment.tables.Tables
+import com.example.dataprocessingexperiment.tables.Sources
 import io.kotest.matchers.shouldBe
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
@@ -68,7 +68,7 @@ class ValueMappingJoinProcessorTest {
         )
 
         // build context
-        val context = SparkContext(Tables("test", "test", "test", listOf()))
+        val context = SparkContext(Sources("test", "test", "test", listOf()))
         context.set("mappings", mappings)
         context.set(tableName, transactions)
 

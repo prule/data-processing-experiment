@@ -6,6 +6,7 @@ import org.apache.spark.sql.SaveMode
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions
 import org.apache.spark.sql.functions.*
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 /**
@@ -63,7 +64,13 @@ class SparkSpikeTest {
     }
 
 
+    /**
+     * Prepare data for the sample - with different column names and limited rows.
+     * Need to execute `./run data:download` to source the raw data first.
+     * This is a once off operation.
+     */
     @Test
+    @Disabled
     fun `transform lga data`() {
 
         // spark setup

@@ -1,5 +1,6 @@
 package com.example.dataprocessingexperiment.spark.data.types
 
+import kotlinx.serialization.Serializable
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions
 
@@ -21,12 +22,13 @@ import org.apache.spark.sql.functions
  * At the moment casting as integer will do a FLOOR. This could be extended to use the formats parameter to allow
  * FLOOR, CEIL, ROUND
  */
+@Serializable
 class IntegerType : Typer {
     override fun key(): String {
         return "integer"
     }
 
-    override fun process(name: String, formats: List<String>?): Column {
+    override fun process(name: String): Column {
         return functions.col(name).cast("integer").alias(name)
     }
 }
