@@ -1,6 +1,6 @@
 package com.example.dataprocessingexperiment.spark.data
 
-import com.example.dataprocessingexperiment.spark.data.types.Types
+import com.example.dataprocessingexperiment.spark.data.types.*
 import com.example.dataprocessingexperiment.tables.ColumnDefinition
 import com.example.dataprocessingexperiment.tables.SourceDefinition
 import com.example.dataprocessingexperiment.tables.TableDefinition
@@ -40,23 +40,17 @@ class DataFrameBuilderTypeTest {
                 false,
                 ",",
                 listOf(
-                    ColumnDefinition(listOf("boolean"), "boolean", "boolean", "boolean"),
-                    ColumnDefinition(listOf("date"), "date", "date", "date", listOf("d/M/yyyy", "yyyy-MM-dd")),
-                    ColumnDefinition(listOf("decimal"), "decimal", "decimal", "decimal", listOf("10", "2")),
-                    ColumnDefinition(listOf("integer"), "integer", "integer", "integer"),
-                    ColumnDefinition(listOf("string"), "string", "string", "string"),
-                    ColumnDefinition(
-                        listOf("unknown"),
-                        "unknown",
-                        "unknown",
-                        "unknown"
-                    ), // test an invalid type definition is defaulted to string
+                    ColumnDefinition(listOf("boolean"), "boolean", "boolean", false, type = BooleanType()),
+                    ColumnDefinition(listOf("date"), "date", "date", false, type = DateType(listOf("d/M/yyyy", "yyyy-MM-dd"))),
+                    ColumnDefinition(listOf("decimal"), "decimal", "decimal", false, type = DecimalType(10,2)),
+                    ColumnDefinition(listOf("integer"), "integer", "integer", false, type = IntegerType()),
+                    ColumnDefinition(listOf("string"), "string", "string", false, type = StringType()),
                 )
             ),
         )
 
         // build the dataframe
-        val dataFrameBuilder = DataFrameBuilder(sparkSession, sourceDefinition, Types.all())
+        val dataFrameBuilder = DataFrameBuilder(sparkSession, sourceDefinition)
 
         // typed dataset, only columns specified
         val typedDataset = dataFrameBuilder.typed()
@@ -75,7 +69,6 @@ class DataFrameBuilderTypeTest {
         result[2] shouldBeEqual BigDecimal.valueOf(100.12)
         result[3] shouldBe 6
         result[4] shouldBe "any value"
-        result[5] shouldBe "unknown"
 
         /*
             root

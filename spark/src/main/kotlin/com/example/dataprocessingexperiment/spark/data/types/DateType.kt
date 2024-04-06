@@ -1,6 +1,7 @@
 package com.example.dataprocessingexperiment.spark.data.types
 
 import com.example.dataprocessingexperiment.spark.data.functions.Date
+import kotlinx.serialization.Serializable
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions
 
@@ -23,12 +24,13 @@ import org.apache.spark.sql.functions
  *
  * @see DateTypeTest
  */
-class DateType : Typer {
+@Serializable
+class DateType(val formats: List<String>) : Typer {
     override fun key(): String {
         return "date"
     }
 
-    override fun process(name: String, formats: List<String>?): Column {
-        return Date(formats!!).parse(functions.col(name)).alias(name)
+    override fun process(name: String): Column {
+        return Date(formats).parse(functions.col(name)).alias(name)
     }
 }

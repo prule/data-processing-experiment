@@ -4,14 +4,9 @@ import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import mu.KotlinLogging
-import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.Row
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
 import org.apache.spark.sql.types.DataTypes
-import org.apache.spark.sql.types.Metadata
-import org.apache.spark.sql.types.StructField
-import org.apache.spark.sql.types.StructType
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 import java.sql.Date
@@ -42,7 +37,7 @@ class DateTypeTest {
             )
         )
 
-        val column = DateType().process(columnName, listOf("yyyy-MM-dd", "dd-MM-yyyy"))
+        val column = DateType(listOf("yyyy-MM-dd", "dd-MM-yyyy")).process(columnName)
 
         // perform
         val result = dataframe.select(column).collectAsList().map { it.getDate(0) }
@@ -72,7 +67,7 @@ class DateTypeTest {
             )
         )
 
-        val column = DateType().process(columnName, listOf("yyyy-MM-dd"))
+        val column = DateType(listOf("yyyy-MM-dd")).process(columnName)
 
         // perform
         val result = dataframe.select(column).collectAsList().map { it.getDate(0) }

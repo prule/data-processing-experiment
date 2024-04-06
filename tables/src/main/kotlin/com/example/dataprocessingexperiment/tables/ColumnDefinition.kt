@@ -24,8 +24,7 @@ data class ColumnDefinition(
     val names: List<String>,
     val alias: String,
     val description: String,
-    val type: String,
-    val formats: List<String>? = listOf(),
     val required: Boolean = false,
-    val trim: Boolean? = null
+    val trim: Boolean? = null,
+    val type: ColumnType,
 )

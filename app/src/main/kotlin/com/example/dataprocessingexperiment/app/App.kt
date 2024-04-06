@@ -2,10 +2,11 @@ package com.example.dataprocessingexperiment.app
 
 import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.data.DataFrameBuilder
-import com.example.dataprocessingexperiment.spark.data.types.Types
+import com.example.dataprocessingexperiment.spark.data.types.*
 import com.example.dataprocessingexperiment.spark.pipeline.*
 import com.example.dataprocessingexperiment.spark.statistics.*
 import com.example.dataprocessingexperiment.spark.statistics.collectors.SparkCollector
+import com.example.dataprocessingexperiment.tables.ColumnType
 import com.example.dataprocessingexperiment.tables.Sources
 import com.example.dataprocessingexperiment.tables.pipeline.*
 import com.example.dataprocessingexperiment.tables.statistics.StatisticDefinition
@@ -37,11 +38,22 @@ class App {
         File(outputPath).deleteRecursively()
 
         // load configuration
-        val sources = Json5.decodeFromStream<Sources>(
+
+        val tablesModule = SerializersModule {
+            polymorphic(ColumnType::class, BooleanType::class, BooleanType.serializer())
+            polymorphic(ColumnType::class, StringType::class, StringType.serializer())
+            polymorphic(ColumnType::class, DateType::class, DateType.serializer())
+            polymorphic(ColumnType::class, IntegerType::class, IntegerType.serializer())
+            polymorphic(ColumnType::class, DecimalType::class, DecimalType.serializer())
+            polymorphic(ColumnType::class, NoOpType::class, NoOpType.serializer())
+        }
+        val tablesJson = Json5 { serializersModule = tablesModule }
+
+        val sources = tablesJson.decodeFromStream<Sources>(
             this::class.java.getResourceAsStream("/sample1.tables.json5")!!
         )
 
-        val module = SerializersModule {
+        val statisticsModule = SerializersModule {
             polymorphic(StatisticDefinition::class, Bounds::class, Bounds.serializer())
             polymorphic(StatisticDefinition::class, ColCount::class, ColCount.serializer())
             polymorphic(StatisticDefinition::class, CountByMonth::class, CountByMonth.serializer())
@@ -54,9 +66,9 @@ class App {
             polymorphic(StatisticDefinition::class, Summary::class, Summary.serializer())
         }
 
-        val format = Json5 { serializersModule = module }
+        val statisticsJson = Json5 { serializersModule = statisticsModule }
 
-        val statisticConfiguration = format.decodeFromStream<StatisticsConfiguration>(
+        val statisticConfiguration = statisticsJson.decodeFromStream<StatisticsConfiguration>(
             this::class.java.getResourceAsStream("/sample1.statistics.json5")!!
         )
 
@@ -74,7 +86,6 @@ class App {
                 val dataFrameBuilder = DataFrameBuilder(
                     sparkSession,
                     source,
-                    Types.all(),
                     "../data/"
                 )
 

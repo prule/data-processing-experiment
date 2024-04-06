@@ -4,14 +4,9 @@ import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.SparkSessionHelper
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.ints.shouldBeExactly
-import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.Row
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
 import org.apache.spark.sql.types.DataTypes
-import org.apache.spark.sql.types.Metadata
-import org.apache.spark.sql.types.StructField
-import org.apache.spark.sql.types.StructType
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
@@ -41,7 +36,7 @@ class DecimalTypeTest {
             )
         )
 
-        val column = DecimalType().process(columnName, listOf("10","3"))
+        val column = DecimalType(10, 3).process(columnName)
 
         // perform
         val result = dataframe.select(column).collectAsList().map { it.getDecimal(0).stripTrailingZeros() }
@@ -67,7 +62,7 @@ class DecimalTypeTest {
             )
         )
 
-        val column = DecimalType().process(columnName, listOf("10","3"))
+        val column = DecimalType(10, 3).process(columnName)
 
         // perform
         val result = dataframe.select(column).collectAsList().map { it.getDecimal(0) }
@@ -94,58 +89,7 @@ class DecimalTypeTest {
             )
         )
 
-        val column = DecimalType().process(columnName, listOf("10"))
-
-        // perform
-        val result = dataframe.select(column).collectAsList().map { it.getDecimal(0) }
-
-        // verify
-        result shouldContainExactlyInAnyOrder (listOf(
-            BigDecimal.valueOf(12),
-        ))
-    }
-
-    @Test
-    fun `should default when scale is invalid`() {
-
-        // prepare
-
-        val data = listOf(
-            GenericRow(arrayOf("12.123")),
-        )
-
-        val dataframe = dataHelper.asDataFrame(
-            data, listOf(
-                Pair(columnName, DataTypes.StringType),
-            )
-        )
-
-        val column = DecimalType().process(columnName, listOf("10", "x"))
-
-        // perform
-        val result = dataframe.select(column).collectAsList().map { it.getDecimal(0) }
-
-        // verify
-        result shouldContainExactlyInAnyOrder (listOf(
-            BigDecimal.valueOf(12),
-        ))
-    }
-
-    @Test
-    fun `should default when precision is invalid`() {
-
-        // prepare
-
-        val data = listOf(
-            GenericRow(arrayOf("12.123")),
-        )
-
-        val dataframe = dataHelper.asDataFrame(
-            data, listOf(
-                Pair(columnName, DataTypes.StringType),
-            )
-        )
-        val column = DecimalType().process(columnName, listOf("x", "2"))
+        val column = DecimalType(10,0).process(columnName)
 
         // perform
         val result = dataframe.select(column).collectAsList().map { it.getDecimal(0) }

@@ -1,5 +1,6 @@
 package com.example.dataprocessingexperiment.spark.data.types
 
+import com.example.dataprocessingexperiment.tables.ColumnType
 import org.apache.spark.sql.Column
 
 /**
@@ -11,7 +12,7 @@ import org.apache.spark.sql.Column
  *
  * DataFrameBuilder will call `process` when building the typed dataframe.
  */
-interface Typer {
+interface Typer: ColumnType {
     fun key(): String
-    fun process(name: String, formats: List<String>?): Column
+    fun process(name: String): Column
 }

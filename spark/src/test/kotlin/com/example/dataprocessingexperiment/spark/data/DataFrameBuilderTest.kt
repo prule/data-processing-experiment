@@ -1,8 +1,9 @@
 package com.example.dataprocessingexperiment.spark.data
 
 import com.example.dataprocessingexperiment.spark.SparkDataHelper
-import com.example.dataprocessingexperiment.spark.data.types.Types
-import com.example.dataprocessingexperiment.spark.pipeline.JoinProcessorTest
+import com.example.dataprocessingexperiment.spark.data.types.DateType
+import com.example.dataprocessingexperiment.spark.data.types.DecimalType
+import com.example.dataprocessingexperiment.spark.data.types.StringType
 import com.example.dataprocessingexperiment.tables.ColumnDefinition
 import com.example.dataprocessingexperiment.tables.SourceDefinition
 import com.example.dataprocessingexperiment.tables.TableDefinition
@@ -14,7 +15,6 @@ import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.expressions.GenericRow
-import org.apache.spark.sql.functions
 import org.apache.spark.sql.types.DataTypes
 import org.junit.jupiter.api.Test
 
@@ -48,26 +48,24 @@ class DataFrameBuilderTest {
                         listOf("date"),
                         "date",
                         "date",
-                        "date",
-                        listOf("yyyy-MM-dd", "dd-MM-yyyy"),
                         required = true,
+                        type = DateType(listOf("yyyy-MM-dd", "dd-MM-yyyy"))
                     ),
-                    ColumnDefinition(listOf("account"), "account", "account", "string", required = true),
-                    ColumnDefinition(listOf("description"), "description", "description", "string"),
+                    ColumnDefinition(listOf("account"), "account", "account", true, type = StringType()),
+                    ColumnDefinition(listOf("description"), "description", "description", false, type = StringType()),
                     ColumnDefinition(
                         listOf("amount"),
                         "amount",
                         "amount",
-                        "decimal",
-                        listOf("10", "2"),
-                        required = true
+                        required = true,
+                        type = DecimalType(10, 2)
                     ),
                 ),
                 trim = true,
             ),
         )
 
-        val dataFrameBuilder = DataFrameBuilder(sparkSession, sourceDefinition, Types.all())
+        val dataFrameBuilder = DataFrameBuilder(sparkSession, sourceDefinition)
 
         // raw dataset, no typing, all columns
         val rawDataset = dataFrameBuilder.raw
@@ -141,13 +139,13 @@ class DataFrameBuilderTest {
                 true,
                 ",",
                 listOf(
-                    ColumnDefinition(listOf("val1"), "val1", "val1", "string", trim = true),
-                    ColumnDefinition(listOf("val2"), "val2", "val2", "string", trim = true),
+                    ColumnDefinition(listOf("val1"), "val1", "val1", true, trim = true, type = StringType()),
+                    ColumnDefinition(listOf("val2"), "val2", "val2", true, trim = true, type = StringType()),
                 )
             ),
         )
 
-        val dataFrameBuilder = DataFrameBuilder(sparkSession, sourceDefinition, Types.all())
+        val dataFrameBuilder = DataFrameBuilder(sparkSession, sourceDefinition)
 
         // check we have some whitespace
         val raw = dataFrameBuilder.raw
@@ -166,7 +164,7 @@ class DataFrameBuilderTest {
 
     }
 
-    private fun hasLeadingOrTrailingWhitespace(str: String?) : Boolean {
+    private fun hasLeadingOrTrailingWhitespace(str: String?): Boolean {
         return str?.trim() != str
     }
 
