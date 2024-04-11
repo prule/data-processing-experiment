@@ -12,7 +12,7 @@ Data Processing Experiment - Part 11
 
 ---
 
-To get started with DataBricks I signed up to the [community edition](https://docs.databricks.com/en/getting-started/community-edition.html). This has some limitations but it'll suit me for this experiment.
+To get started with DataBricks I signed up to the [community edition](https://docs.databricks.com/en/getting-started/community-edition.html). This has some limitations but it'll suit me for this experiment. I've exported the source to [notebooks/databricks/Data processing experiment 1.py](notebooks/databricks/Data processing experiment 1.py)
 
 First step is to upload the data I want to use - this is done via the Catalog menu, uploading to DBFS, so we have a directory structure like:
 
