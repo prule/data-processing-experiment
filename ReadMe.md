@@ -1,6 +1,6 @@
-Data Processing Experiment - Part 10
+Data Processing Experiment - Part 11
 ---
-- The one where I refactor to clean up and use more polymorphic serialization to simplify and reduce code 
+- The one where I try out DataBricks Community Edition to do something similar to the Kotlin codebase. 
 
 ---
 
@@ -8,65 +8,75 @@ Data Processing Experiment - Part 10
 >
 > - [Github repository for this project](https://github.com/prule/data-processing-experiment/)
 > - [Pull requests for each part](https://github.com/prule/data-processing-experiment/pulls?q=is%3Apr+is%3Aclosed) 
-> - [Branch for part-10](https://github.com/prule/data-processing-experiment/tree/part-10)
+> - [Branch for part-11](https://github.com/prule/data-processing-experiment/tree/part-11)
 
 ---
 
-In its current state the framework can:
+To get started with DataBricks I signed up to the [community edition](https://docs.databricks.com/en/getting-started/community-edition.html). This has some limitations but it'll suit me for this experiment.
 
-- load tables from configuration
-  - trim, 
-  - handle multiple formats
-  - handle multiple column names
-- select only configured columns
-- convert to types
-- remove invalid rows
-- deduplicate
-- generate statistics
-- apply a pipeline of tasks
-  - join
-  - union
-  - map values
-  - add literal columns
-  - write output
+First step is to upload the data I want to use - this is done via the Catalog menu, uploading to DBFS, so we have a directory structure like:
 
-The framework is extensible so more types, statistics and tasks can easily be added as future requirements evolve.
-
-The configuration for the reference application be seen here:
-- [tables](https://github.com/prule/data-processing-experiment/tree/latest/app/src/main/resources/sample1.tables.json5)
-- [statistics](https://github.com/prule/data-processing-experiment/tree/latest/app/src/main/resources/sample1.statistics.json5)
-- [pipeline](https://github.com/prule/data-processing-experiment/tree/latest/app/src/main/resources/sample1.pipeline.json5)
-
-Here's the [output](https://github.com/prule/data-processing-experiment/tree/latest/app) from the [reference application](https://github.com/prule/data-processing-experiment/tree/latest/app/src/main/kotlin/com/example/dataprocessingexperiment/app/App.kt) for each stage for comparison.
-
-This week I haven't been able to add any new features, but I have done some clean up and refactoring. Since discovering how to use kotlin polymorphic serialization for the pipeline work, I now have an appreciation of how much it can simplify the codebase. Accordingly I've modified the table configuration to use this so it directly instantiates types instead of creating a generic type definition which then has to be transformed into the type - reducing code and complexity...
-
-Column configurations now have a type property which refers to a concrete class:
-
-```json5
-{
-  names: ["amount"],
-  alias: "amount",
-  description: "amount can be a positive (credit) or negative (debit) number representing dollars and cents",
-  type: {
-    type: "com.example.dataprocessingexperiment.spark.data.types.DecimalType",
-    precision: 10,
-    scale: 2
-  },
-  required: true
-}
+```text
+dbfs
+└── FileStore
+    └── shared_uploads
+        └── <user name>
+            └── sample1
+                ├── lgas
+                │   ├── 1
+                │   │   └── lga-1.csv
+                │   ├── 2
+                │   │   └── lga-2.csv
+                │   └── 3
+                │       └── lga-3.csv
+                ├── transactions
+                │   ├── 2020-01.csv
+                │   ├── 2020-02.csv
+                │   ├── 2020-03.csv
+                │   └── invalid-rows.csv
+                ├── types
+                │   └── types.csv
+                └── value_mappings
+                    └── transactions-mappings.csv
 ```
-Now the type classes can have specific fields:
-- DecimalType has `precision` and `scale`
-- DateType has `formats` 
+![DBFS file system](docs/dbfs-dir-list.png)
 
-This is much better than before where there was just a generic column class covering all types - a single `formats` string list handled parameters.
+The first step is to set up some basics. Here we need to set up JSON5 so we can read the configuration.
 
-Next week I'm going to experiment with Notebooks to implement similar functionality...
+![Step 1](docs/1.png)
 
-Some options I hope to look into over the next couple of weeks are:
+Now, set up some utility functions, and its important to know what version of python is available - here it's version 3.9.5.
 
-- [Databricks community edition](https://community.cloud.databricks.com)
-- [Google Colab](https://colab.research.google.com)
-- [Intellij Jupyter Notebook](https://plugins.jetbrains.com/plugin/22814-jupyter)
-- [JetBrains DataLore](https://www.jetbrains.com/datalore/)
+![Step 1](docs/2.png)
+
+Copy the configuration from DBFS to local file so it can be read via python file system.
+
+![Step 1](docs/3.png)
+
+Load the configuration and print it out for reference.
+
+![Step 1](docs/4.png)
+
+Loop over each table defined in the configuration and load into a dataframe - Spark can load from DBFS. Then add the dataframe to the context.
+
+![Step 1](docs/5.png)
+
+And display the dataframes as each one is loaded.
+
+![Step 1](docs/6.png)
+
+Next, loop over each table in the configuration again, selecting only the defined columns and aliasing so we end up with a standard dataframe.
+
+![Step 1](docs/7.png)
+![Step 1](docs/8.png)
+![Step 1](docs/9.png)
+
+Similarly, convert the tables from all string columns to typed columns as per configuration. And update the context.
+
+![Step 1](docs/10.png)
+![Step 1](docs/11.png)
+![Step 1](docs/12.png)
+
+#### Summary
+
+Here, I've gone from loading raw data using configuration to a typed dataset in a DataBricks notebook. There is still much to do to get it to parity with the functionality of the Kotlin codebase, but using python without any Object Oriented design wouldn't be satisfying so I'm going to leave it here, and try a different approach later.
