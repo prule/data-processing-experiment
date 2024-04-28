@@ -109,7 +109,9 @@ class App {
                 // SELECTED
                 // ------------
 
-                // get the raw version of the dataset, everything is a string, and all columns are included
+                // get the selected version of the dataset, everything is a string, and only configured columns are included.
+                // values will be trimmed if specified,
+                // and columns will be aliased.
                 val selectedDataset = dataFrameBuilder.selected()
                 display("SELECTED dataset", selectedDataset, "date")
 
