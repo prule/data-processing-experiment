@@ -11,15 +11,17 @@ import org.apache.spark.sql.functions
  * The following column definition specifies a decimal with precision=10 and scale=2
  *
  * ```
- *       {
- *         name: "amount",
- *         description: "amount can be a positive (credit) or negative (debit) number representing dollars and cents",
- *         type: "decimal",
- *         formats: [
- *           "10",
- *           "2"
- *         ]
- *       }
+    {
+        names: ["amount"],
+        alias: "amount",
+        description: "amount can be a positive (credit) or negative (debit) number representing dollars and cents",
+        type: {
+            type: "com.example.dataprocessingexperiment.spark.data.types.DecimalType",
+            precision: 10,
+            scale: 2
+        },
+        required: true
+    }
  * ```
  *
  * @link https://spark.apache.org/docs/3.5.0/api/java/org/apache/spark/sql/types/DecimalType.html

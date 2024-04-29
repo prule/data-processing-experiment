@@ -20,8 +20,6 @@ class DataFrameBuilder(
     private val rootPath: String = ""
 ) {
 
-    private val string = StringType()
-
     /**
      * Loads the raw dataset containing all columns as strings.
      */

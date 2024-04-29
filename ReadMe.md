@@ -1,82 +1,100 @@
-Data Processing Experiment - Part 11
+Data Processing Experiment - Part 12
 ---
-- The one where I try out DataBricks Community Edition to do something similar to the Kotlin codebase. 
+- The one where I try out Google Colab notebooks to do something similar to the Kotlin codebase.
 
 ---
 
-> The code for this project is available in GitHub - I’m using a branch for each part and merging each part into the **[latest](https://github.com/prule/data-processing-experiment/tree/latest)** branch. See the ReadMe.md in each branch for the story.
+> The code for the Python project is available in GitHub
+> - [Github repository](https://github.com/prule/data-processing-experiment-python/)
 >
-> - [Github repository for this project](https://github.com/prule/data-processing-experiment/)
-> - [Pull requests for each part](https://github.com/prule/data-processing-experiment/pulls?q=is%3Apr+is%3Aclosed) 
-> - [Branch for part-11](https://github.com/prule/data-processing-experiment/tree/part-11)
+> The code for the Kotlin project is available in GitHub - I’m using a branch for each part and merging each part into the **[latest](https://github.com/prule/data-processing-experiment/tree/latest)** branch. See the ReadMe.md in each branch for the story.
+>
+> Kotlin Project
+> - [Github repository](https://github.com/prule/data-processing-experiment/)
+> - [Pull requests for each part](https://github.com/prule/data-processing-experiment/pulls?q=is%3Apr+is%3Aclosed)
+> - [Branch for latest](https://github.com/prule/data-processing-experiment/tree/latest)
 
 ---
 
-To get started with DataBricks I signed up to the [community edition](https://docs.databricks.com/en/getting-started/community-edition.html). This has some limitations but it'll suit me for this experiment.
+## Introduction
 
-First step is to upload the data I want to use - this is done via the Catalog menu, uploading to DBFS, so we have a directory structure like:
+After playing with [DataBricks](https://databricks.com) notebooks, I thought I'd play with [Google Colab](https://colab.research.google.com) notebooks. This time I want to see if I can develop the python code as a module, and then use that from the notebook.
 
-```text
-dbfs
-└── FileStore
-    └── shared_uploads
-        └── <user name>
-            └── sample1
-                ├── lgas
-                │   ├── 1
-                │   │   └── lga-1.csv
-                │   ├── 2
-                │   │   └── lga-2.csv
-                │   └── 3
-                │       └── lga-3.csv
-                ├── transactions
-                │   ├── 2020-01.csv
-                │   ├── 2020-02.csv
-                │   ├── 2020-03.csv
-                │   └── invalid-rows.csv
-                ├── types
-                │   └── types.csv
-                └── value_mappings
-                    └── transactions-mappings.csv
+![Colab](notebooks/colab/screenshots/colab.png)
+
+## Details
+
+I'm using [PyCharm](https://www.jetbrains.com/pycharm/) to develop the python code - this gives me a familiar environment to code, test, and execute. I'm not used to python so I'm using a free version of [Cody](https://sourcegraph.com/demo/cody) AI assistant with the [Intellij plugin](https://plugins.jetbrains.com/plugin/9682-cody-ai-coding-assistant-with-autocomplete--chat) to help me with the syntax.
+![PyCharm](notebooks/colab/screenshots/pycharm.png)
+
+The python code can be developed in a similar way to the Kotlin code - some of the classes are similar, and its a lot easier to code and test in an IDE versus the notebook. I've taken the code only as far as loading the raw, selected, typed dataframes - not as complete as Kotlin version because the rest is purely academic. The interesting part is seeing how all of this fits together and how it works.
+See
+- https://github.com/prule/data-processing-experiment-python/blob/main/src/app/App.py
+- https://github.com/prule/data-processing-experiment-python/blob/main/src/core_prule/DataFrameBuilder.py
+
+To make the python module available to the notebook I've cloned the git repository and added it to the path:
+```notebook
+!git clone https://github.com/prule/data-processing-experiment-python.git experiment_module
 ```
-![DBFS file system](docs/dbfs-dir-list.png)
 
-The first step is to set up some basics. Here we need to set up JSON5 so we can read the configuration.
+In order for the notebook python to find the module, I need to add the path to the python module to the system path:
+```python
+base_path = '/content/experiment_module'
 
-![Step 1](docs/1.png)
+# update the path so the custom module can be loaded
+import sys
+sys.path.insert(1, base_path)
+```
 
-Now, set up some utility functions, and its important to know what version of python is available - here it's version 3.9.5.
+As I make changes to the code and push them to github, I want to load those changes into the notebook. Git PULL will pull in the changes:
+```notebook
+!cd experiment_module && git pull
+```
 
-![Step 1](docs/2.png)
+And so these changes will be dynamically reloaded I had to add:
+```notebook
+# dynamically load changes to code
+%load_ext autoreload
+%autoreload 2
+```
 
-Copy the configuration from DBFS to local file so it can be read via python file system.
+The python module lets me load the configuration and then process it to create the dataframes. So from the notebook I can start to reproduce the reference application:
+```python
+sources = Sources.from_dict(JsonRepository().load_file(base_path + '/config/sample1/sample1.tables.json5'))
 
-![Step 1](docs/3.png)
+with (SparkSession.builder.appName("Data Processing Experiment").master("local").getOrCreate()) as spark:
+    context = Context(sources)
 
-Load the configuration and print it out for reference.
+    for source in sources.sources:
+        builder = DataFrameBuilder(source, base_path + "/data/", spark)
 
-![Step 1](docs/4.png)
+        typed = builder.typed()
+        self.display("typed", typed)
 
-Loop over each table defined in the configuration and load into a dataframe - Spark can load from DBFS. Then add the dataframe to the context.
+        # Add to context
+        context.put(source.key, typed)
+...
+```
 
-![Step 1](docs/5.png)
+## Summary
 
-And display the dataframes as each one is loaded.
+This episode has been a bit rushed, but we've seen how the python code can be developed in an IDE, and then loaded into the notebook. This would allow a team to leverage simple externalised configuration and functionality to drive the data processing as was done in the Kotlin project. The intention here would be to be able to provide consistency across this work as well as speeding up the process.
 
-![Step 1](docs/6.png)
+## Other interesting points
 
-Next, loop over each table in the configuration again, selecting only the defined columns and aliasing so we end up with a standard dataframe.
+Colab keeps version history, and its easy to browse the history and compare any two versions.
 
-![Step 1](docs/7.png)
-![Step 1](docs/8.png)
-![Step 1](docs/9.png)
+![Colab Revisions](notebooks/colab/screenshots/colab-revisions.png)
 
-Similarly, convert the tables from all string columns to typed columns as per configuration. And update the context.
+The notebook can also be exported as an `ipynb` file - which includes the source and the output. This file can be opened in Intellij with the Jupyter
+plugin.
 
-![Step 1](docs/10.png)
-![Step 1](docs/11.png)
-![Step 1](docs/12.png)
+It can also be converted to HTML using the following:
+```commandline
+pip install jupyter 
+jupyter nbconvert --to html Data_Processing_Experiment_part_12.ipynb
+```
 
-#### Summary
+And now, as a simple HTML file it can easily be captured as a screenshot using the web developer tools available in Chrome, Safari, and Firefox.
 
-Here, I've gone from loading raw data using configuration to a typed dataset in a DataBricks notebook. There is still much to do to get it to parity with the functionality of the Kotlin codebase, but using python without any Object Oriented design wouldn't be satisfying so I'm going to leave it here, and try a different approach later.
+![Full screenshot](notebooks/colab/data_processing_experiment_part_12.png)
