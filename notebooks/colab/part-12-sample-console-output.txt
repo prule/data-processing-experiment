@@ -1,0 +1,404 @@
+/Users/paulrule/.pyenv/versions/venv-3.10.12/bin/python /Users/paulrule/PycharmProjects/data-processing-experiment-python/src/app/App.py
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+24/04/16 20:46:39 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+
+raw
+
+root
+ |-- date: string (nullable = true)
+ |-- account: string (nullable = true)
+ |-- description: string (nullable = true)
+ |-- amount: string (nullable = true)
+ |-- location: string (nullable = true)
+ |-- comment: string (nullable = true)
+
++----------+-------+-----------+-------+----------+----------+
+|      date|account|description| amount|  location|   comment|
++----------+-------+-----------+-------+----------+----------+
+|      NULL|      x|     tennis|   0.03|      NULL|   no date|
+| 2020-0...|      1|     tennis|  35.00|  Banana  |      NULL|
+| 2020-0...|      2|     petrol| 150.45|Central...|      NULL|
+|01-03-2020|      1|     burger|  15.47|Greater...|alterna...|
+|03-03-2020|      1|     tennis|  35.03| Maroondah|alterna...|
+|04-03-2020|      2|     petrol| 150.47|      NULL|alterna...|
+|05-03-2020|      2|     petrol|  50.47|   Burwood|      NULL|
+|05-03-2020|      2|     petrol|  50.48|  Berrigan|      NULL|
+|2020-01...|      1|  burgers  |  15.45|  Gympie  |      NULL|
+|2020-01-02|      1|     movie |  20.00|  South...|      NULL|
+|2020-01-04|      2|     petrol| 150.45|   Cent...|      NULL|
+|2020-02-01|      1|     burger|  15.46|  Yarrabah|      NULL|
+|2020-02-02|      1|     movies|  20.01|Barcaldine|      NULL|
+|2020-02-03|      1|     tennis|  35.01| Maroondah|      NULL|
+|2020-02-04|      2|     petrol| 150.46|Gannawarra|      NULL|
+|2020-02-04|      2|  electr...| 300.47|   Hepburn|      NULL|
+|2020-12-01|       |     tennis|   0.04|      NULL| blank ...|
+|2020-12-01|      x|     petrol|      x|      NULL| invali...|
+|2020-13-01|      x|     burger|   0.01|unknown...| invali...|
+|invalid...|      x|     petrol|   0.02|          |invalid...|
+|         x|      x|          x|      x|      NULL| row wi...|
+|         x|      x|          x|      x|      NULL| row wi...|
++----------+-------+-----------+-------+----------+----------+
+
+Row count = 22
+
+selected
+
+root
+ |-- date: string (nullable = true)
+ |-- account: string (nullable = true)
+ |-- description: string (nullable = true)
+ |-- location: string (nullable = true)
+ |-- amount: string (nullable = true)
+
++----------+-------+-----------+----------+-------+
+|      date|account|description|  location| amount|
++----------+-------+-----------+----------+-------+
+|      NULL|      x|     tennis|      NULL|   0.03|
+| 2020-0...|      1|     tennis|  Banana  |  35.00|
+| 2020-0...|      2|     petrol|Central...| 150.45|
+|01-03-2020|      1|     burger|Greater...|  15.47|
+|03-03-2020|      1|     tennis| Maroondah|  35.03|
+|04-03-2020|      2|     petrol|      NULL| 150.47|
+|05-03-2020|      2|     petrol|   Burwood|  50.47|
+|05-03-2020|      2|     petrol|  Berrigan|  50.48|
+|2020-01...|      1|    burgers|  Gympie  |  15.45|
+|2020-01-02|      1|      movie|  South...|  20.00|
+|2020-01-04|      2|     petrol|   Cent...| 150.45|
+|2020-02-01|      1|     burger|  Yarrabah|  15.46|
+|2020-02-02|      1|     movies|Barcaldine|  20.01|
+|2020-02-03|      1|     tennis| Maroondah|  35.01|
+|2020-02-04|      2|     petrol|Gannawarra| 150.46|
+|2020-02-04|      2| electri...|   Hepburn| 300.47|
+|2020-12-01|       |     tennis|      NULL|   0.04|
+|2020-12-01|      x|     petrol|      NULL|      x|
+|2020-13-01|      x|     burger|unknown...|   0.01|
+|invalid...|      x|     petrol|          |   0.02|
+|         x|      x|          x|      NULL|      x|
+|         x|      x|          x|      NULL|      x|
++----------+-------+-----------+----------+-------+
+
+Row count = 22
+
+typed
+
+root
+ |-- date: date (nullable = true)
+ |-- account: string (nullable = true)
+ |-- description: string (nullable = true)
+ |-- location: string (nullable = true)
+ |-- amount: decimal(10,2) (nullable = true)
+
++----------+-------+-----------+----------+------+
+|      date|account|description|  location|amount|
++----------+-------+-----------+----------+------+
+|      NULL|      x|     burger|unknown...|  0.01|
+|      NULL|      x|     petrol|          |  0.02|
+|      NULL|      x|     tennis|      NULL|  0.03|
+|      NULL|      x|          x|      NULL|  NULL|
+|      NULL|      x|          x|      NULL|  NULL|
+|2020-01-01|      1|    burgers|  Gympie  | 15.45|
+|2020-01-02|      1|      movie|  South...| 20.00|
+|2020-01-03|      1|     tennis|  Banana  | 35.00|
+|2020-01-04|      2|     petrol|Central...|150.45|
+|2020-01-04|      2|     petrol|   Cent...|150.45|
+|2020-02-01|      1|     burger|  Yarrabah| 15.46|
+|2020-02-02|      1|     movies|Barcaldine| 20.01|
+|2020-02-03|      1|     tennis| Maroondah| 35.01|
+|2020-02-04|      2|     petrol|Gannawarra|150.46|
+|2020-02-04|      2| electri...|   Hepburn|300.47|
+|2020-03-01|      1|     burger|Greater...| 15.47|
+|2020-03-03|      1|     tennis| Maroondah| 35.03|
+|2020-03-04|      2|     petrol|      NULL|150.47|
+|2020-03-05|      2|     petrol|   Burwood| 50.47|
+|2020-03-05|      2|     petrol|  Berrigan| 50.48|
+|2020-12-01|       |     tennis|      NULL|  0.04|
+|2020-12-01|      x|     petrol|      NULL|  NULL|
++----------+-------+-----------+----------+------+
+
+Row count = 22
+
+raw
+
+root
+ |-- Code State: string (nullable = true)
+ |-- Name State: string (nullable = true)
+ |-- Year: string (nullable = true)
+ |-- Code Local Government Area: string (nullable = true)
+ |-- Iso 3166-3 Area Code: string (nullable = true)
+ |-- Name Local Government Area: string (nullable = true)
+ |-- Type: string (nullable = true)
+ |-- Long Name Local Government Area: string (nullable = true)
+
++----------+----------+----+--------------------------+--------------------+--------------------------+----------+-------------------------------+
+|Code State|Name State|Year|Code Local Government Area|Iso 3166-3 Area Code|Name Local Government Area|      Type|Long Name Local Government Area|
++----------+----------+----+--------------------------+--------------------+--------------------------+----------+-------------------------------+
+|       001|    N.S.W.|2021|                     10850|                  AU|                   Blayney|local g...|                        Blayney|
+|       001|New Sou...|2021|                     11500|                 AUS|                Campbel...|local g...|                     Campbel...|
+|        01|       NSW|2021|                     10650|                 AUS|                  Berrigan|local g...|                       Berrigan|
+|         1|       NSW|2021|                     10650|                 AUS|                  Berrigan|local g...|                       Berrigan|
+|         1|New Sou...|2021|                     11700|                 AUS|                Central...|local g...|                     Central...|
+|         1|New Sou...|2021|                     15990|                 AUS|                Norther...|local g...|                     Norther...|
+|         1|       NSW|2021|                     11300|                 AUS|                   Burwood|local g...|                        Burwood|
+|         1|New Sou...|2021|                     11750|                 AUS|                     Cobar|local g...|                          Cobar|
+|         1|New Sou...|2021|                     14000|                 AUS|                   Hornsby|local g...|                        Hornsby|
+|         1|New Sou...|2021|                     14750|                 AUS|                    Leeton|local g...|                         Leeton|
+|         1|New Sou...|2021|                     17200|                 AUS|                    Sydney|local g...|                         Sydney|
++----------+----------+----+--------------------------+--------------------+--------------------------+----------+-------------------------------+
+
+Row count = 11
+
+selected
+
+root
+ |-- level_1_code: string (nullable = true)
+ |-- level_1_name: string (nullable = true)
+ |-- level_2_code: string (nullable = true)
+ |-- level_2_name: string (nullable = true)
+
++------------+------------+------------+------------+
+|level_1_code|level_1_name|level_2_code|level_2_name|
++------------+------------+------------+------------+
+|         001|      N.S.W.|       10850|     Blayney|
+|         001|  New Sou...|       11500|  Campbel...|
+|          01|         NSW|       10650|    Berrigan|
+|           1|         NSW|       10650|    Berrigan|
+|           1|  New Sou...|       11700|  Central...|
+|           1|  New Sou...|       15990|  Norther...|
+|           1|         NSW|       11300|     Burwood|
+|           1|  New Sou...|       11750|       Cobar|
+|           1|  New Sou...|       14000|     Hornsby|
+|           1|  New Sou...|       14750|      Leeton|
+|           1|  New Sou...|       17200|      Sydney|
++------------+------------+------------+------------+
+
+Row count = 11
+
+typed
+
+root
+ |-- level_1_code: string (nullable = true)
+ |-- level_1_name: string (nullable = true)
+ |-- level_2_code: string (nullable = true)
+ |-- level_2_name: string (nullable = true)
+
++------------+------------+------------+------------+
+|level_1_code|level_1_name|level_2_code|level_2_name|
++------------+------------+------------+------------+
+|         001|      N.S.W.|       10850|     Blayney|
+|         001|  New Sou...|       11500|  Campbel...|
+|          01|         NSW|       10650|    Berrigan|
+|           1|         NSW|       10650|    Berrigan|
+|           1|  New Sou...|       11700|  Central...|
+|           1|  New Sou...|       15990|  Norther...|
+|           1|         NSW|       11300|     Burwood|
+|           1|  New Sou...|       11750|       Cobar|
+|           1|  New Sou...|       14000|     Hornsby|
+|           1|  New Sou...|       14750|      Leeton|
+|           1|  New Sou...|       17200|      Sydney|
++------------+------------+------------+------------+
+
+Row count = 11
+
+raw
+
+root
+ |-- Official Name State: string (nullable = true)
+ |-- Year: string (nullable = true)
+ |-- Official Code Local Government Area: string (nullable = true)
+ |-- Official Code State: string (nullable = true)
+ |-- Iso 3166-3 Area Code: string (nullable = true)
+ |-- Official Name Local Government Area: string (nullable = true)
+
++-------------------+----+-----------------------------------+-------------------+--------------------+-----------------------------------+
+|Official Name State|Year|Official Code Local Government Area|Official Code State|Iso 3166-3 Area Code|Official Name Local Government Area|
++-------------------+----+-----------------------------------+-------------------+--------------------+-----------------------------------+
+|           Victoria|2021|                              21750|                  2|                 AUS|                         Colac O...|
+|           Victoria|2021|                              22670|                  2|                 AUS|                         Greater...|
+|           Victoria|2021|                              22910|                  2|                 AUS|                            Hepburn|
+|           Victoria|2021|                              24410|                  2|                 AUS|                          Maroondah|
+|           Victoria|2021|                              24850|                  2|                 AUS|                           Mitchell|
+|           Victoria|2021|                              23350|                  2|                 AUS|                             Indigo|
+|           Victoria|2021|                              26610|                  2|                 AUS|                          Swan Hill|
+|           Victoria|2021|                              22250|                  2|                 AUS|                         Gannawarra|
+|           Victoria|2021|                              20830|                  2|                 AUS|                            Baw Baw|
+|           Victoria|2021|                              21110|                  2|                 AUS|                         Boroondara|
++-------------------+----+-----------------------------------+-------------------+--------------------+-----------------------------------+
+
+Row count = 10
+
+selected
+
+root
+ |-- level_1_code: string (nullable = true)
+ |-- level_1_name: string (nullable = true)
+ |-- level_2_code: string (nullable = true)
+ |-- level_2_name: string (nullable = true)
+
++------------+------------+------------+------------+
+|level_1_code|level_1_name|level_2_code|level_2_name|
++------------+------------+------------+------------+
+|           2|    Victoria|       21750|  Colac O...|
+|           2|    Victoria|       22670|  Greater...|
+|           2|    Victoria|       22910|     Hepburn|
+|           2|    Victoria|       24410|   Maroondah|
+|           2|    Victoria|       24850|    Mitchell|
+|           2|    Victoria|       23350|      Indigo|
+|           2|    Victoria|       26610|   Swan Hill|
+|           2|    Victoria|       22250|  Gannawarra|
+|           2|    Victoria|       20830|     Baw Baw|
+|           2|    Victoria|       21110|  Boroondara|
++------------+------------+------------+------------+
+
+Row count = 10
+
+typed
+
+root
+ |-- level_1_code: string (nullable = true)
+ |-- level_1_name: string (nullable = true)
+ |-- level_2_code: string (nullable = true)
+ |-- level_2_name: string (nullable = true)
+
++------------+------------+------------+------------+
+|level_1_code|level_1_name|level_2_code|level_2_name|
++------------+------------+------------+------------+
+|           2|    Victoria|       21750|  Colac O...|
+|           2|    Victoria|       22670|  Greater...|
+|           2|    Victoria|       22910|     Hepburn|
+|           2|    Victoria|       24410|   Maroondah|
+|           2|    Victoria|       24850|    Mitchell|
+|           2|    Victoria|       23350|      Indigo|
+|           2|    Victoria|       26610|   Swan Hill|
+|           2|    Victoria|       22250|  Gannawarra|
+|           2|    Victoria|       20830|     Baw Baw|
+|           2|    Victoria|       21110|  Boroondara|
++------------+------------+------------+------------+
+
+Row count = 10
+
+raw
+
+root
+ |-- Official Name State: string (nullable = true)
+ |-- Official Code Local Government Area: string (nullable = true)
+ |-- Official Code State: string (nullable = true)
+ |-- Iso 3166-3 Area Code: string (nullable = true)
+ |-- Official Name Local Government Area: string (nullable = true)
+
++-------------------+-----------------------------------+-------------------+--------------------+-----------------------------------+
+|Official Name State|Official Code Local Government Area|Official Code State|Iso 3166-3 Area Code|Official Name Local Government Area|
++-------------------+-----------------------------------+-------------------+--------------------+-----------------------------------+
+|         Queensland|                              30410|                  3|                 AUS|                         Barcaldine|
+|         Queensland|                              33620|                  3|                 AUS|                             Gympie|
+|         Queensland|                              35670|                  3|                 AUS|                           Napranum|
+|         Queensland|                              36660|                  3|                 AUS|                         Souther...|
+|         Queensland|                              30370|                  3|                 AUS|                             Banana|
+|         Queensland|                              33100|                  3|                 AUS|                          Etheridge|
+|         Queensland|                              34830|                  3|                 AUS|                             Mapoon|
+|         Queensland|                              35300|                  3|                 AUS|                          Mount Isa|
+|         Queensland|                              37600|                  3|                 AUS|                           Yarrabah|
+|         Queensland|                              32270|                  3|                 AUS|                         Central...|
++-------------------+-----------------------------------+-------------------+--------------------+-----------------------------------+
+
+Row count = 10
+
+selected
+
+root
+ |-- level_1_code: string (nullable = true)
+ |-- level_1_name: string (nullable = true)
+ |-- level_2_code: string (nullable = true)
+ |-- level_2_name: string (nullable = true)
+
++------------+------------+------------+------------+
+|level_1_code|level_1_name|level_2_code|level_2_name|
++------------+------------+------------+------------+
+|           3|  Queensland|       30410|  Barcaldine|
+|           3|  Queensland|       33620|      Gympie|
+|           3|  Queensland|       35670|    Napranum|
+|           3|  Queensland|       36660|  Souther...|
+|           3|  Queensland|       30370|      Banana|
+|           3|  Queensland|       33100|   Etheridge|
+|           3|  Queensland|       34830|      Mapoon|
+|           3|  Queensland|       35300|   Mount Isa|
+|           3|  Queensland|       37600|    Yarrabah|
+|           3|  Queensland|       32270|  Central...|
++------------+------------+------------+------------+
+
+Row count = 10
+
+typed
+
+root
+ |-- level_1_code: string (nullable = true)
+ |-- level_1_name: string (nullable = true)
+ |-- level_2_code: string (nullable = true)
+ |-- level_2_name: string (nullable = true)
+
++------------+------------+------------+------------+
+|level_1_code|level_1_name|level_2_code|level_2_name|
++------------+------------+------------+------------+
+|           3|  Queensland|       30410|  Barcaldine|
+|           3|  Queensland|       33620|      Gympie|
+|           3|  Queensland|       35670|    Napranum|
+|           3|  Queensland|       36660|  Souther...|
+|           3|  Queensland|       30370|      Banana|
+|           3|  Queensland|       33100|   Etheridge|
+|           3|  Queensland|       34830|      Mapoon|
+|           3|  Queensland|       35300|   Mount Isa|
+|           3|  Queensland|       37600|    Yarrabah|
+|           3|  Queensland|       32270|  Central...|
++------------+------------+------------+------------+
+
+Row count = 10
+
+raw
+
+root
+ |-- table: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- from: string (nullable = true)
+ |-- to: string (nullable = true)
+
++----------+----------+-------+------+
+|     table|    column|   from|    to|
++----------+----------+-------+------+
+|transac...|descrip...|burgers|burger|
++----------+----------+-------+------+
+
+Row count = 1
+
+selected
+
+root
+ |-- table: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- from: string (nullable = true)
+ |-- to: string (nullable = true)
+
++----------+----------+-------+------+
+|     table|    column|   from|    to|
++----------+----------+-------+------+
+|transac...|descrip...|burgers|burger|
++----------+----------+-------+------+
+
+Row count = 1
+
+typed
+
+root
+ |-- table: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- from: string (nullable = true)
+ |-- to: string (nullable = true)
+
++----------+----------+-------+------+
+|     table|    column|   from|    to|
++----------+----------+-------+------+
+|transac...|descrip...|burgers|burger|
++----------+----------+-------+------+
+
+Row count = 1
+
+Process finished with exit code 0

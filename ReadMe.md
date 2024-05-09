@@ -1,72 +1,100 @@
-Data Processing Experiment - Part 10
+Data Processing Experiment - Part 12
 ---
-- The one where I refactor to clean up and use more polymorphic serialization to simplify and reduce code 
+- The one where I try out Google Colab notebooks to do something similar to the Kotlin codebase.
 
 ---
 
-> The code for this project is available in GitHub - I’m using a branch for each part and merging each part into the **[latest](https://github.com/prule/data-processing-experiment/tree/latest)** branch. See the ReadMe.md in each branch for the story.
+> The code for the Python project is available in GitHub
+> - [Github repository](https://github.com/prule/data-processing-experiment-python/)
 >
-> - [Github repository for this project](https://github.com/prule/data-processing-experiment/)
-> - [Pull requests for each part](https://github.com/prule/data-processing-experiment/pulls?q=is%3Apr+is%3Aclosed) 
-> - [Branch for part-10](https://github.com/prule/data-processing-experiment/tree/part-10)
+> The code for the Kotlin project is available in GitHub - I’m using a branch for each part and merging each part into the **[latest](https://github.com/prule/data-processing-experiment/tree/latest)** branch. See the ReadMe.md in each branch for the story.
+>
+> Kotlin Project
+> - [Github repository](https://github.com/prule/data-processing-experiment/)
+> - [Pull requests for each part](https://github.com/prule/data-processing-experiment/pulls?q=is%3Apr+is%3Aclosed)
+> - [Branch for latest](https://github.com/prule/data-processing-experiment/tree/latest)
 
 ---
 
-In its current state the framework can:
+## Introduction
 
-- load tables from configuration
-  - trim, 
-  - handle multiple formats
-  - handle multiple column names
-- select only configured columns
-- convert to types
-- remove invalid rows
-- deduplicate
-- generate statistics
-- apply a pipeline of tasks
-  - join
-  - union
-  - map values
-  - add literal columns
-  - write output
+After playing with [DataBricks](https://databricks.com) notebooks, I thought I'd play with [Google Colab](https://colab.research.google.com) notebooks. This time I want to see if I can develop the python code as a module, and then use that from the notebook.
 
-The framework is extensible so more types, statistics and tasks can easily be added as future requirements evolve.
+![Colab](notebooks/colab/screenshots/colab.png)
 
-The configuration for the reference application be seen here:
-- [tables](https://github.com/prule/data-processing-experiment/tree/latest/app/src/main/resources/sample1.tables.json5)
-- [statistics](https://github.com/prule/data-processing-experiment/tree/latest/app/src/main/resources/sample1.statistics.json5)
-- [pipeline](https://github.com/prule/data-processing-experiment/tree/latest/app/src/main/resources/sample1.pipeline.json5)
+## Details
 
-Here's the [output](https://github.com/prule/data-processing-experiment/tree/latest/app) from the [reference application](https://github.com/prule/data-processing-experiment/tree/latest/app/src/main/kotlin/com/example/dataprocessingexperiment/app/App.kt) for each stage for comparison.
+I'm using [PyCharm](https://www.jetbrains.com/pycharm/) to develop the python code - this gives me a familiar environment to code, test, and execute. I'm not used to python so I'm using a free version of [Cody](https://sourcegraph.com/demo/cody) AI assistant with the [Intellij plugin](https://plugins.jetbrains.com/plugin/9682-cody-ai-coding-assistant-with-autocomplete--chat) to help me with the syntax.
+![PyCharm](notebooks/colab/screenshots/pycharm.png)
 
-This week I haven't been able to add any new features, but I have done some clean up and refactoring. Since discovering how to use kotlin polymorphic serialization for the pipeline work, I now have an appreciation of how much it can simplify the codebase. Accordingly I've modified the table configuration to use this so it directly instantiates types instead of creating a generic type definition which then has to be transformed into the type - reducing code and complexity...
+The python code can be developed in a similar way to the Kotlin code - some of the classes are similar, and its a lot easier to code and test in an IDE versus the notebook. I've taken the code only as far as loading the raw, selected, typed dataframes - not as complete as Kotlin version because the rest is purely academic. The interesting part is seeing how all of this fits together and how it works.
+See
+- https://github.com/prule/data-processing-experiment-python/blob/main/src/app/App.py
+- https://github.com/prule/data-processing-experiment-python/blob/main/src/core_prule/DataFrameBuilder.py
 
-Column configurations now have a type property which refers to a concrete class:
-
-```json5
-{
-  names: ["amount"],
-  alias: "amount",
-  description: "amount can be a positive (credit) or negative (debit) number representing dollars and cents",
-  type: {
-    type: "com.example.dataprocessingexperiment.spark.data.types.DecimalType",
-    precision: 10,
-    scale: 2
-  },
-  required: true
-}
+To make the python module available to the notebook I've cloned the git repository and added it to the path:
+```notebook
+!git clone https://github.com/prule/data-processing-experiment-python.git experiment_module
 ```
-Now the type classes can have specific fields:
-- DecimalType has `precision` and `scale`
-- DateType has `formats` 
 
-This is much better than before where there was just a generic column class covering all types - a single `formats` string list handled parameters.
+In order for the notebook python to find the module, I need to add the path to the python module to the system path:
+```python
+base_path = '/content/experiment_module'
 
-Next week I'm going to experiment with Notebooks to implement similar functionality...
+# update the path so the custom module can be loaded
+import sys
+sys.path.insert(1, base_path)
+```
 
-Some options I hope to look into over the next couple of weeks are:
+As I make changes to the code and push them to github, I want to load those changes into the notebook. Git PULL will pull in the changes:
+```notebook
+!cd experiment_module && git pull
+```
 
-- [Databricks community edition](https://community.cloud.databricks.com)
-- [Google Colab](https://colab.research.google.com)
-- [Intellij Jupyter Notebook](https://plugins.jetbrains.com/plugin/22814-jupyter)
-- [JetBrains DataLore](https://www.jetbrains.com/datalore/)
+And so these changes will be dynamically reloaded I had to add:
+```notebook
+# dynamically load changes to code
+%load_ext autoreload
+%autoreload 2
+```
+
+The python module lets me load the configuration and then process it to create the dataframes. So from the notebook I can start to reproduce the reference application:
+```python
+sources = Sources.from_dict(JsonRepository().load_file(base_path + '/config/sample1/sample1.tables.json5'))
+
+with (SparkSession.builder.appName("Data Processing Experiment").master("local").getOrCreate()) as spark:
+    context = Context(sources)
+
+    for source in sources.sources:
+        builder = DataFrameBuilder(source, base_path + "/data/", spark)
+
+        typed = builder.typed()
+        self.display("typed", typed)
+
+        # Add to context
+        context.put(source.key, typed)
+...
+```
+
+## Summary
+
+This episode has been a bit rushed, but we've seen how the python code can be developed in an IDE, and then loaded into the notebook. This would allow a team to leverage simple externalised configuration and functionality to drive the data processing as was done in the Kotlin project. The intention here would be to be able to provide consistency across this work as well as speeding up the process.
+
+## Other interesting points
+
+Colab keeps version history, and its easy to browse the history and compare any two versions.
+
+![Colab Revisions](notebooks/colab/screenshots/colab-revisions.png)
+
+The notebook can also be exported as an `ipynb` file - which includes the source and the output. This file can be opened in Intellij with the Jupyter
+plugin.
+
+It can also be converted to HTML using the following:
+```commandline
+pip install jupyter 
+jupyter nbconvert --to html Data_Processing_Experiment_part_12.ipynb
+```
+
+And now, as a simple HTML file it can easily be captured as a screenshot using the web developer tools available in Chrome, Safari, and Firefox.
+
+![Full screenshot](notebooks/colab/data_processing_experiment_part_12.png)
