@@ -14,7 +14,7 @@ Data Processing Experiment - Part 13
 
 ## Introduction
 
-After using colab notebooks, I thought it was time to have a look at using more native Python options like Pandas.
+After using colab notebooks, I thought it was time to have a look at using more native Python options like [Pandas](https://www.codecademy.com/article/introduction-to-numpy-and-pandas).
 
 ## Details
 
@@ -85,13 +85,13 @@ valid = typed.drop(typed[(typed.date.isnull()) | (typed.amount.isnull())].index)
 At this point so far, this hasn't seemed intuitive. Lots to learn about pandas and the errors aren't very descriptive.
 There are some options to use a more SQL like approach.
 
-Firstly with pandasql:
+Firstly with [pandasql](https://pypi.org/project/pandasql/):
 ```
 import pandasql as ps
 rs = ps.sqldf("select * from valid order by amount desc")
 ```
 
-And alternatively with duckdb:
+And alternatively with [duckdb](https://duckdb.org/2021/05/14/sql-on-pandas.html):
 ```
 import duckdb
 # order by
