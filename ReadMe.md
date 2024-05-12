@@ -1,118 +1,118 @@
-Data Processing Experiment - Part 13
+Data Processing Experiment - Part 14
 ---
-- The one where I try out using Pandas to manipulate data
+- The one where I use a databricks notebook with spark and partitioned data.
 
 ---
 
 > The code for this project is available in GitHub - I’m using a branch for each part and merging each part into the **[latest](https://github.com/prule/data-processing-experiment/tree/latest)** branch. See the ReadMe.md in each branch for the story.
 >
-> - [Github repository](https://github.com/prule/data-processing-experiment/)
+> - [Github repository for this project](https://github.com/prule/data-processing-experiment/)
 > - [Pull requests for each part](https://github.com/prule/data-processing-experiment/pulls?q=is%3Apr+is%3Aclosed)
-> - [Branch for latest](https://github.com/prule/data-processing-experiment/tree/latest)
+> - [Branch for part-14](https://github.com/prule/data-processing-experiment/tree/part-14)
 
 ---
 
 ## Introduction
 
-After using colab notebooks, I thought it was time to have a look at using more native Python options like [Pandas](https://www.codecademy.com/article/introduction-to-numpy-and-pandas).
+Today's exercise is using a DataBricks notebook to play with spark dataframes using partitioning - with big data this is useful to parallelize processing across a spark cluster. 
+
+- https://spark.apache.org/docs/latest/sql-data-sources-parquet.html
+- https://medium.com/@dipayandev/everything-you-need-to-understand-data-partitioning-in-spark-487d4be63b9c
+- https://statusneo.com/everything-you-need-to-understand-data-partitioning-in-spark/#:~:text=Spark%2FPyspark%20partitioning%20is%20a,faster%20reads%20by%20downstream%20systems.
+
+A screen shot of the full notebook can be seen at the end of this article.
 
 ## Details
 
-In this episode, I'm just using Python with Pandas to manipulate dataframes to process data.
-
-I've created a git repository with just data - so the first thing to do is clone this repo so it's local:
+I have a little git repository with some simple sample data. I clone this so I have a local copy:
 ```
-!git clone https://github.com/prule/data.git data
+git clone https://github.com/prule/data.git /tmp/data
 ```
-
-Because there are multiple files in the transactions directory, I want to load them all into one dataframe:
+which looks like this:
 ```
-import pandas as pd
-import os
-
-# https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-pd.options.mode.copy_on_write = True
-
-directory = './data/sample1/transactions'
-
-# Load all CSV files in the directory into a list of DataFrames
-csv_files = [pd.read_csv(os.path.join(directory, filename)) for filename in os.listdir(directory) if filename.endswith('.csv')]
-
-# Concatenate the DataFrames into a single DataFrame
-# https://stackoverflow.com/a/47576083/20242
-df = pd.concat(csv_files,ignore_index=True)
+sample2
+├── partitioned
+│   ├── year=2022
+│   │   └── data.csv
+│   ├── year=2023
+│   │   └── data.csv
+│   └── year=2024
+│       └── data.csv
 ```
+The year value isn't in the CSV files, but is provided by the directory name. When the dataframe is loaded the year value will be a column.
 
-With the raw dataframe constructed, I want to select only the columns of interest
+>  In a partitioned table, data are usually stored in different directories, with partitioning column values encoded in the path of each partition directory. All built-in file sources (including Text/CSV/JSON/ORC/Parquet) are able to discover and infer partitioning information automatically.
+
+Now load it into a spark dataframe: 
 ```
-# select only the columns needed
-selected = df[['date','description','amount']]
-selected.head()
+df = spark.read.format(file_type) \
+  .option("inferSchema", infer_schema) \
+  .option("header", first_row_is_header) \
+  .option("sep", delimiter) \
+  .load(file_location)
 ```
-
-Data cleaning comes next - I know the date column has superflous spaces which break parsing so I need to trim these
+The schema is inferred so columns are typed appropriately:
 ```
-cleaned = selected
-## date
-# trim whitespace
-cleaned['date'] = cleaned['date'].str.strip()
+root
+ |-- amount: integer (nullable = true)
+ |-- type: string (nullable = true)
+ |-- year: integer (nullable = true)
+ ```
+There's lots that can be done with the dataframe to transform the data now, but that's for another time. 
+
+Next though is to create a view from the dataframe:
 ```
-
-To do type conversion is a bit more complicated. Amount is simple, but for date I need to support multiple date formats so I'll add a column and iteratively
-update this column by using each date format.
-
-Once complete I need to select the desired columns (with my new date column) and alias the column names so they are back to normal.
+df.createOrReplaceTempView("data_csv")
 ```
-typed = cleaned
-
-# amount - type conversion
-typed['amount'] = pd.to_numeric(typed['amount'], errors='coerce')
-
-# type conversion using multiple formats
-typed['date_new'] = None # add column to populate using each date format
-typed.loc[typed['date_new'].isnull(), 'date_new'] = pd.to_datetime(typed['date'], format='%Y-%m-%d', errors='coerce')
-typed.loc[typed['date_new'].isnull(), 'date_new'] = pd.to_datetime(typed['date'], format='%d-%m-%Y', errors='coerce')
-# select the right columns (aliasing)
-typed = typed[['date_new','description','amount']].rename(columns={'date_new':'date'})
+which we can then query with SQL:
 ```
-
-And then it's just a matter of dropping the invalid rows
-
+%sql
+select * from `data_csv`
 ```
-valid = typed.drop(typed[(typed.date.isnull()) | (typed.amount.isnull())].index)
+Also, the dataframe can be written to disk, in this case partitioned by type instead of date (just as a example):
+```
+df.write.partitionBy("type").parquet(path='file:/tmp/output/sample-data.parquet', mode='overwrite')
+```
+Which produces
+```
+sample-data.parquet
+├── type=A
+├── type=B
+├── type=C
 ```
 
-At this point so far, this hasn't seemed intuitive. Lots to learn about pandas and the errors aren't very descriptive.
-There are some options to use a more SQL like approach.
+----
 
-Firstly with [pandasql](https://pypi.org/project/pandasql/):
-```
-import pandasql as ps
-rs = ps.sqldf("select * from valid order by amount desc")
-```
+Note that if your data isn't properly partitioned on disk the dataframe will fail to load.
 
-And alternatively with [duckdb](https://duckdb.org/2021/05/14/sql-on-pandas.html):
+So in this case it will fail since the "invalid" directory doesn't follow the expected "year=nnnn" format:
 ```
-import duckdb
-# order by
-rs = duckdb.query("select * from valid order by amount desc").df()
-# order by with where clause
-rs = duckdb.query("select * from valid where amount < 20 order by amount desc").df()
+└── partitioned-invalid
+    ├── invalid
+    │   └── data.csv
+    ├── year=2022
+    │   └── data.csv
+    ├── year=2023
+    │   └── data.csv
+    └── year=2024
+        └── data.csv
 ```
 
 ## Summary
 
-Pandas is a Python library used for data manipulation and analysis. It offers data structures and operations for manipulating numerical tables and time series. Pandas is built on top of the NumPy library and provides a high-performance, easy-to-use interface for data analysis tasks.
+Spark partitioning is a technique used to distribute data across multiple nodes in a Spark cluster. It enables parallel processing and improves performance by allowing multiple tasks to work on different partitions of the data simultaneously.
 
-I've covered some basic uses cases here - showing how notebooks with pandas can be used to manipulate data.
+Here I've loaded some partitioned data into a spark dataframe, demonstrated how it can be queried or transformed and then persisted to disk.
 
-I've exported the notebook from colab as a `ipynb` file, so I can convert it to html:
+---
+
+I've exported the notebook as a `ipynb` file, so I can convert it to html:
 
 ```commandline
 pip install jupyter 
-jupyter nbconvert --to html Pandas_example.ipynb
+jupyter nbconvert --to html Spark\ Partitioned\ Example.ipynb
 ```
 
 And now, as a simple HTML file it can easily be captured as a screenshot using the web developer tools available in [Chrome](https://www.tomsguide.com/how-to/how-to-screenshot-a-full-page-in-chrome), [Safari](https://eshop.macsales.com/blog/76508-take-a-screenshot-of-an-entire-webpage/), and [Firefox](https://support.mozilla.org/en-US/kb/take-screenshots-firefox).
 
-![Full screenshot](notebooks/colab-pandas/Pandas_example.png)
+![Full screenshot](notebooks/databricks/part-14/Spark_Partitioned_Example.png)
