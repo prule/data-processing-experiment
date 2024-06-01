@@ -1,6 +1,6 @@
-Data Processing Experiment - Part 15
+Data Processing Experiment - Part 16
 ---
-- Experimenting with sampling and seeing the effect of data size.
+- Sampling data to reduce the dataset size
 
 ---
 
@@ -8,198 +8,208 @@ Data Processing Experiment - Part 15
 >
 > - [Github repository for this project](https://github.com/prule/data-processing-experiment/)
 > - [Pull requests for each part](https://github.com/prule/data-processing-experiment/pulls?q=is%3Apr+is%3Aclosed)
-> - [Branch for part-15](https://github.com/prule/data-processing-experiment/tree/part-15)
+> - [Branch for part-16](https://github.com/prule/data-processing-experiment/tree/part-16)
 
 ---
 
 ## Introduction
 
-sampleBy() is a method in Apache Spark that allows you to perform stratified sampling on a DataFrame or RDD.
+Stratified sampling is a way to reduce a dataset while keeping the distribution of certain characteristics similar to the original.
 
-Stratified sampling means dividing the data into distinct subgroups (strata) and then sampling each subgroup independently according to specified fractions. This is particularly useful when you want to ensure that certain subsets of your data are well-represented in the sample.
+For example, if we have a very large dataset we may want to make it smaller to make processing and experimenting with it easier.
 
-A screen shot of the full notebook can be seen at the end of this article.
+* We could take a random sample, but this will may mean the distribution of the data will not match the original.
+    * Perhaps the original data was skewed toward a certain age group and gender in which case random sampling may change the shape of the data
 
-Use Cases:
+With stratified sampling, the aim is to keep the proportions similar to the original.
 
-* Balanced Datasets: Ensure that each subgroup of data is equally represented in the sample, useful in machine learning for training balanced models.
-* Data Analysis: Analyze a representative subset of data from each category without processing the entire dataset.
-* Quality Assurance: Validate the integrity of data processing steps on stratified samples.
+The wikipedia page has a good example which I try to recreate below.
 
-The pyspark source has an example demonstrating how to use it [here](https://spark.apache.org/docs/3.3.2/api/python/_modules/pyspark/sql/dataframe.html#DataFrame.sample).
+* https://en.wikipedia.org/wiki/Stratified_sampling
+* https://spark.apache.org/docs/3.5.1/mllib-statistics.html#stratified-sampling
 
 ----
 
-View this code as a notebook [here](https://colab.research.google.com/drive/1SByfibzSjAcq0V9kow5hM0x6IUpEnoae?usp=sharing).
+View this code as a notebook [here](https://colab.research.google.com/drive/1W1s9iJ37FxdowZNp2Qm6bxPHuw6XBsuK?usp=sharing).
 
 ----
 
 ## Details
 
-First, we need some data:
+Lets have a look at the raw data:
 ```
-# create a dataset using a range - each row is the modulus of 3
-#  - so we end up with 100 rows containing keys 0, 1, or 2
-dataset = spark.range(0, 99).select((col("id") % 3).alias("key"))
+# Load the data
+raw = load("file:/tmp/data/sample4/large/")
+raw.count()
 
-# and summarise the data - counts by key
-dataset.groupBy("key").count().orderBy("key").show()
+180,000
 
-+---+-----+
-|key|count|
-+---+-----+
-|  0|   33|
-|  1|   33|
-|  2|   33|
-+---+-----+
+
+# Show distribution of data by sex and status
+rawProportions = raw.groupBy("sex","status").count() \
+.withColumn("proportion", col('count')/raw.count()) \
+.withColumn("label", concat(col('sex'), lit("|"), col('status'))) \
+.orderBy("sex","status")
+rawProportions.show()
+
++------+---------+-----+----------+----------------+
+|   sex|   status|count|proportion|           label|
++------+---------+-----+----------+----------------+
+|Female|Full-time| 9000|      0.05|Female|Full-time|
+|Female|Part-time|63000|      0.35|Female|Part-time|
+|  Male|Full-time|90000|       0.5|  Male|Full-time|
+|  Male|Part-time|18000|       0.1|  Male|Part-time|
++------+---------+-----+----------+----------------+
 ```
-When taking a sample we need to specify the column to use - in this case `key` and then the fraction of those matching rows we want - so in this case we are using fractions:
+Graphing it as a pie chart might be a good way to visualise it - clicking the + next to the table lets you choose how to display the data shown.
+```
+values = rawProportions.toPandas()
+values.plot(kind='pie', y='proportion', labels=values['label'])
+```
+
+### Transform the data
+
+I'm not sure how to sample the data by multiple columns, so to make it simple I'll add a column which is the concatenation of sex and status. Then I can just sample by that column.
+
+```
+transformed = raw.withColumn( \
+  'sample_by', \
+  concat( \
+    col("sex"), \
+    lit("|"), \
+    col("status") \
+  ) \
+)
+```
+
+### Calculate how to scale each stratum
+
+If we have 180 rows and we want to reduce that to 40 we need to sample 40/180 = approx 22%.
+
+And we want to take equal proportions of each segment (in this example) so the sample proportions will match the original data.
+
+```
+fractions = transformed.select("sample_by") \
+.distinct() \
+.withColumn("fraction", lit(.22)) \
+.rdd.collectAsMap()
+```
+results in
+
 ```
 {
-    0: 0.1,
-    1: 0.2
+'Male|Full-time':0.22,
+'Male|Part-time':0.22,
+'Female|Full-time':0.22,
+'Female|Part-time':0.22
 }
 ```
-In this case the raw data only has 99 rows. Each key (0,1,2) occurs 33 times.
-
-So
-
-* for a fraction of 0.1 we'd expect 3.
-* for a fraction of 0.2 we'd expect 6.
-* if a fraction isn’t specified for a key we expect 0.
-
-* Now lets do some sampling:
-```
-# now sample the data using defined fractions for each key
-sampled = dataset.sampleBy("key", fractions={0: 0.1, 1: 0.2}, seed=4)
-# and summarise the results - counts by key
-sampled.groupBy("key").count().orderBy("key").show()
-
-# Expected:
-# +---+-----+
-# |key|count|
-# +---+-----+
-# |  0|    3|
-# |  1|    6|
-# +---+-----+
-
-# Actual
-+---+-----+
-|key|count|
-+---+-----+
-|  0|    6|
-|  1|   12|
-+---+-----+
-```
-This isn’t quite the result I was expecting…
-
-For comparison lets try different seed values
-
-* For seed = 8 I get
-```
-+---+-----+
-|key|count|
-+---+-----+
-|  0|    8|
-|  1|    4|
-+---+-----+
-```
-* For see 12 I get
-```
-+---+-----+
-|key|count|
-+---+-----+
-|  0|    4|
-|  1|    8|
-+---+-----+
-```
-Quite a bit of variability and not so accurate proportions - so lets increase the data size to see if it gets closer...
-```
-# use the dataSize variable to change the range
-
-dataset = spark.range(0, dataSize).select((col("id") % 3).alias("key"))
-sampled = dataset.sampleBy("key", fractions={0: 0.1, 1: 0.2}, seed=seed)
-sampled.groupBy("key").count().orderBy("key").show()
-```
-
-dataSize = 1000:
-```
-+---+-----+
-|key|count|
-+---+-----+
-|  0|   38|
-|  1|   87|
-+---+-----+
-```
-Data size = 10,000:
-```
-+---+-----+
-|key|count|
-+---+-----+
-|  0|  336|
-|  1|  697|
-+---+-----+
-```
-Data size = 100,000
-```
-+---+-----+
-|key|count|
-+---+-----+
-|  0| 3314|
-|  1| 6750|
-+---+-----+
-```
-Data size = 1,000,000
-```
-+---+-----+
-|key|count|
-+---+-----+
-|  0|33312|
-|  1|66800|
-+---+-----+
-```
-Now it looks pretty accurate.
-
-For interest sake, lets try different seeds again…
-
-For seed = 8:
+Perform the sampling
 
 ```
-dataset = spark.range(0, 1000000).select((col("id") % 3).alias("key"))
-sampled = dataset.sampleBy("key", fractions={0: 0.1, 1: 0.2}, seed=8)
-sampled.groupBy("key").count().orderBy("key").show()
+sample = transformed.stat.sampleBy( \
+col="sample_by", \
+fractions=fractions, \
+seed=12 \
+)
 
-+---+-----+
-|key|count|
-+---+-----+
-|  0|33134|
-|  1|67107|
-+---+-----+
+sample.count()
+
+39631
 ```
-For seed = 12:
+We have approximately 40,000 rows in our sample.
+
+Look at the proportions for the sample
 
 ```
-dataset = spark.range(0, 1000000).select((col("id") % 3).alias("key"))
-sampled = dataset.sampleBy("key", fractions={0: 0.1, 1: 0.2}, seed=12)
-sampled.groupBy("key").count().orderBy("key").show()
+sampledProportions = sample \
+.groupBy("sex","status") \
+.count() \
+.withColumn("proportion", (col('count')/sample.count()).cast(DecimalType(10,2))) \
+.orderBy("sex","status")
 
-+---+-----+
-|key|count|
-+---+-----+
-|  0|33294|
-|  1|66564|
-+---+-----+
+
++------+---------+-----+----------+
+|   sex|   status|count|proportion|
++------+---------+-----+----------+
+|Female|Full-time| 1907|      0.05|
+|Female|Part-time|13904|      0.35|
+|  Male|Full-time|19911|      0.50|
+|  Male|Part-time| 3909|      0.10|
++------+---------+-----+----------+
 ```
-As we might expect, the seed does not make any significant difference with a large enough dataset…
+From the wikipedia page, I expected:
 
-## Summary
+* 5% (2 individuals) should be female, full-time.
+* 35% (14 individuals) should be female, part-time.
+* 50% (20 individuals) should be male, full-time.
+* 10% (4 individuals) should be male, part-time.
 
-In summary, if you are using sampling and wanting an accurate proportion of data, make sure you have a big enough dataset.
+So this is spot on! We have the same proportions across the combinations of sex and status but a much smaller dataset at 40,000 rows instead of 180,000.
 
-while developing something new, I’ll use a tiny dataset to iterate quickly - but in this case it threw me off when I didn’t see what I expected.
+But wait, with simple random sampling I get the same result:
+
+```
+raw.sample(fraction=0.22, seed=12).groupBy("sex","status") \
+  .count() \
+  .withColumn("proportion", (col('count')/sample.count()).cast(DecimalType(10,2))) \
+  .orderBy("sex","status") \
+  .show()
+
++------+---------+-----+----------+
+|   sex|   status|count|proportion|
++------+---------+-----+----------+
+|Female|Full-time| 1907|      0.05|
+|Female|Part-time|13904|      0.35|
+|  Male|Full-time|19911|      0.50|
+|  Male|Part-time| 3909|      0.10|
++------+---------+-----+----------+
+```
+It's exactly the same! No point in all that complexity in this example. Perhaps if we wanted to CHANGE the proportions (use unequal fractions) then we could do it that way. (Perhaps for manufacturing some sample data?)
+
+----
+
+If we use a small dataset we can see the proportions are close to expected but not quite exact - that is, the bigger the dataset the more accurate the proportions will be.
+
+```
+small = load("file:/tmp/data/sample4/small/")
+small.groupBy("sex","status") \
+  .count() \
+  .withColumn("proportion", (col('count')/small.count()).cast(DecimalType(10,2))) \
+  .orderBy("sex","status") \
+  .show()
+
++------+---------+-----+----------+
+|   sex|   status|count|proportion|
++------+---------+-----+----------+
+|Female|Full-time|    9|      0.05|
+|Female|Part-time|   63|      0.35|
+|  Male|Full-time|   90|      0.50|
+|  Male|Part-time|   18|      0.10|
++------+---------+-----+----------+
+
+
+smallSample = small.sample(fraction=0.22, seed=12)
+
+smallSample.groupBy("sex","status") \
+  .count() \
+  .withColumn("proportion", (col('count')/smallSample.count()).cast(DecimalType(10,2))) \
+  .orderBy("sex","status") \
+  .show()
+
++------+---------+-----+----------+
+|   sex|   status|count|proportion|
++------+---------+-----+----------+
+|Female|Full-time|    1|      0.02|
+|Female|Part-time|   14|      0.32|
+|  Male|Full-time|   24|      0.55|
+|  Male|Part-time|    5|      0.11|
++------+---------+-----+----------+
+```
+Close, but not as close as when the dataset was bigger.
 
 ---
 
-[Notebook](notebooks/part-15-colab-sampling-1/Sampling_data_with_spark.ipynb)
+[Notebook](notebooks/part-16-colab-stratified-sampling/Stratified_sampling_with_spark.ipynb)
 
-![Full screenshot](notebooks/part-15-colab-sampling-1/Sampling_data_with_spark.png)
+![Full screenshot](notebooks/part-16-colab-stratified-sampling/Stratified_sampling_with_spark.png)
