@@ -22,6 +22,8 @@ dependencies {
     implementation(project(":spark"))
 
     implementation("io.github.xn32:json5k:0.3.0")
+    implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
+    implementation("ch.qos.logback:logback-classic:1.4.12")
 
     // Use the Kotlin JUnit 5 integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")

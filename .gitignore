@@ -6,5 +6,6 @@
 build
 
 # Ignore downloaded data
-**/downloaded
+*/downloaded/*
 /notes.txt
+/data/part17/downloaded/

@@ -30,6 +30,7 @@ class DataFrameBuilder(
             .option("delimiter", sourceDefinition.table.delimiter)
             .load(rootPath + sourceDefinition.path)
             .alias(sourceDefinition.name)
+//            .persist()
     }
 
     /**

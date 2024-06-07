@@ -21,7 +21,7 @@ dependencies {
     api("org.apache.spark:spark-sql_2.13:3.5.0")
     api("com.fasterxml.jackson.core:jackson-core:2.15.2")
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
-    implementation("ch.qos.logback:logback-classic:1.4.7")
+    implementation("ch.qos.logback:logback-classic:1.4.12")
     implementation("io.github.xn32:json5k:0.3.0")
 
 

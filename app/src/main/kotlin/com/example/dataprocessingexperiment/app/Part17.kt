@@ -2,16 +2,15 @@ package com.example.dataprocessingexperiment.app
 
 import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.data.DataFrameBuilder
-import com.example.dataprocessingexperiment.spark.pipeline.*
 import com.example.dataprocessingexperiment.spark.statistics.StatisticRepository
 import com.example.dataprocessingexperiment.spark.statistics.StatisticsRunner
 import com.example.dataprocessingexperiment.spark.statistics.collectors.SparkCollector
 import com.example.dataprocessingexperiment.tables.Sources
-import com.example.dataprocessingexperiment.tables.pipeline.ProcessorDefinition
 import com.example.dataprocessingexperiment.tables.statistics.Statistics
 import com.example.dataprocessingexperiment.tables.statistics.StatisticsConfiguration
 import io.github.xn32.json5k.decodeFromStream
-import kotlinx.serialization.modules.SerializersModule
+import mu.KotlinLogging
+import org.apache.commons.lang3.time.StopWatch
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
@@ -22,8 +21,9 @@ import java.io.File
  * Reference implementation to demonstrate and exercise current capabilities.
  */
 
-class App {
+class Part17 {
     private val displayRows = 100
+    private val logger = KotlinLogging.logger {}
 
     fun go() {
         // spark setup
@@ -31,21 +31,23 @@ class App {
         val sparkSession = SparkSession.builder().config(config).orCreate
 
         // clean up the output directory
-        val outputPath = "./build/out/sample1/statements/statistics"
+        val outputPath = "./build/out/part17/statistics"
         File(outputPath).deleteRecursively()
 
         // load configuration
         val defaultJsonSerializer = DefaultJsonSerializer()
 
         val sources = defaultJsonSerializer.tableModule().decodeFromStream<Sources>(
-            this::class.java.getResourceAsStream("/sample1.tables.json5")!!
+            File("./data/part17/part17.tables.json5").inputStream()
         )
 
         val statisticConfiguration = defaultJsonSerializer.statisticsModule().decodeFromStream<StatisticsConfiguration>(
-            this::class.java.getResourceAsStream("/sample1.statistics.json5")!!
+            File("./data/part17/part17.statistics.json5").inputStream()
         )
 
         val context = SparkContext(sources)
+
+        val stopWatch = StopWatch.createStarted()
 
         // run
         // load each table
@@ -55,11 +57,13 @@ class App {
             // populate context with tables
             sources.sources.forEach { source ->
 
+                val stopWatchSource = StopWatch.createStarted()
+
                 // set up the dataframe
                 val dataFrameBuilder = DataFrameBuilder(
                     sparkSession,
                     source,
-                    "../data/"
+                    "./data/part17/"
                 )
 
                 // ------------
@@ -67,15 +71,15 @@ class App {
                 // ------------
 
                 // get the raw version of the dataset, everything is a string, and all columns are included
-                val rawDataset = dataFrameBuilder.raw
-                display("Raw dataset", rawDataset, "date")
+                val rawDataset = dataFrameBuilder.raw.persist()
+//                display("Raw dataset", rawDataset, "date")
 
                 // statistics
                 val stats = statisticConfiguration.statisticsById(source.id)
                 stats?.let {
                     val rawStatisticsPath = "$outputPath/${source.id}/raw"
                     generateStatistics(stats, rawDataset, rawStatisticsPath, sparkSession)
-                    display("RAW Statistics", rawStatisticsPath, "key", sparkSession)
+//                    display("RAW Statistics", rawStatisticsPath, "key", sparkSession)
                 }
 
                 // ------------
@@ -85,16 +89,16 @@ class App {
                 // get the selected version of the dataset, everything is a string, and only configured columns are included.
                 // values will be trimmed if specified,
                 // and columns will be aliased.
-                val selectedDataset = dataFrameBuilder.selected()
-                display("SELECTED dataset", selectedDataset, "date")
+//                val selectedDataset = dataFrameBuilder.selected()
+//                display("SELECTED dataset", selectedDataset, "date")
 
                 // ------------
                 // TYPED
                 // ------------
 
                 // get the typed version of the dataset, with columns and types specified in config
-                val typedDataset = dataFrameBuilder.typed()
-                display("Typed dataset", typedDataset, "date")
+//                val typedDataset = dataFrameBuilder.typed()
+//                display("Typed dataset", typedDataset, "date")
 
                 // ------------
                 // VALID
@@ -102,49 +106,23 @@ class App {
 
                 // get the valid version of the dataset, de-duplicating if required
                 val validDataset = dataFrameBuilder.valid(source.table.deduplicate)
-                display("Valid dataset", validDataset, "date")
+//                display("Valid dataset", validDataset, "date")
 
                 // statistics
                 stats?.let {
                     val validStatisticsPath = "$outputPath/${source.id}/valid"
                     generateStatistics(stats, validDataset, validStatisticsPath, sparkSession)
-                    display("VALID Statistics", validStatisticsPath, "key", sparkSession)
+//                    display("VALID Statistics", validStatisticsPath, "key", sparkSession)
                 }
 
                 // update the context
                 context.set(source.id, validDataset)
 
+                logger.info { "${source.id} took $stopWatchSource" }
             }
 
-            val pipelineConfigurationRepository = PipelineConfigurationRepository(
-                SerializersModule {
-                    polymorphic(ProcessorDefinition::class, JoinProcessor::class, JoinProcessor.serializer())
-                    polymorphic(ProcessorDefinition::class, UnionProcessor::class, UnionProcessor.serializer())
-                    polymorphic(ProcessorDefinition::class, LiteralProcessor::class, LiteralProcessor.serializer())
-                    polymorphic(ProcessorDefinition::class, OutputProcessor::class, OutputProcessor.serializer())
-                    polymorphic(
-                        ProcessorDefinition::class,
-                        ValueMappingJoinProcessor::class,
-                        ValueMappingJoinProcessor.serializer()
-                    )
-                    polymorphic(
-                        ProcessorDefinition::class,
-                        ValueMappingWhenProcessor::class,
-                        ValueMappingWhenProcessor.serializer()
-                    )
-                }
-            )
-
-            val pipelineConfiguration = pipelineConfigurationRepository.load(
-                File("./src/main/resources/sample1.pipeline.json5").inputStream()
-            )
-
-            PipelineProcessor(pipelineConfiguration).process(context)
-
-            // display result
-            context.show()
         }
-
+        logger.info { "Took $stopWatch" }
 
     }
 
@@ -191,7 +169,19 @@ class App {
 fun main() {
     println("Starting...")
 
-    App().go()
+    Part17().go()
 
     println("Finished...")
 }
+
+// With original code, it took 27 seconds and FileScanRDD occurred 40 times.
+// 24/06/07 20:39:24 INFO Part17: Took 00:00:27.173
+//
+// Removing calls to display dataframes, it took 22 seconds and FileScanRDD occurred 18 times.
+// 24/06/07 20:43:59 INFO Part17: Took 00:00:22.464
+//
+// Using persist on the raw dataset, it took 9 seconds and FileScanRDD occurred 3 times.
+// 24/06/07 20:52:49 INFO Part17: Took 00:00:09.479
+// addresses is read twice
+// cities is read once
+//

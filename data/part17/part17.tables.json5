@@ -1,0 +1,77 @@
+{
+  id: "part17",
+  name: "part17",
+  description: "Attempt to apply framework to the problem presented in https://github.com/davidasboth/solve-any-data-analysis-problem/blob/a2612923f23c15dcefbb482a5806861faed0ae51/chapter-2/Chapter%202%20sample%20solution.ipynb",
+
+  sources: [
+    {
+      id: "addresses",
+      name: "Addresses",
+      description: "",
+      path: "downloaded/addresses.csv",
+      type: "csv",
+      table: {
+        name: "addresses",
+        description: "",
+        deduplicate: true,
+        trim: true,
+        columns: [
+          // company_id,address,total_spend
+          {
+            names: ["company_id"],
+            alias: "company_id",
+            description: "company_id",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
+            required: true
+          },
+          {
+            names: ["address"],
+            alias: "address",
+            description: "address",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
+            trim: true
+          },
+          {
+            names: ["total_spend"],
+            alias: "total_spend",
+            description: "total_spend",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.DecimalType",
+              precision: 10,
+              scale: 2
+            }
+          },
+        ]
+      }
+    },
+    {
+      id: "cities",
+      name: "Cities",
+      description: "",
+      path: "downloaded/cities.csv",
+      type: "csv",
+      table: {
+        name: "cities",
+        description: "",
+        deduplicate: true,
+        trim: true,
+        columns: [
+          // England
+          {
+            names: ["England"],
+            alias: "England",
+            description: "England",
+            type: {
+              type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
+            },
+            required: true
+          },
+        ]
+      }
+    }
+  ],
+}
