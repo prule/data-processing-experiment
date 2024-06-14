@@ -5,6 +5,13 @@
         </encoder>
     </appender>
 
+    <!--
+    LogMgr is used to emit logs that are referenced by external systems eg log monitoring.
+    Do not disable this class.
+     -->
+    <logger name="com.example.dataprocessingexperiment.app.LogMgr" level="TRACE" />
+
+
     <logger name="org" level="WARN" />
 
     <root level="info">

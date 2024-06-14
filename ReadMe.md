@@ -44,3 +44,123 @@ Shuffle Operations: Operations that involve shuffling data across partitions, su
 However, it's important to note that persisting data in memory or on disk comes with a cost of increased memory or disk usage. Therefore, you should carefully evaluate the trade-off between performance gain and resource consumption when deciding to persist data. It's generally recommended to unpersist the data when it's no longer needed to free up resources.
 Additionally, you should choose the appropriate storage level (StorageLevel) based on your use case and available resources. For example, MEMORY_AND_DISK can be used when the data doesn't fit entirely in memory, or DISK_ONLY can be used when you have limited memory but sufficient disk space.
 
+
+
+with this:
+
+```
+    val raw: Dataset<Row> by lazy {
+        sparkSession.read()
+            .format(sourceDefinition.type)
+//            .option("quotedstring","\"")
+//            .option("escape","\"")
+//            .option("multiline", true)
+            .option("header", true) // headers are always required at this point
+            .option("delimiter", sourceDefinition.table.delimiter)
+            .load(rootPath + sourceDefinition.path)
+            .alias(sourceDefinition.name)
+    }
+```
+for addresses:
+
+key,column,discriminator,value
+EmptyCount,company_id,"",4
+EmptyCount,address,"",267387
+EmptyCount,total_spend,"",466316
+EmptyPercentage,"","",52
+row count,"","",467439
+column count,"","",3
+duplicate row count,"","",254162
+Summary,total_spend,count,1123
+Summary,total_spend,mean,4945.6419868791
+Summary,total_spend,stddev,1527.4680871493963
+Summary,total_spend,min,NR DAVENTRY
+Summary,total_spend,max,STAINES
+Summary,total_spend,25%,4000.0
+Summary,total_spend,50%,4900.0
+Summary,total_spend,75%,5900.0
+
+
+with
+.option("multiline", true)
+
+key,column,discriminator,value
+EmptyCount,company_id,"",0
+EmptyCount,address,"",983
+EmptyCount,total_spend,"",27
+EmptyPercentage,"","",0
+row count,"","",100021
+column count,"","",3
+duplicate row count,"","",2
+Summary,total_spend,count,99994
+Summary,total_spend,mean,4951.649098945937
+Summary,total_spend,stddev,1500.9995471720408
+Summary,total_spend,min,0
+Summary,total_spend,max,9900
+Summary,total_spend,25%,3900.0
+Summary,total_spend,50%,5000.0
+Summary,total_spend,75%,6000.0
+
+with
+.option("escape","\"")
+
+key,column,discriminator,value
+EmptyCount,company_id,"",0
+EmptyCount,address,"",968
+EmptyCount,total_spend,"",0
+EmptyPercentage,"","",0
+row count,"","",100000
+column count,"","",3
+duplicate row count,"","",0
+Summary,total_spend,count,100000
+Summary,total_spend,mean,4951.662
+Summary,total_spend,stddev,1500.9838664295094
+Summary,total_spend,min,0
+Summary,total_spend,max,9900
+Summary,total_spend,25%,3900.0
+Summary,total_spend,50%,5000.0
+Summary,total_spend,75%,6000.0
+
+
+with
+.option("quotedstring","\"")
+
+key,column,discriminator,value
+EmptyCount,company_id,"",0
+EmptyCount,address,"",968
+EmptyCount,total_spend,"",0
+EmptyPercentage,"","",0
+row count,"","",100000
+column count,"","",3
+duplicate row count,"","",0
+Summary,total_spend,count,100000
+Summary,total_spend,mean,4951.662
+Summary,total_spend,stddev,1500.9838664295094
+Summary,total_spend,min,0
+Summary,total_spend,max,9900
+Summary,total_spend,25%,3900.0
+Summary,total_spend,50%,5000.0
+Summary,total_spend,75%,6000.0
+
+total spend max is still wrong
+we need trim specified for that column
+then we look at the valid dataset statistics and we see the max is now correct - so it must have been whitespace that was interfering.
+
+- perhaps we should apply trimming to the raw dataset
+
+key,column,discriminator,value
+EmptyCount,company_id,"",0
+EmptyCount,address,"",968
+EmptyCount,total_spend,"",0
+EmptyPercentage,"","",0
+row count,"","",100000
+column count,"","",3
+duplicate row count,"","",0
+Summary,total_spend,count,100000
+Summary,total_spend,mean,4951.662000
+Summary,total_spend,stddev,1500.983866429508
+Summary,total_spend,min,0.00
+Summary,total_spend,max,11700.00
+Summary,total_spend,25%,3900.0
+Summary,total_spend,50%,5000.0
+Summary,total_spend,75%,6000.0

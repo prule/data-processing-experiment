@@ -21,24 +21,26 @@
             names: ["company_id"],
             alias: "company_id",
             description: "company_id",
+            required: true,
             type: {
               type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
             },
-            required: true
           },
           {
             names: ["address"],
             alias: "address",
             description: "address",
+            required: true,
+            trim: true,
             type: {
               type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
             },
-            trim: true
           },
           {
             names: ["total_spend"],
             alias: "total_spend",
             description: "total_spend",
+            trim: true,
             type: {
               type: "com.example.dataprocessingexperiment.spark.data.types.DecimalType",
               precision: 10,

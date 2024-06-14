@@ -37,7 +37,7 @@ class PersistSpike {
             File("./data/part17/part17.tables.json5").inputStream()
         )
 
-        val outputPath = "./build/out/part17/raw"
+        val outputPath = "./build/output/part17/raw"
         File(outputPath).deleteRecursively()
 
         val stopWatch = StopWatch.createStarted()

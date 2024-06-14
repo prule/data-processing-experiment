@@ -26,11 +26,13 @@ class DataFrameBuilder(
     val raw: Dataset<Row> by lazy {
         sparkSession.read()
             .format(sourceDefinition.type)
+            .option("quotedstring","\"")
+            .option("escape","\"")
+            .option("multiline", true)
             .option("header", true) // headers are always required at this point
             .option("delimiter", sourceDefinition.table.delimiter)
             .load(rootPath + sourceDefinition.path)
             .alias(sourceDefinition.name)
-//            .persist()
     }
 
     /**

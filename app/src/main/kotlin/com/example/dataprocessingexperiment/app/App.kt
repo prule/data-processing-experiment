@@ -31,7 +31,7 @@ class App {
         val sparkSession = SparkSession.builder().config(config).orCreate
 
         // clean up the output directory
-        val outputPath = "./build/out/sample1/statements/statistics"
+        val outputPath = "./build/output/sample1/statements/statistics"
         File(outputPath).deleteRecursively()
 
         // load configuration

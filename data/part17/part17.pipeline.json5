@@ -1,0 +1,18 @@
+{
+  id: "part17",
+  name: "Part 17 Pipeline 1",
+  description: "",
+  tasks: [
+    {
+      type: "com.example.dataprocessingexperiment.spark.pipeline.ValueProcessor",
+      id: "t0.1",
+      name: "Value filter",
+      description: "Remove rows where values match those specified",
+      table: "cities",
+      column: "city",
+      values: ["England", "Scotland", "Wales", "Northern Ireland"],
+      exclude: true
+    },
+
+  ]
+}

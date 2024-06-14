@@ -24,6 +24,8 @@ import java.io.File
 class Part17 {
     private val displayRows = 100
     private val logger = KotlinLogging.logger {}
+    private val outputBase = "./build/output/part17"
+    private val dataBase = "../data/part17"
 
     fun go() {
         // spark setup
@@ -31,21 +33,19 @@ class Part17 {
         val sparkSession = SparkSession.builder().config(config).orCreate
 
         // clean up the output directory
-        val outputPath = "./build/out/part17/statistics"
+        val outputPath = "$outputBase/statistics"
         File(outputPath).deleteRecursively()
 
         // load configuration
         val defaultJsonSerializer = DefaultJsonSerializer()
 
         val sources = defaultJsonSerializer.tableModule().decodeFromStream<Sources>(
-            File("./data/part17/part17.tables.json5").inputStream()
+            File("$dataBase/part17.tables.json5").inputStream()
         )
 
         val statisticConfiguration = defaultJsonSerializer.statisticsModule().decodeFromStream<StatisticsConfiguration>(
-            File("./data/part17/part17.statistics.json5").inputStream()
+            File("$dataBase/part17.statistics.json5").inputStream()
         )
-
-        val context = SparkContext(sources)
 
         val stopWatch = StopWatch.createStarted()
 
@@ -63,7 +63,7 @@ class Part17 {
                 val dataFrameBuilder = DataFrameBuilder(
                     sparkSession,
                     source,
-                    "./data/part17/"
+                    "$dataBase/"
                 )
 
                 // ------------
@@ -71,52 +71,29 @@ class Part17 {
                 // ------------
 
                 // get the raw version of the dataset, everything is a string, and all columns are included
+                logger.info { "raw ${source.id}" }
                 val rawDataset = dataFrameBuilder.raw.persist()
-//                display("Raw dataset", rawDataset, "date")
+
+                rawDataset.show(displayRows)
 
                 // statistics
+                logger.info { "raw stats ${source.id}" }
                 val stats = statisticConfiguration.statisticsById(source.id)
                 stats?.let {
                     val rawStatisticsPath = "$outputPath/${source.id}/raw"
                     generateStatistics(stats, rawDataset, rawStatisticsPath, sparkSession)
-//                    display("RAW Statistics", rawStatisticsPath, "key", sparkSession)
                 }
 
-                // ------------
-                // SELECTED
-                // ------------
-
-                // get the selected version of the dataset, everything is a string, and only configured columns are included.
-                // values will be trimmed if specified,
-                // and columns will be aliased.
-//                val selectedDataset = dataFrameBuilder.selected()
-//                display("SELECTED dataset", selectedDataset, "date")
-
-                // ------------
-                // TYPED
-                // ------------
-
-                // get the typed version of the dataset, with columns and types specified in config
-//                val typedDataset = dataFrameBuilder.typed()
-//                display("Typed dataset", typedDataset, "date")
-
-                // ------------
-                // VALID
-                // ------------
-
                 // get the valid version of the dataset, de-duplicating if required
+                logger.info { "valid ${source.id}" }
                 val validDataset = dataFrameBuilder.valid(source.table.deduplicate)
-//                display("Valid dataset", validDataset, "date")
 
                 // statistics
+                logger.info { "valid stats ${source.id}" }
                 stats?.let {
                     val validStatisticsPath = "$outputPath/${source.id}/valid"
                     generateStatistics(stats, validDataset, validStatisticsPath, sparkSession)
-//                    display("VALID Statistics", validStatisticsPath, "key", sparkSession)
                 }
-
-                // update the context
-                context.set(source.id, validDataset)
 
                 logger.info { "${source.id} took $stopWatchSource" }
             }
@@ -143,27 +120,27 @@ class Part17 {
         }
     }
 
-    private fun display(name: String, path: String, sort: String, sparkSession: SparkSession) {
-        val statisticDataframe = sparkSession.read()
-            .format("csv")
-            .option("header", true)
-            .load(path)
-
-        display(name, statisticDataframe, sort)
-    }
-
-    private fun display(name: String, ds: Dataset<Row>, sort: String) {
-        println()
-        println(name)
-        println()
-        ds.printSchema()
-        if (ds.columns().contains(sort)) {
-            ds.orderBy(sort).show(displayRows, 10)
-        } else {
-            ds.show(displayRows, 10)
-        }
-        println("row count = ${ds.count()}")
-    }
+//    private fun display(name: String, path: String, sort: String, sparkSession: SparkSession) {
+//        val statisticDataframe = sparkSession.read()
+//            .format("csv")
+//            .option("header", true)
+//            .load(path)
+//
+//        display(name, statisticDataframe, sort)
+//    }
+//
+//    private fun display(name: String, ds: Dataset<Row>, sort: String) {
+//        println()
+//        println(name)
+//        println()
+//        ds.printSchema()
+//        if (ds.columns().contains(sort)) {
+//            ds.orderBy(sort).show(displayRows, 10)
+//        } else {
+//            ds.show(displayRows, 10)
+//        }
+//        println("row count = ${ds.count()}")
+//    }
 }
 
 fun main() {

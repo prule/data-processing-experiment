@@ -8,7 +8,11 @@
       values: [
         {
           type: "com.example.dataprocessingexperiment.spark.statistics.EmptyCount",
-          columns: []
+          columns: [
+            "company_id",
+            "address",
+            "total_spend"
+          ]
         },
         {
           type: "com.example.dataprocessingexperiment.spark.statistics.RowCount",
@@ -19,7 +23,6 @@
         {
           type: "com.example.dataprocessingexperiment.spark.statistics.DuplicateCount",
         },
-
         {
           type: "com.example.dataprocessingexperiment.spark.statistics.Summary",
           columns: [
