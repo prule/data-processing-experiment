@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.jvm)
 
     kotlin("plugin.serialization") version "${libs.plugins.jvm.get().version}"
-    id("org.jetbrains.dokka") version "${libs.plugins.jvm.get().version}"
+    id("org.jetbrains.dokka") version libs.versions.dokka.get()
 
 }
 
