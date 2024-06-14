@@ -4,8 +4,8 @@ import java.net.URL
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     alias(libs.plugins.jvm)
-    kotlin("plugin.serialization") version "${libs.plugins.jvm.get().version}"
-    id("org.jetbrains.dokka") version "${libs.plugins.jvm.get().version}"
+    kotlin("plugin.serialization") version "${libs.versions.kotlin}"
+    id("org.jetbrains.dokka") version "${libs.versions.kotlin}"
 }
 
 repositories {
