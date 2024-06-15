@@ -4,13 +4,22 @@ import com.example.dataprocessingexperiment.tables.Sources
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
 
+/**
+ * Stores datasets which can be accessed by processors.
+ */
 class SparkContext(val sources: Sources) {
     private val data = mutableMapOf<String, Dataset<Row>>()
 
+    /**
+     * Add or update a dataset in the context
+     */
     fun set(id: String, dataset: Dataset<Row>) {
         data.put(id, dataset)
     }
 
+    /**
+     * Get a dataset from the context
+     */
     fun get(id: String): Dataset<Row> {
         if (contains(id)) {
             return data[id]!!

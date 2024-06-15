@@ -5,7 +5,8 @@ import kotlinx.serialization.Serializable
 import org.apache.spark.sql.functions.*
 
 /**
- *
+ * Either include or exclude rows that contain values in a specified column.
+ * It has parameters for the table, column, values, and whether to exclude or include the values.
  */
 @Serializable
 class ValuesProcessor(
@@ -27,7 +28,7 @@ class ValuesProcessor(
     }
 
     override fun toString(): String {
-        return "RemoveValuesProcessor(id='$id', name='$name', description='$description', table='$table', column='$column', values=$values)"
+        return "ValuesProcessor(id='$id', name='$name', description='$description', table='$table', column='$column', values=$values)"
     }
 
 
