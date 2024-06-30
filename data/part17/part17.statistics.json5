@@ -1,9 +1,11 @@
 // map of table id to statistics
 {
   statistics: [
+
+
     {
-      id: "addresses",
-      name: "Address Statistics",
+      id: "customers",
+      name: "Customer Statistics",
       description: "Statistics configuration for the addresses table",
       values: [
         {
@@ -38,6 +40,10 @@
             "50%",
             "75%"
           ]
+        },
+        {
+          type: "com.example.dataprocessingexperiment.spark.statistics.CountByValue",
+          column: "city"
         }
       ],
     },

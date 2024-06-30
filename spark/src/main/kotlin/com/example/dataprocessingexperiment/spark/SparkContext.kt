@@ -3,11 +3,12 @@ package com.example.dataprocessingexperiment.spark
 import com.example.dataprocessingexperiment.tables.Sources
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
+import org.apache.spark.sql.SparkSession
 
 /**
  * Stores datasets which can be accessed by processors.
  */
-class SparkContext(val sources: Sources) {
+class SparkContext(val sources: Sources, val sparkSession: SparkSession, val truncate: Int = 20) {
     private val data = mutableMapOf<String, Dataset<Row>>()
 
     /**
@@ -44,7 +45,7 @@ class SparkContext(val sources: Sources) {
             // order by first column
             val firstColumn = dataset.columns().first()
             println("$it ordered by $firstColumn")
-            dataset.orderBy(firstColumn).show(100, 9)
+            dataset.orderBy(firstColumn).show(100, truncate)
         }
         println("==============================================")
     }

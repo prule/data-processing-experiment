@@ -4,8 +4,8 @@
   description: "",
   tasks: [
     {
-      type: "com.example.dataprocessingexperiment.spark.pipeline.ValueProcessor",
-      id: "t0.1",
+      type: "com.example.dataprocessingexperiment.spark.pipeline.ValuesFilterProcessor",
+      id: "city.1",
       name: "Value filter",
       description: "Remove rows where values match those specified",
       table: "cities",
@@ -13,6 +13,34 @@
       values: ["England", "Scotland", "Wales", "Northern Ireland"],
       exclude: true
     },
-
+    {
+      type: "com.example.dataprocessingexperiment.spark.pipeline.RegExReplaceProcessor",
+      id: "city.2",
+      name: "Reg ex replace filter",
+      description: "Remove * from city names",
+      table: "cities",
+      column: "city",
+      regex: "[*#@]",
+      replacement: "",
+    },
+    {
+      type: "com.example.dataprocessingexperiment.app.part17.CityProcessor",
+      id: "customers.3",
+      name: "City Name",
+      description: "Derive city name from address",
+      addressTable: "customers",
+      cityTable: "cities",
+      column: "city",
+    },
+    {
+      type: "com.example.dataprocessingexperiment.spark.pipeline.AggregateSumProcessor",
+      id: "customers.4",
+      name: "City total",
+      description: "Sum by city",
+      table: "customers",
+      sumColumn: "total_spend",
+      groupColumn: "city",
+      resultTable: "city_totals",
+    }
   ]
 }

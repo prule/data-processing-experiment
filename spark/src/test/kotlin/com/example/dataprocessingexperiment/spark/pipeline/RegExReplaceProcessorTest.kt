@@ -10,16 +10,15 @@ import org.apache.spark.sql.catalyst.expressions.GenericRow
 import org.apache.spark.sql.types.DataTypes
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
-import org.apache.spark.sql.functions.*
 
-class ValueProcessorTest {
+class RegExReplaceProcessorTest {
     private val dataHelper = SparkDataHelper(sparkSession)
 
     fun setupContext(): SparkContext {
         val data1 = listOf(
-            GenericRow(arrayOf(-1, "a")),
+            GenericRow(arrayOf(-1, "a*")),
             GenericRow(arrayOf(10, "b")),
-            GenericRow(arrayOf(5, "c")),
+            GenericRow(arrayOf(5, "c*")),
             GenericRow(arrayOf(null, "d")),
         )
 
@@ -36,51 +35,27 @@ class ValueProcessorTest {
     }
 
     @Test
-    fun `should exclude rows with matching values`() {
+    fun `should replace column`() {
         // setup
         val context = setupContext()
 
         // perform
-        ValuesProcessor(
+        RegExReplaceProcessor(
             "id",
             "name",
             "description",
             "dataFrame1",
             "val2",
-            listOf("a", "b"),
-            true
+            "[*#@]",
+            replacement = ""
         ).process(context)
 
         // verify
         val result = context.get("dataFrame1")
-        result.count() shouldBe 2
+        result.count() shouldBe 4
         result.select("val2")
             .collectAsList()
-            .map { row -> row.getString(0) } shouldBe listOf("c", "d")
-    }
-
-    @Test
-    fun `should include rows with matching values`() {
-        // setup
-        val context = setupContext()
-
-        // perform
-        ValuesProcessor(
-            "id",
-            "name",
-            "description",
-            "dataFrame1",
-            "val2",
-            listOf("a", "b"),
-            false
-        ).process(context)
-
-        // verify
-        val result = context.get("dataFrame1")
-        result.count() shouldBe 2
-        result.select("val2")
-            .collectAsList()
-            .map { row -> row.getString(0) } shouldBe listOf("a", "b")
+            .map { row -> row.getString(0) } shouldBe listOf("a", "b", "c", "d")
     }
 
     companion object {

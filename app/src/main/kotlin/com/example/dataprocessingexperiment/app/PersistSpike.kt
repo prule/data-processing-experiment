@@ -50,7 +50,7 @@ class PersistSpike {
             println("stage 0")
 
             val rawDataset = sparkSession.read()
-                .format(source.type)
+                .format(source.type.format)
                 .option("header", true) // headers are always required at this point
                 .option("delimiter", source.table.delimiter)
 //                .option("inferSchema", "true") // infer schema causes another read of the file

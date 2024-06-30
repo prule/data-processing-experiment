@@ -45,7 +45,7 @@ class App {
             this::class.java.getResourceAsStream("/sample1.statistics.json5")!!
         )
 
-        val context = SparkContext(sources)
+        val context = SparkContext(sources, sparkSession)
 
         // run
         // load each table

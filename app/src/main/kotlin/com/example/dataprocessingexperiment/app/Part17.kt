@@ -1,14 +1,18 @@
 package com.example.dataprocessingexperiment.app
 
+import com.example.dataprocessingexperiment.app.part17.CityProcessor
 import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.data.DataFrameBuilder
+import com.example.dataprocessingexperiment.spark.pipeline.*
 import com.example.dataprocessingexperiment.spark.statistics.StatisticRepository
 import com.example.dataprocessingexperiment.spark.statistics.StatisticsRunner
 import com.example.dataprocessingexperiment.spark.statistics.collectors.SparkCollector
 import com.example.dataprocessingexperiment.tables.Sources
+import com.example.dataprocessingexperiment.tables.pipeline.ProcessorDefinition
 import com.example.dataprocessingexperiment.tables.statistics.Statistics
 import com.example.dataprocessingexperiment.tables.statistics.StatisticsConfiguration
 import io.github.xn32.json5k.decodeFromStream
+import kotlinx.serialization.modules.SerializersModule
 import mu.KotlinLogging
 import org.apache.commons.lang3.time.StopWatch
 import org.apache.spark.SparkConf
@@ -48,6 +52,8 @@ class Part17 {
         )
 
         val stopWatch = StopWatch.createStarted()
+
+        val context = SparkContext(sources, sparkSession, 100)
 
         // run
         // load each table
@@ -96,10 +102,75 @@ class Part17 {
                 }
 
                 logger.info { "${source.id} took $stopWatchSource" }
+
+                // update the context
+                context.set(source.id, validDataset)
+
+            }
+
+            // run pipeline
+            runPipeline(context)
+
+            context.tablesIds().forEach { id ->
+                // statistics
+                logger.info { "tranformed stats $id" }
+                val stats = statisticConfiguration.statisticsById(id)
+                stats?.let {
+                    val statisticsPath = "$outputPath/${id}/transformed"
+                    generateStatistics(stats, context.get(id), statisticsPath, sparkSession)
+                }
+
             }
 
         }
         logger.info { "Took $stopWatch" }
+
+    }
+
+    private fun runPipeline(context: SparkContext) {
+        val pipelineConfigurationRepository = PipelineConfigurationRepository(
+            SerializersModule {
+                polymorphic(ProcessorDefinition::class, JoinProcessor::class, JoinProcessor.serializer())
+                polymorphic(ProcessorDefinition::class, UnionProcessor::class, UnionProcessor.serializer())
+                polymorphic(ProcessorDefinition::class, LiteralProcessor::class, LiteralProcessor.serializer())
+                polymorphic(ProcessorDefinition::class, OutputProcessor::class, OutputProcessor.serializer())
+                polymorphic(
+                    ProcessorDefinition::class,
+                    ValuesFilterProcessor::class,
+                    ValuesFilterProcessor.serializer()
+                )
+                polymorphic(
+                    ProcessorDefinition::class,
+                    RegExReplaceProcessor::class,
+                    RegExReplaceProcessor.serializer()
+                )
+                polymorphic(ProcessorDefinition::class, CityProcessor::class, CityProcessor.serializer())
+                polymorphic(
+                    ProcessorDefinition::class,
+                    AggregateSumProcessor::class,
+                    AggregateSumProcessor.serializer()
+                )
+                polymorphic(
+                    ProcessorDefinition::class,
+                    ValueMappingJoinProcessor::class,
+                    ValueMappingJoinProcessor.serializer()
+                )
+                polymorphic(
+                    ProcessorDefinition::class,
+                    ValueMappingWhenProcessor::class,
+                    ValueMappingWhenProcessor.serializer()
+                )
+            }
+        )
+
+        val pipelineConfiguration = pipelineConfigurationRepository.load(
+            File("../data/part17/part17.pipeline.json5").inputStream()
+        )
+
+        PipelineProcessor(pipelineConfiguration).process(context)
+
+        // display result
+        context.show()
 
     }
 

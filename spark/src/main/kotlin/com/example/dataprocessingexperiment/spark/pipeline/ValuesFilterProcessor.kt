@@ -9,7 +9,7 @@ import org.apache.spark.sql.functions.*
  * It has parameters for the table, column, values, and whether to exclude or include the values.
  */
 @Serializable
-class ValuesProcessor(
+class ValuesFilterProcessor(
     override val id: String,
     override val name: String,
     override val description: String,

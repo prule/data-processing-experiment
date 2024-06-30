@@ -14,6 +14,25 @@ Data Processing Experiment - Part 17
 
 ## Introduction
 
+https://github.com/davidasboth/solve-any-data-analysis-problem/blob/main/chapter-2/Chapter%202%20sample%20solution.ipynb
+
+Cities
+- countries_to_remove = ["England", "Scotland", "Wales", "Northern Ireland"]
+- cities["city"] = cities["city"].str.replace("*", "", regex=False)
+- cities["city"] = cities["city"].str.upper()
+
+assign city in address table
+
+for city in cities["city"].values:
+customers.loc[customers["address_clean"].str.contains(f"\n{city},"), "city"] = city
+- nulls get assigned to other
+customers["city"].fillna("OTHER", inplace=True)
+
+fix hull
+customers.loc[customers["address_clean"].str.contains("\nHULL,"), "city"] = "HULL"
+
+sum spend, grouped by city
+
 
 
 ## Details

@@ -4,9 +4,7 @@ import com.example.dataprocessingexperiment.spark.SparkDataHelper
 import com.example.dataprocessingexperiment.spark.data.types.DateType
 import com.example.dataprocessingexperiment.spark.data.types.DecimalType
 import com.example.dataprocessingexperiment.spark.data.types.StringType
-import com.example.dataprocessingexperiment.tables.ColumnDefinition
-import com.example.dataprocessingexperiment.tables.SourceDefinition
-import com.example.dataprocessingexperiment.tables.TableDefinition
+import com.example.dataprocessingexperiment.tables.*
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import mu.KotlinLogging
@@ -36,7 +34,7 @@ class DataFrameBuilderTest {
             "test1",
             "test csv file",
             "../data/sample1/transactions",
-            "csv",
+            DefaultCsvSourceType().get(),
             // table structure
             TableDefinition(
                 "test1",
@@ -131,7 +129,7 @@ class DataFrameBuilderTest {
             "test1",
             "test csv file",
             path,
-            "csv",
+            DefaultCsvSourceType().get(),
             // table structure
             TableDefinition(
                 "test1",

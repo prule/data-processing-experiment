@@ -3,13 +3,21 @@
   name: "sample 1",
   description: "sample 1 description",
   path: "sample1/transactions/",
-  type: "csv",
+  type: {
+    format: "csv",
+    options: {
+      header: "true",
+    }
+  },
+
   table: {
     name: "transactions",
     description: "account transactions",
     columns: [
       {
-        names: ["date"],
+        names: [
+          "date"
+        ],
         alias: "date",
         description: "date of transaction",
         type: {
@@ -17,7 +25,9 @@
         },
       },
       {
-        names: ["account"],
+        names: [
+          "account"
+        ],
         alias: "account",
         description: "account",
         type: {
@@ -25,16 +35,19 @@
         }
       },
       {
-        names: ["description"],
+        names: [
+          "description"
+        ],
         alias: "description",
         description: "description",
         type: {
           type: "com.example.dataprocessingexperiment.tables.SampleType"
         }
-
       },
       {
-        names: ["amount"],
+        names: [
+          "amount"
+        ],
         alias: "amount",
         description: "amount can be a positive (credit) or negative (debit) number representing dollars and cents",
         type: {

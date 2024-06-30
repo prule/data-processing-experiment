@@ -2,23 +2,34 @@
   id: "part17",
   name: "part17",
   description: "Attempt to apply framework to the problem presented in https://github.com/davidasboth/solve-any-data-analysis-problem/blob/a2612923f23c15dcefbb482a5806861faed0ae51/chapter-2/Chapter%202%20sample%20solution.ipynb",
-
   sources: [
     {
-      id: "addresses",
-      name: "Addresses",
+      id: "customers",
+      name: "Customers",
       description: "",
       path: "downloaded/addresses.csv",
-      type: "csv",
+      type: {
+        format: "csv",
+        options: {
+          quotedstring: "\"",
+          escape: "\"",
+          multiline: "true",
+          header: "true",
+          delimiter: ","
+        }
+      },
+
       table: {
-        name: "addresses",
+        name: "customers",
         description: "",
         deduplicate: true,
         trim: true,
         columns: [
           // company_id,address,total_spend
           {
-            names: ["company_id"],
+            names: [
+              "company_id"
+            ],
             alias: "company_id",
             description: "company_id",
             required: true,
@@ -27,7 +38,9 @@
             },
           },
           {
-            names: ["address"],
+            names: [
+              "address"
+            ],
             alias: "address",
             description: "address",
             required: true,
@@ -37,7 +50,9 @@
             },
           },
           {
-            names: ["total_spend"],
+            names: [
+              "total_spend"
+            ],
             alias: "total_spend",
             description: "total_spend",
             trim: true,
@@ -55,7 +70,16 @@
       name: "Cities",
       description: "",
       path: "downloaded/cities.csv",
-      type: "csv",
+      type: {
+        format: "csv",
+        options: {
+          quotedstring: "\"",
+          escape: "\"",
+          multiline: "true",
+          header: "false",
+          delimiter: ";"
+        }
+      },
       table: {
         name: "cities",
         description: "",
@@ -64,9 +88,11 @@
         columns: [
           // England
           {
-            names: ["England"],
-            alias: "England",
-            description: "England",
+            names: [
+              "_c0"
+            ],
+            alias: "city",
+            description: "Name of city",
             type: {
               type: "com.example.dataprocessingexperiment.spark.data.types.StringType"
             },
