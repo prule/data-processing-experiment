@@ -24,14 +24,14 @@ import org.apache.spark.sql.types.StructField
  * @param columns If an empty list, all columns will be included - otherwise just the named columns will have this statistic applied.
  */
 @Serializable
-class EmptyCount(private val columns: List<String>) : Statistic {
+class EmptyCount(private val columns: List<String>?) : Statistic {
     private val logger = KotlinLogging.logger {}
 
     @Transient
     private val sparkDataTypes = SparkDataTypes()
 
     override fun run(data: Dataset<Row>, collector: Collector) {
-        val cols = if (columns.isNotEmpty()) {
+        val cols = if (!columns.isNullOrEmpty()) {
             data.columns().intersect(columns)
         } else {
             data.columns().toList()

@@ -36,13 +36,6 @@ class StatisticRepository {
     }
 
     fun buildStatistics(statistics: com.example.dataprocessingexperiment.tables.statistics.Statistics): List<Statistic> {
-//        val missing = statistics.values.map { it.id }.filter { !registry.containsKey(it) }
-//        if (missing.isNotEmpty()) {
-//            logger.warn { "Could not find statistics for $missing" }
-//        }
-//        return statistics.values.mapNotNull { insightDescriptor ->
-//            registry[insightDescriptor.id]?.of(insightDescriptor.column!!)
-//        }
         return statistics.values.map { it as Statistic }
     }
 }

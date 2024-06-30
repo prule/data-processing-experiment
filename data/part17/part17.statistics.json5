@@ -1,0 +1,51 @@
+// map of table id to statistics
+{
+  statistics: [
+
+
+    {
+      id: "customers",
+      name: "Customer Statistics",
+      description: "Statistics configuration for the addresses table",
+      values: [
+        {
+          type: "com.example.dataprocessingexperiment.spark.statistics.EmptyCount",
+          columns: [
+            "company_id",
+            "address",
+            "total_spend"
+          ]
+        },
+        {
+          type: "com.example.dataprocessingexperiment.spark.statistics.RowCount",
+        },
+        {
+          type: "com.example.dataprocessingexperiment.spark.statistics.ColCount",
+        },
+        {
+          type: "com.example.dataprocessingexperiment.spark.statistics.DuplicateCount",
+        },
+        {
+          type: "com.example.dataprocessingexperiment.spark.statistics.Summary",
+          columns: [
+            "total_spend",
+          ],
+          statistics: [
+            "count",
+            "mean",
+            "stddev",
+            "min",
+            "max",
+            "25%",
+            "50%",
+            "75%"
+          ]
+        },
+        {
+          type: "com.example.dataprocessingexperiment.spark.statistics.CountByValue",
+          column: "city"
+        }
+      ],
+    },
+  ]
+}

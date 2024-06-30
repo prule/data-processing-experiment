@@ -23,6 +23,6 @@ class SourceDefinition(
     val name: String,
     val description: String,
     val path: String,
-    val type: String,
+    val type: SourceType,
     val table: TableDefinition,
 )

@@ -63,15 +63,29 @@ case "$1" in
     echo ""
     ;;
 
-  'data:download')
+  'data:download:sample1')
     echo ""
     echo "Downloading data"
     mkdir -p ./data/sample1/downloaded/aus-lga-mapping
-    curl "https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/georef-australia-local-government-area@public/exports/csv?lang=en&timezone=Australia%2FSydney&use_labels=true&delimiter=%3B" \
+    curl "" \
     -o "./data/sample1/downloaded/aus-lga-mapping/georef-australia-local-government-area.csv"
     echo ""
     echo ""
     ;;
+
+  'data:download:part17')
+    echo ""
+    echo "Downloading data"
+    mkdir -p ./data/part-17/downloaded
+#https://github.com/davidasboth/solve-any-data-analysis-problem/blob/a2612923f23c15dcefbb482a5806861faed0ae51/chapter-2/data/addresses.csv
+    curl "https://raw.githubusercontent.com/davidasboth/solve-any-data-analysis-problem/a2612923f23c15dcefbb482a5806861faed0ae51/chapter-2/data/addresses.csv" \
+    -o "./data/part-17/downloaded/addresses.csv"
+    curl "https://raw.githubusercontent.com/davidasboth/solve-any-data-analysis-problem/a2612923f23c15dcefbb482a5806861faed0ae51/chapter-2/data/cities.csv" \
+    -o "./data/part-17/downloaded/cities.csv"
+    echo ""
+    echo ""
+    ;;
+
 
   *)
     echo -e ""
