@@ -40,7 +40,6 @@ class DataFrameBuilderTypeTest {
                 "test1",
                 "test csv file",
                 false,
-                ",",
                 listOf(
                     ColumnDefinition(listOf("boolean"), "boolean", "boolean", false, type = BooleanType()),
                     ColumnDefinition(listOf("date"), "date", "date", false, type = DateType(listOf("d/M/yyyy", "yyyy-MM-dd"))),
@@ -109,7 +108,6 @@ class DataFrameBuilderTypeTest {
                 "test1",
                 "test csv file",
                 false,
-                ",",
                 listOf(
                     ColumnDefinition(listOf("_c0"), "boolean", "boolean", false, type = BooleanType()),
                     ColumnDefinition(listOf("_c1"), "date", "date", false, type = DateType(listOf("d/M/yyyy", "yyyy-MM-dd"))),

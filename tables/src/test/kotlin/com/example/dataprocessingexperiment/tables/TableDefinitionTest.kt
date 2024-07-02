@@ -11,7 +11,6 @@ class TableDefinitionTest {
             "test1",
             "test csv file",
             false,
-            ",",
             listOf(
                 ColumnDefinition(listOf("boolean"), "boolean", "boolean", true, trim = false, type = SampleColType()),
             ),
@@ -27,7 +26,6 @@ class TableDefinitionTest {
             "test1",
             "test csv file",
             false,
-            ",",
             listOf(
                 ColumnDefinition(listOf("boolean"), "boolean", "boolean", true, trim = null, type = SampleColType()),
             ),
@@ -43,7 +41,6 @@ class TableDefinitionTest {
             "test1",
             "test csv file",
             false,
-            ",",
             listOf(
                 ColumnDefinition(listOf("boolean1"), "boolean", "boolean", true, trim = true, type = SampleColType()),
                 ColumnDefinition(listOf("boolean2"), "boolean", "boolean", true, trim = false, type = SampleColType()),
@@ -61,7 +58,6 @@ class TableDefinitionTest {
             "test1",
             "test csv file",
             false,
-            ",",
             listOf(
                 ColumnDefinition(listOf("boolean1"), "boolean", "boolean", true, trim = true, type = SampleColType()),
                 ColumnDefinition(listOf("boolean2"), "boolean", "boolean", true, trim = false, type = SampleColType()),

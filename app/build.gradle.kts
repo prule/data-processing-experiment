@@ -51,3 +51,8 @@ tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+tasks.register<JavaExec>("part17") {
+    mainClass = "com.example.dataprocessingexperiment.app.Part17"
+    classpath = sourceSets["main"].runtimeClasspath
+}

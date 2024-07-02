@@ -32,7 +32,7 @@ class SparkUDFTest {
             )
         )
 
-        val context = SparkContext(Sources("test", "test", "test", listOf()))
+        val context = SparkContext(Sources("test", "test", "test", listOf()), sparkSession)
         context.set("dataFrame1", dataframe1)
         return context
     }

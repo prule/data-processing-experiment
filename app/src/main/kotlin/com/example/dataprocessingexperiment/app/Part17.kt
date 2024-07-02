@@ -1,6 +1,6 @@
 package com.example.dataprocessingexperiment.app
 
-import com.example.dataprocessingexperiment.app.part17.CityProcessor
+import com.example.dataprocessingexperiment.app.part17.ValueContainsOneInListProcessor
 import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.data.DataFrameBuilder
 import com.example.dataprocessingexperiment.spark.pipeline.*
@@ -144,7 +144,11 @@ class Part17 {
                     RegExReplaceProcessor::class,
                     RegExReplaceProcessor.serializer()
                 )
-                polymorphic(ProcessorDefinition::class, CityProcessor::class, CityProcessor.serializer())
+                polymorphic(
+                    ProcessorDefinition::class,
+                    ValueContainsOneInListProcessor::class,
+                    ValueContainsOneInListProcessor.serializer()
+                )
                 polymorphic(
                     ProcessorDefinition::class,
                     AggregateSumProcessor::class,
@@ -212,14 +216,7 @@ class Part17 {
 //        }
 //        println("row count = ${ds.count()}")
 //    }
-}
 
-fun main() {
-    println("Starting...")
-
-    Part17().go()
-
-    println("Finished...")
 }
 
 // With original code, it took 27 seconds and FileScanRDD occurred 40 times.

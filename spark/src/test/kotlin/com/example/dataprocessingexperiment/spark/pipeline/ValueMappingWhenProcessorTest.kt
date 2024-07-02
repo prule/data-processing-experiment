@@ -64,7 +64,7 @@ class ValueMappingWhenProcessorTest {
         )
 
         // build context
-        val context = SparkContext(Sources("test", "test", "test", listOf()))
+        val context = SparkContext(Sources("test", "test", "test", listOf()), sparkSession)
         context.set(tableName, transactions)
 
         println("original")

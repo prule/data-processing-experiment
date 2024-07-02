@@ -40,7 +40,6 @@ class DataFrameBuilderTest {
                 "test1",
                 "test csv file",
                 true,
-                ",",
                 listOf(
                     ColumnDefinition(
                         listOf("date"),
@@ -135,7 +134,6 @@ class DataFrameBuilderTest {
                 "test1",
                 "test csv file",
                 true,
-                ",",
                 listOf(
                     ColumnDefinition(listOf("val1"), "val1", "val1", true, trim = true, type = StringType()),
                     ColumnDefinition(listOf("val2"), "val2", "val2", true, trim = true, type = StringType()),

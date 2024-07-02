@@ -188,10 +188,17 @@ class App {
     }
 }
 
-fun main() {
+fun main(args: Array<String>) {
     println("Starting...")
 
-    App().go()
-
+    if(args.isEmpty()) {
+        App().go()
+    } else {
+        val command = args[0]
+        when (command) {
+            "Part17" -> Part17().go()
+            else -> println("Unknown command $command")
+        }
+    }
     println("Finished...")
 }

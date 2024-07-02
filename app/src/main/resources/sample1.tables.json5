@@ -11,12 +11,11 @@
       type: {
         format: "csv",
         options: {
-          headers: true,
           quotedstring: "\"",
           escape: "\"",
-          multiline: true,
-          header: false,
-          delimiter: ";"
+          multiline: "true",
+          header: "true",
+          delimiter: ","
         }
       },
       table: {
@@ -102,12 +101,20 @@
       name: "lga-1",
       description: "lga-1",
       path: "sample1/lgas/1",
-      type: "csv",
+      type: {
+        format: "csv",
+        options: {
+          quotedstring: "\"",
+          escape: "\"",
+          multiline: "true",
+          header: "true",
+          delimiter: ";"
+        }
+      },
       table: {
         name: "lga-1",
         description: "",
         deduplicate: true,
-        delimiter: ";",
         // with multiple column names we can now us the same column definitions for each of the LGA tables
         columns: [
           {
@@ -173,12 +180,20 @@
       name: "lga-2",
       description: "lga-2",
       path: "sample1/lgas/2",
-      type: "csv",
+      type: {
+        format: "csv",
+        options: {
+          quotedstring: "\"",
+          escape: "\"",
+          multiline: "true",
+          header: "true",
+          delimiter: ";"
+        }
+      },
       table: {
         name: "lga-2",
         description: "",
         deduplicate: true,
-        delimiter: ";",
         // with multiple column names we can now us the same column definitions for each of the LGA tables
         columns: [
           {
@@ -243,12 +258,20 @@
       name: "lga-3",
       description: "lga-3",
       path: "sample1/lgas/3",
-      type: "csv",
+      type: {
+        format: "csv",
+        options: {
+          quotedstring: "\"",
+          escape: "\"",
+          multiline: "true",
+          header: "true",
+          delimiter: ";"
+        }
+      },
       table: {
         name: "lga-3",
         description: "",
         deduplicate: true,
-        delimiter: ";",
         // with multiple column names we can now us the same column definitions for each of the LGA tables
         columns: [
           {
@@ -307,7 +330,16 @@
       name: "Mappings",
       description: "Value mappings for all tables",
       path: "sample1/value_mappings",
-      type: "csv",
+      type: {
+        format: "csv",
+        options: {
+          quotedstring: "\"",
+          escape: "\"",
+          multiline: "true",
+          header: "true",
+          delimiter: ","
+        }
+      },
       table: {
         name: "mappings",
         description: "",

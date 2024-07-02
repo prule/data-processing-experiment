@@ -24,13 +24,15 @@
       replacement: "",
     },
     {
-      type: "com.example.dataprocessingexperiment.app.part17.CityProcessor",
+      type: "com.example.dataprocessingexperiment.app.part17.ValueContainsOneInListProcessor",
       id: "customers.3",
       name: "City Name",
       description: "Derive city name from address",
-      addressTable: "customers",
-      cityTable: "cities",
-      column: "city",
+      factTable: "customers",
+      factCol: "address",
+      dimensionTable: "cities",
+      dimensionCol: "city",
+      other: "Other"
     },
     {
       type: "com.example.dataprocessingexperiment.spark.pipeline.AggregateSumProcessor",
