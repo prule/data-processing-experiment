@@ -33,7 +33,7 @@ class DataFrameBuilderTypeTest {
             "test1",
             "test1",
             "test csv file",
-            "../data/sample1/types",
+            "../data/reference-app-1/types",
             DefaultCsvSourceType().get(),
             // table structure
             TableDefinition(
@@ -101,7 +101,7 @@ class DataFrameBuilderTypeTest {
             "test1",
             "test1",
             "test csv file",
-            "../data/sample1/types",
+            "../data/reference-app-1/types",
             DefaultCsvSourceType(header = false).get(),
             // table structure
             TableDefinition(

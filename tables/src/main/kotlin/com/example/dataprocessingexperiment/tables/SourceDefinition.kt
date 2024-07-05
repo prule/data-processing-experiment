@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
  * {
  *   name: "sample 1",
  *   description: "sample 1 description",
- *   path: "sample1/statements/",
+ *   path: "reference-app-1/statements/",
  *   type: "csv",
  *   table: {
  *      ...

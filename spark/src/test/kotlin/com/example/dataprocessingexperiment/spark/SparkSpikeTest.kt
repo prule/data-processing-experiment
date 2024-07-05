@@ -28,7 +28,7 @@ class SparkSpikeTest {
         val statementsDataFrame = sparkSession.read()
             .format("csv")
             .option("header", true)
-            .load("../data/sample1/transactions")
+            .load("../data/reference-app-1/transactions")
             .alias("transactions")
 
         println("Statements data frame")
@@ -82,14 +82,14 @@ class SparkSpikeTest {
             .format("csv")
             .option("header", true)
             .option("delimiter", ";")
-            .load("../data/sample1/downloaded/aus-lga-mapping/")
+            .load("../data/reference-app-1/downloaded/aus-lga-mapping/")
             .alias("lgas")
 
         println("data frame")
         dataFrame.show(20)
         dataFrame.printSchema()
 
-        val path = "../data/sample1/downloaded/transformed/"
+        val path = "../data/reference-app-1/downloaded/transformed/"
 
         // only select the columns needed so we can exclude data we don't need here
         val selectedDataFrame = dataFrame.select(

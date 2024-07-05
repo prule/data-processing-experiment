@@ -28,12 +28,11 @@ class DataFrameBuilderTest {
         val sparkSession = SparkSession.builder().config(config).orCreate
 
         // define our input source
-        // code version of app/src/main/resources/sample1.statements.json5
         val sourceDefinition = SourceDefinition(
             "test1",
             "test1",
             "test csv file",
-            "../data/sample1/transactions",
+            "../data/reference-app-1/transactions",
             DefaultCsvSourceType().get(),
             // table structure
             TableDefinition(
@@ -122,7 +121,6 @@ class DataFrameBuilderTest {
             .save(path)
 
         // define our input source
-        // code version of app/src/main/resources/sample1.statements.json5
         val sourceDefinition = SourceDefinition(
             "test1",
             "test1",

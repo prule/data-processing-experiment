@@ -26,7 +26,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = "com.example.dataprocessingexperiment.app.ReferenceAppKt"
+    mainClass = "com.example.dataprocessingexperiment.app.ReferenceApp1Kt"
 
     // spark Java17 Compatible JvmArgs
     applicationDefaultJvmArgs  = listOf(

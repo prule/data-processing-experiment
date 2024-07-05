@@ -11,7 +11,7 @@
       description: "Update values for columns based on mappings",
       // ids of mapping tables to process
       tables: [
-        // for this table there is an associated entry in sample1.tables.json5
+        // for this table there is an associated entry in tables.json5
         "mappings"
       ]
     },
@@ -123,7 +123,7 @@
       name: "Output transactions",
       description: "Writes out the denormalized transactions",
       table: "transactionsWithLGAs",
-      path: "./build/output/sample1/transactions",
+      path: "./build/output/reference-app-1/transactions",
       format: "csv",
       mode: "overwrite",
       options: {

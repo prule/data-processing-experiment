@@ -22,8 +22,9 @@ import java.io.File
  * Reference implementation to demonstrate and exercise current capabilities.
  */
 
-class App {
+class ReferenceApp1 {
     private val displayRows = 100
+    private val dataBase = "../data/reference-app-1"
 
     fun go() {
         // spark setup
@@ -31,18 +32,18 @@ class App {
         val sparkSession = SparkSession.builder().config(config).orCreate
 
         // clean up the output directory
-        val outputPath = "./build/output/sample1/statements/statistics"
+        val outputPath = "./build/output/reference-app-1/statements/statistics"
         File(outputPath).deleteRecursively()
 
         // load configuration
         val defaultJsonSerializer = DefaultJsonSerializer()
 
         val sources = defaultJsonSerializer.tableModule().decodeFromStream<Sources>(
-            this::class.java.getResourceAsStream("/sample1.tables.json5")!!
+            File("$dataBase/tables.json5").inputStream()
         )
 
         val statisticConfiguration = defaultJsonSerializer.statisticsModule().decodeFromStream<StatisticsConfiguration>(
-            this::class.java.getResourceAsStream("/sample1.statistics.json5")!!
+            File("$dataBase/statistics.json5").inputStream()
         )
 
         val context = SparkContext(sources, sparkSession)
@@ -136,7 +137,7 @@ class App {
             )
 
             val pipelineConfiguration = pipelineConfigurationRepository.load(
-                File("./src/main/resources/sample1.pipeline.json5").inputStream()
+                File("$dataBase/pipeline.json5").inputStream()
             )
 
             PipelineProcessor(pipelineConfiguration).process(context)
@@ -192,10 +193,11 @@ fun main(args: Array<String>) {
     println("Starting...")
 
     if(args.isEmpty()) {
-        App().go()
+        ReferenceApp1().go()
     } else {
         val command = args[0]
         when (command) {
+            "reference-app-1" -> ReferenceApp1().go()
             "reference-app-2" -> ReferenceApp2().go()
             else -> println("Unknown command $command")
         }

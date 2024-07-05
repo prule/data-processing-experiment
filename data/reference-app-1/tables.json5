@@ -1,5 +1,5 @@
 {
-  id: "sample1",
+  id: "reference-app-1",
   name: "Sample 1",
   description: "Sample 1 is a basic dataset configuration to demonstrate capability",
   sources: [
@@ -7,7 +7,7 @@
       id: "transactions",
       name: "Transactions",
       description: "Transactions contains transactions from multiple bank accounts",
-      path: "sample1/transactions/",
+      path: "reference-app-1/transactions/",
       type: {
         format: "csv",
         options: {
@@ -100,7 +100,7 @@
       id: "lga-1",
       name: "lga-1",
       description: "lga-1",
-      path: "sample1/lgas/1",
+      path: "reference-app-1/lgas/1",
       type: {
         format: "csv",
         options: {
@@ -179,7 +179,7 @@
       id: "lga-2",
       name: "lga-2",
       description: "lga-2",
-      path: "sample1/lgas/2",
+      path: "reference-app-1/lgas/2",
       type: {
         format: "csv",
         options: {
@@ -257,7 +257,7 @@
       id: "lga-3",
       name: "lga-3",
       description: "lga-3",
-      path: "sample1/lgas/3",
+      path: "reference-app-1/lgas/3",
       type: {
         format: "csv",
         options: {
@@ -329,7 +329,7 @@
       id: "mappings",
       name: "Mappings",
       description: "Value mappings for all tables",
-      path: "sample1/value_mappings",
+      path: "reference-app-1/value_mappings",
       type: {
         format: "csv",
         options: {

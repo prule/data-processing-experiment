@@ -27,6 +27,10 @@ import java.io.File
  * This might be useful in the case that the data would be updated regularly and the transform needed to be run regularly.
  * Sure, you could just do it all in a notebook, but this is a test to see how this framework could be applied to such a problem and what that would look like.
  *
+ * Also, what we get here for free is:
+ * - statistics
+ * - documentation
+ * - TODO
  */
 
 class ReferenceApp2 {
@@ -47,15 +51,15 @@ class ReferenceApp2 {
         val defaultJsonSerializer = DefaultJsonSerializer()
 
         val sources = defaultJsonSerializer.tableModule().decodeFromStream<Sources>(
-            File("$dataBase/reference-app-2.tables.json5").inputStream()
+            File("$dataBase/tables.json5").inputStream()
         )
 
         val statisticConfiguration = defaultJsonSerializer.statisticsModule().decodeFromStream<StatisticsConfiguration>(
-            File("$dataBase/reference-app-2.statistics.json5").inputStream()
+            File("$dataBase/statistics.json5").inputStream()
         )
 
         val pipelineConfiguration = defaultJsonSerializer.pipelineModule().decodeFromStream<PipelineConfiguration>(
-            File("$dataBase/reference-app-2.pipeline.json5").inputStream()
+            File("$dataBase/pipeline.json5").inputStream()
         )
 
         val datasetOutput = DatasetOutput()
