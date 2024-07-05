@@ -26,7 +26,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = "com.example.dataprocessingexperiment.app.AppKt"
+    mainClass = "com.example.dataprocessingexperiment.app.ReferenceAppKt"
 
     // spark Java17 Compatible JvmArgs
     applicationDefaultJvmArgs  = listOf(
@@ -50,9 +50,4 @@ application {
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
-}
-
-tasks.register<JavaExec>("part17") {
-    mainClass = "com.example.dataprocessingexperiment.app.Part17"
-    classpath = sourceSets["main"].runtimeClasspath
 }

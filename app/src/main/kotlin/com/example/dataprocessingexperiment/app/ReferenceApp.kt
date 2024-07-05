@@ -196,7 +196,7 @@ fun main(args: Array<String>) {
     } else {
         val command = args[0]
         when (command) {
-            "Part17" -> Part17().go()
+            "reference-app-2" -> ReferenceApp2().go()
             else -> println("Unknown command $command")
         }
     }

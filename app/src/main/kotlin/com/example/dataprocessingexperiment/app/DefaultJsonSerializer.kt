@@ -1,8 +1,11 @@
 package com.example.dataprocessingexperiment.app
 
+import com.example.dataprocessingexperiment.app.part17.ValueContainsOneInListProcessor
 import com.example.dataprocessingexperiment.spark.data.types.*
+import com.example.dataprocessingexperiment.spark.pipeline.*
 import com.example.dataprocessingexperiment.spark.statistics.*
 import com.example.dataprocessingexperiment.tables.ColumnType
+import com.example.dataprocessingexperiment.tables.pipeline.ProcessorDefinition
 import com.example.dataprocessingexperiment.tables.statistics.StatisticDefinition
 import io.github.xn32.json5k.Json5
 import kotlinx.serialization.modules.SerializersModule
@@ -35,5 +38,45 @@ class DefaultJsonSerializer {
             polymorphic(StatisticDefinition::class, Summary::class, Summary.serializer())
         }
         return Json5 { serializersModule = statisticsModule }
+    }
+
+    fun pipelineModule(): Json5 {
+        val pipelineModule = SerializersModule {
+            polymorphic(ProcessorDefinition::class, JoinProcessor::class, JoinProcessor.serializer())
+            polymorphic(ProcessorDefinition::class, UnionProcessor::class, UnionProcessor.serializer())
+            polymorphic(ProcessorDefinition::class, LiteralProcessor::class, LiteralProcessor.serializer())
+            polymorphic(ProcessorDefinition::class, OutputProcessor::class, OutputProcessor.serializer())
+            polymorphic(
+                ProcessorDefinition::class,
+                ValuesFilterProcessor::class,
+                ValuesFilterProcessor.serializer()
+            )
+            polymorphic(
+                ProcessorDefinition::class,
+                RegExReplaceProcessor::class,
+                RegExReplaceProcessor.serializer()
+            )
+            polymorphic(
+                ProcessorDefinition::class,
+                ValueContainsOneInListProcessor::class,
+                ValueContainsOneInListProcessor.serializer()
+            )
+            polymorphic(
+                ProcessorDefinition::class,
+                AggregateSumProcessor::class,
+                AggregateSumProcessor.serializer()
+            )
+            polymorphic(
+                ProcessorDefinition::class,
+                ValueMappingJoinProcessor::class,
+                ValueMappingJoinProcessor.serializer()
+            )
+            polymorphic(
+                ProcessorDefinition::class,
+                ValueMappingWhenProcessor::class,
+                ValueMappingWhenProcessor.serializer()
+            )
+        }
+        return Json5 { serializersModule = pipelineModule }
     }
 }

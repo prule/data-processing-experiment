@@ -1,0 +1,449 @@
+9:21:46 pm: Executing 'run --args="Part17" --stacktrace'...
+
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :spark:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :tables:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :tables:compileKotlin UP-TO-DATE
+> Task :tables:compileJava NO-SOURCE
+> Task :tables:processResources NO-SOURCE
+> Task :tables:classes UP-TO-DATE
+> Task :tables:jar UP-TO-DATE
+> Task :spark:compileKotlin UP-TO-DATE
+> Task :spark:compileJava NO-SOURCE
+> Task :spark:processResources NO-SOURCE
+> Task :spark:classes UP-TO-DATE
+> Task :spark:jar UP-TO-DATE
+> Task :app:compileKotlin UP-TO-DATE
+> Task :app:compileJava NO-SOURCE
+> Task :app:processResources UP-TO-DATE
+> Task :app:classes UP-TO-DATE
+
+> Task :app:run
+Starting...
+21:21:46.864 [main] WARN  org.apache.spark.util.Utils MDC= - Your hostname, Pauls-MacBook-Air.local resolves to a loopback address: 127.0.0.1; using 10.27.27.56 instead (on interface en0)
+21:21:46.865 [main] WARN  org.apache.spark.util.Utils MDC= - Set SPARK_LOCAL_IP if you need to bind to another address
+21:21:46.990 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+21:21:47.576 [main] INFO  c.e.d.spark.TableProcessor MDC= - raw customers
+SLF4J: Class path contains multiple SLF4J providers.
+SLF4J: Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@396f6598]
+SLF4J: Found provider [org.apache.logging.slf4j.SLF4JServiceProvider@394e1a0f]
+SLF4J: See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual provider is of type [ch.qos.logback.classic.spi.LogbackServiceProvider@396f6598]
++----------+--------------------+-----------+
+|company_id|             address|total_spend|
++----------+--------------------+-----------+
+|         1|APARTMENT 2,\n52 ...|       5700|
+|         2|107 SHERINGHAM AV...|       4700|
+|         3|43 SUNNINGDALE,\n...|       5900|
+|         4|HAWESWATER HOUSE,...|       7200|
+|         5|AMBERFIELD BARN H...|       4600|
+|         6|FIRST FLOOR CEF B...|       4600|
+|         7|37 BEVERLEY ROAD,...|       7300|
+|         8|B82 ALBION RIVERS...|       6100|
+|         9|Flat 27, Domelton...|       4200|
+|        10|34 BROOKSIDE ESTA...|       5800|
++----------+--------------------+-----------+
+only showing top 10 rows
+
+21:21:49.828 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.EmptyCount
+21:21:50.294 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.RowCount
+21:21:50.324 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.ColCount
+21:21:50.324 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.DuplicateCount
+21:21:50.819 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.Summary
++-------+------------------+
+|summary|       total_spend|
++-------+------------------+
+|  count|            100000|
+|   mean|          4951.662|
+| stddev|1500.9838664295094|
+|    min|                 0|
+|    max|              9900|
+|    25%|            3900.0|
+|    50%|            5000.0|
+|    75%|            6000.0|
++-------+------------------+
+
+21:21:51.343 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.CountByValue
+21:21:51.343 [main] WARN  c.e.d.spark.statistics.CountByValue MDC= - Column city not found in dataset.
+21:21:51.467 [main] INFO  c.e.d.spark.TableProcessor MDC= - valid customers
++----------+--------------------+-----------+
+|company_id|             address|total_spend|
++----------+--------------------+-----------+
+|        69|LEO UNIT LANDOR R...|    5500.00|
+|       139|110 REGENT RD.,\n...|    6200.00|
+|       472|20C UNDERHILL ROA...|    1500.00|
+|       859|Tall Trees Beehiv...|    4100.00|
+|      1360|82 JAMES STREET,\...|    5200.00|
+|      1718|42 PEGASUS GARDEN...|    5200.00|
+|      1760|20-22 WENLOCK ROA...|    6900.00|
+|      2059|105 DAMSELFLY ROA...|    5300.00|
+|      2094|40 TRAILCOCK ROAD...|    3200.00|
+|      2246|THORP ARCH GRANGE...|    5100.00|
++----------+--------------------+-----------+
+only showing top 10 rows
+
+21:21:51.864 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.EmptyCount
+21:21:53.095 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.RowCount
+21:21:53.336 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.ColCount
+21:21:53.336 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.DuplicateCount
+21:21:53.710 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.Summary
++-------+------------------+
+|summary|       total_spend|
++-------+------------------+
+|  count|             99032|
+|   mean|       4951.673197|
+| stddev|1500.6423977802363|
+|    min|              0.00|
+|    max|          11700.00|
+|    25%|            3900.0|
+|    50%|            5000.0|
+|    75%|            6000.0|
++-------+------------------+
+
+21:21:54.497 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.CountByValue
+21:21:54.497 [main] WARN  c.e.d.spark.statistics.CountByValue MDC= - Column city not found in dataset.
+21:21:54.583 [main] INFO  c.e.d.spark.TableProcessor MDC= - customers took 00:00:07.008
+21:21:54.583 [main] INFO  c.e.d.spark.TableProcessor MDC= - raw cities
++---------------+
+|            _c0|
++---------------+
+|        England|
+|           Bath|
+|    Birmingham*|
+|      Bradford*|
+|Brighton & Hove|
+|       Bristol*|
+|      Cambridge|
+|    Canterbury*|
+|       Carlisle|
+|     Chelmsford|
++---------------+
+only showing top 10 rows
+
+21:21:54.686 [main] INFO  c.e.d.spark.TableProcessor MDC= - valid cities
++---------------+
+|           city|
++---------------+
+|      Worcester|
+|       Cardiff*|
+|      Lichfield|
+|      Inverness|
+|        Exeter*|
+|     Sunderland|
+|        Lisburn|
+|Stoke on Trent*|
+|      Cambridge|
+|       Bristol*|
++---------------+
+only showing top 10 rows
+
+21:21:54.772 [main] INFO  c.e.d.spark.TableProcessor MDC= - cities took 00:00:00.189
+21:21:54.773 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting pipeline id=part17 name=Part 17 Pipeline 1
+21:21:54.777 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor ValuesProcessor(id='city.1', name='Value filter', description='Remove rows where values match those specified', table='cities', column='city', values=[England, Scotland, Wales, Northern Ireland])
+21:21:54.780 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor ValuesProcessor(id='city.1', name='Value filter', description='Remove rows where values match those specified', table='cities', column='city', values=[England, Scotland, Wales, Northern Ireland])
+21:21:54.782 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor RegExReplaceProcessor(id='city.2', name='Reg ex replace filter', description='Remove * from city names', table='cities', column='city', regex='[*#@]', replacement='')
+21:21:54.784 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor RegExReplaceProcessor(id='city.2', name='Reg ex replace filter', description='Remove * from city names', table='cities', column='city', regex='[*#@]', replacement='')
+21:21:54.784 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor com.example.dataprocessingexperiment.app.part17.ValueContainsOneInListProcessor@6e6bc3c1
+21:21:54.923 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor com.example.dataprocessingexperiment.app.part17.ValueContainsOneInListProcessor@6e6bc3c1
+21:21:54.923 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor AggregateSumProcessor(id='customers.4', name='City total', description='Sum by city', table='customers', sumColumn='total_spend', groupColumn='city', resultTable='city_totals')
+21:21:54.925 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor AggregateSumProcessor(id='customers.4', name='City total', description='Sum by city', table='customers', sumColumn='total_spend', groupColumn='city', resultTable='city_totals')
+==============================================
+Context
+customers ordered by company_id
++----------+----------------------------------------------------------------------------------------------------+-----------+-------------+
+|company_id|                                                                                             address|total_spend|         city|
++----------+----------------------------------------------------------------------------------------------------+-----------+-------------+
+|         1|                                          APARTMENT 2,\n52 BEDFORD ROAD,\nLONDON,\nENGLAND,\nSW4 7HJ|    5700.00|       LONDON|
+|        10|                                34 BROOKSIDE ESTATE,\nCHALGROVE,\nOXFORD,\nUNITED KINGDOM,\nOX44 7SQ|    5800.00|       OXFORD|
+|       100|                 PROFILE WEST SUITE 2, FLOOR 1,\n950 GREAT WEST ROAD,\nBRENTFORD,\nENGLAND,\nTW8 9ES|    4600.00|        Other|
+|      1000|                                       35 SOUTH STREET,\nPENNINGTON,\nLYMINGTON,\nENGLAND,\nSO41 8EA|    5800.00|        Other|
+|     10000|                                                    18 BROUGHTON ROAD,\nBANBURY,\nENGLAND,\nOX16 9PZ|    5900.00|        Other|
+|    100000|Manningham Mills Community Center, Silk Warehouse,\nLilycroft Road,\nBradford,\nUnited Kingdom,\n...|    5100.00|     BRADFORD|
+|     10001|                                                       WILMSLOW ROAD,\nWOODFORD,\nCHESHIRE,\nSK7 1RJ|    3900.00|        Other|
+|     10002|                                  71-75 SHELTON STREET,\nCOVENT GARDEN,\nLONDON,\nENGLAND,\nWC2H 9JQ|    4500.00|       LONDON|
+|     10003|                                         24 HAYNES AVENUE,\nTROWELL,\nNOTTINGHAM,\nENGLAND,\nNG9 3NY|    4100.00|   NOTTINGHAM|
+|     10004|                                                              19 ESTCOURT ROAD,\nSALISBURY,\nSP1 3AP|    5100.00|    SALISBURY|
+|     10005|                                                   PICKFORDS WHARF,\nCLINK STREET,\nLONDON,\nSE1 9DG|    6700.00|       LONDON|
+|     10006|                                              THE SPINNEY,\nDUCKINGTON,\nMALPAS,\nENGLAND,\nSY14 8LQ|    3800.00|        Other|
+|     10007|                                 1 STATION APPROACH,\nWEST WICKHAM,\nKENT,\nUNITED KINGDOM,\nBR4 0EH|    6500.00|        Other|
+|     10008|                                   6 NORTH STREET,\nOUNDLE,\nPETERBOROUGH,\nUNITED KINGDOM,\nPE8 4AL|    3800.00| PETERBOROUGH|
+|     10009|                        UNIT 3,\nSPECTRUM BUSINESS PARK,\nSEAHAM,\nCOUNTY DURHAM,\nENGLAND,\nSR7 7PP|    3700.00|        Other|
+|      1001|                             4 HADEN PARK ROAD,\nHADEN PARK ROAD,\nCRADLEY HEATH,\nENGLAND,\nB64 7HE|    7000.00|        Other|
+|     10010|                                   EPIC HOUSE,\n128 FULWELL ROAD,\nTEDDINGTON,\nMIDDLESEX,\nTW11 0RQ|    6200.00|        Other|
+|     10011|                            Suite G04,\n1 Quality Court, Chancery Lane,\nLondon,\nEngland,\nWc2A 1Hr|    6300.00|       LONDON|
+|     10012|                                                          16 THE MALL,\nSURBITON,\nENGLAND,\nKT6 4EQ|    6200.00|        Other|
+|     10013|                                                           11 WAGGON ROAD,\nAYR,\nSCOTLAND,\nKA8 8DW|    3000.00|        Other|
+|     10014|                                                5 Walpole Street,\nWolverhampton,\nEngland,\nWv6 0At|    4300.00|WOLVERHAMPTON|
+|     10015|         UNIT 7 ROE HOUSE FARM,\nBROOMLEY,\nSTOCKSFIELD,\nNORTHUMBERLAND,\nUNITED KINGDOM,\nNE43 7HP|    6200.00|        Other|
+|     10016|                           THE NUTSHELL COOPERS LANE,\nBRAMLEY,\nTADLEY,\nHANTS,\nENGLAND,\nRG26 5BZ|    5000.00|        Other|
+|     10017|                                             158 EDMUND STREET,\nBIRMINGHAM,\nWEST MIDLANDS,\nB3 2HB|    3300.00|   BIRMINGHAM|
+|     10018|           UNIT 1 BEDNALL HEAD FARM,\nBEDNALL,\nSTAFFORD,\nSTAFFORDSHIRE,\nUNITED KINGDOM,\nST17 0SG|    5600.00|        Other|
+|     10019|                 BARRY ISLAND STATION,\nSTATION APPROACH ROAD,\nBARRY,\nVALE OF GLAMORGAN,\nCF62 5TH|    3900.00|        Other|
+|      1002|                                                28 QUEENSGATE,\nINVERNESS,\nUNITED KINGDOM,\nIV1 1DJ|    6300.00|    INVERNESS|
+|     10020|     OFFICE 1, ORCHARD HOUSE TUGBY ORCHARDS,\nWOOD LANE,\nTUGBY,\nLEICESTERSHIRE,\nENGLAND,\nLE7 9WE|    7600.00|        Other|
+|     10021|         3 KENSWORTH GATE,\n200-204 HIGH STREET SOUTH,\nDUNSTABLE,\nBEDFORDSHIRE,\nENGLAND,\nLU6 3HS|    7300.00|        Other|
+|     10022|                                       33 THINGWALL ROAD,\nIRBY,\nWIRRAL,\nUNITED KINGDOM,\nCH61 3UE|    5900.00|        Other|
+|     10023|                                 2ND FLOOR, 11-12,\nST. JAMES'S SQUARE,\nLONDON,\nENGLAND,\nSW1Y 4LB|    7000.00|       LONDON|
+|     10024|                                                    221 Latchmere Road,\nLondon,\nEngland,\nSw11 2La|    5000.00|       LONDON|
+|     10025|                                               MUIR BUILDING,\n427 HOLYWOOD ROAD,\nBELFAST,\nBT4 2LT|    6100.00|      BELFAST|
+|     10026|                                          54 Courthouse Road,\nMaidenhead,\nUnited Kingdom,\nSl6 6Jb|    7200.00|        Other|
+|     10027|                                                  2 ST ANDREWS PLACE,\nLEWES,\nEAST SUSSEX,\nBN7 1UP|    5300.00|        Other|
+|     10028|                                  35 Church Road,\nTunbridge Wells,\nKent,\nUnited Kingdom,\nTn1 1Jt|    4600.00|        Other|
+|     10029|C/O Towers + Gornall Ltd River View, 96 High Street,\nGarstang,\nPreston,\nLancashire,\nEngland,\...|    2400.00|      PRESTON|
+|     10030|                                               33 Dragons Hill Court,\nKeynsham,\nBristol,\nBs31 1Lw|    4800.00|      BRISTOL|
+|     10031|                                                        9 BROOKE PARADE,\nCHIGWELL,\nESSEX,\nIG7 6PE|    6200.00|        Other|
+|     10032|                           71-75 Shelton Street,\nCovent Garden,\nLondon,\nUnited Kingdom,\nWc2H 9Jq|    6400.00|       LONDON|
+|     10033|                 NEW STONE HILL FARM STONE HILL ROAD,\nEGERTON,\nASHFORD,\nKENT,\nENGLAND,\nTN27 9DU|    5700.00|        Other|
+|     10034|                                  Clyde Offices 2Nd Floor,\n48 West George Street,\nGlasgow,\nG2 1Bp|    4100.00|      GLASGOW|
+|     10035|                    1 BREWERY HOUSE BROOK STREET,\nWIVENHOE,\nCOLCHESTER,\nESSEX,\nENGLAND,\nCO7 9DS|    2000.00|   COLCHESTER|
+|     10036|                                        239-241 KENNINGTON LANE,\nLONDON,\nUNITED KINGDOM,\nSE11 5QU|    4200.00|       LONDON|
+|     10037|                                         354 JERSEY ROAD,\nISLEWORTH,\nMIDDLESEX,\nENGLAND,\nTW7 5PL|    4500.00|        Other|
+|     10038|                                                   151 PRESTWICK ROAD,\nWATFORD,\nENGLAND,\nWD19 6EQ|    4500.00|        Other|
+|     10039|                                        291 BRIGHTON ROAD,\nSOUTH CROYDON,\nUNITED KINGDOM,\nCR2 6EQ|    5900.00|        Other|
+|      1004|                                         C/O Browne Jacobson Llp,\n6 Bevis Marks,\nLondon,\nEc3A 7Ba|    4000.00|       LONDON|
+|     10040|                                   2Nd Floor Gadd House,\nArcadia Avenue,\nLondon,\nEngland,\nN3 2Ju|    7900.00|       LONDON|
+|     10041|                                    21 SPINNINGDALE,\nLITTLE HULTON,\nMANCHESTER,\nENGLAND,\nM38 9DL|    5100.00|   MANCHESTER|
+|     10042|                                                328 BARKING ROAD,\nLONDON,\nUNITED KINGDOM,\nE13 8HL|    4600.00|       LONDON|
+|     10043|                         Suite 1B1, Argyle House Northside,\nJoel Street,\nNorthwood Hills,\nHa6 1Nw|    4600.00|        Other|
+|     10044|                                             6 EVERARD ROAD,\nRHOS ON SEA,\nCONWY,\nWALES,\nLL28 4EY|    5100.00|        Other|
+|     10045|                                          56 Pine Street,\nNew York,\nNy 10005,\nUsa,\nUnited States|    3700.00|        Other|
+|     10046|                               SUITE 205, BALFOUR HOUSE,\n741 HIGH ROAD,\nLONDON,\nENGLAND,\nN12 0BP|    5100.00|       LONDON|
+|     10047|                                    F26 1-15 Main Street,\nCambuslang,\nGlasgow,\nScotland,\nG72 7Ex|    5600.00|      GLASGOW|
+|     10048|                                                  27 Grantham Crescent,\nIpswich,\nEngland,\nIp2 9Pd|    5300.00|        Other|
+|     10049|                                   UNIT 2 BALL MILL TOP BUSINESS PARK,\nHALLOW,\nWORCESTER,\nWR2 6PD|    5600.00|    WORCESTER|
+|      1005|                                 59 LITTLE STOCK ROAD,\nCHESHUNT,\nWALTHAM CROSS,\nENGLAND,\nEN7 6XT|    6000.00|        Other|
+|     10050|                                             22 EMPRESS ROAD,\nGRAVESEND,\nUNITED KINGDOM,\nDA12 2QR|    5600.00|        Other|
+|     10051|                                                                    PO Box 4385,\nCARDIFF,\nCF14 8LH|    2300.00|      CARDIFF|
+|     10052|                                    48 ENDEAVOUR ROAD,\nCHESHUNT,\nWALTHAM CROSS,\nENGLAND,\nEN8 0LN|    5900.00|        Other|
+|     10053|                                       27 Old Gloucester Street,\nLondon,\nUnited Kingdom,\nWc1N 3Ax|    3900.00|       LONDON|
+|     10054|                                               16 ARBOUR ROAD,\nLEICESTER,\nUNITED KINGDOM,\nLE4 6QA|    3300.00|    LEICESTER|
+|     10055|                                                      20-22 WENLOCK ROAD,\nLONDON,\nENGLAND,\nN1 7GU|    3300.00|       LONDON|
+|     10056|                                    20 WINSTER ROAD,\nDERBY,\nDERBYSHIRE,\nUNITED KINGDOM,\nDE21 4JY|    5600.00|        DERBY|
+|     10057|                                                        36 NEW STREET,\nPLYMOUTH,\nENGLAND,\nPL1 2NA|    4600.00|     PLYMOUTH|
+|     10058|                                                    54 ASHFORD AVENUE,\nASHFORD,\nENGLAND,\nTW15 2BD|    2400.00|        Other|
+|     10059|             UNIT 1A DALTON COURT,\nCOMMERCIAL ROAD,\nDARWEN,\nLANCASHIRE,\nUNITED KINGDOM,\nBB3 0DG|    5700.00|        Other|
+|      1006|                                      SARNIA HOUSE,\nLE TRUCHOT,\nST PETER PORT,\nGUERNSEY,\nGY1 1GR|    5500.00|        Other|
+|     10060|                              7 Westmoreland House,\nCumberland Park Scrubs Lane,\nLondon,\nNw10 6Re|    2800.00|       LONDON|
+|     10061|      DOWNSVIEW HOUSE MARLBOROUGH ROAD,\nLANCING BUSINESS PARK,\nLANCING,\nUNITED KINGDOM,\nBN15 8SU|    5200.00|        Other|
+|     10062|                                                  128 City Road,\nLondon,\nUnited Kingdom,\nEc1V 2Nx|    5300.00|       LONDON|
+|     10063|                                   SUITE 106,\nDAVINA HOUSE 137-149 GOSWELL ROAD,\nLONDON,\nEC1V 7ET|    6300.00|       LONDON|
+|     10064|                                        1 THE DELL,\nFIXBY,\nHUDDERSFIELD,\nUNITED KINGDOM,\nHD2 2FD|    7600.00|        Other|
+|     10065|                                                           146B PORTWAY,\nLONDON,\nENGLAND,\nE15 3QW|    2900.00|       LONDON|
+|     10066|                 64 BAGNALL ROAD,\nBASFORD,\nNOTTINGHAM,\nNOTTINGHAMSHIRE,\nUNITED KINGDOM,\nNG6 0JX|    4900.00|   NOTTINGHAM|
+|     10067|                                               6 & 7 QUEENS TERRACE,\nABERDEEN,\nSCOTLAND,\nAB10 1XL|    4500.00|     ABERDEEN|
+|     10068|                            4 Celandine Way,\nCheltenham Road,\nEvesham,\nWorcs,\nEngland,\nWr11 2Ly|    5600.00|        Other|
+|     10069|                                              85A GREAT PORTLAND STREET,\nLONDON,\nENGLAND,\nW1W 7LT|    5300.00|       LONDON|
+|      1007|                                                       19 SHEPISTON LANE,\nHAYES,\nENGLAND,\nUB3 1LH|    6300.00|        Other|
+|     10070|                          2 Garrick Close,\nHersham,\nWalton-On-Thames,\nSurrey,\nEngland,\nKt12 5Ny|    4400.00|        Other|
+|     10071|                                             14 Mallard Close,\nHerne Bay,\nKent,\nEngland,\nCt6 5Rj|    4300.00|        Other|
+|     10072|                                   270A NEWBOLD ROAD,\nCHESTERFIELD,\nDERBYSHIRE,\nENGLAND,\nS41 7AJ|    3300.00|        Other|
+|     10073|UNIT J4 FRANKLIN HOUSE CHAUCER BUSINESS PARK,\nDITTONS ROAD,\nPOLEGATE,\nEAST SUSSEX,\nENGLAND,\n...|    6400.00|        Other|
+|     10074|                                             57 POPE LANE,\nPENWORTHAM,\nPRESTON,\nENGLAND,\nPR1 9BY|    5600.00|      PRESTON|
+|     10075|                                    WELL COURT,\n5 PUMPHOUSE CRESCENT,\nWATFORD,\nENGLAND,\nWD17 2AA|    6300.00|        Other|
+|     10076|                                                   8 RINGERS SPINNEY,\nLEICESTER,\nENGLAND,\nLE2 2HA|    4500.00|    LEICESTER|
+|     10077|               THE M GROUP, 287-291,\nBANBURY ROAD,\nOXFORD,\nOXFORDSHIRE,\nUNITED KINGDOM,\nOX2 7JQ|    4000.00|       OXFORD|
+|     10078|                                                       20 BURCHETT WAY,\nROMFORD,\nENGLAND,\nRM6 6BX|    3300.00|        Other|
+|     10079|                    HIGHFIELD LODGE,\nPROVIDENCE HILL BURSLEDON,\nSOUTHAMPTON,\nHAMPSHIRE,\nSO31 8AT|    5500.00|  SOUTHAMPTON|
+|      1008|OAKINGHAM HOUSE GROUND FLOOR,\nWEST WING LONDON ROAD,\nLOUDWATER, HIGH WYCOMBE,\nBUCKINGHAMSHIRE,...|    5900.00|        Other|
+|     10080|                                           NORMAH CAFE,\n23-25 QUEENSWAY,\nLONDON,\nENGLAND,\nW2 4QJ|    3400.00|       LONDON|
+|     10081|                                                     50 HAMILTON ROAD,\nCOVENTRY,\nENGLAND,\nCV2 4FH|    7700.00|     COVENTRY|
+|     10082|                                          1-3 Manor Road,\nChatham,\nKent,\nUnited Kingdom,\nMe4 6Ae|    3000.00|        Other|
+|     10083|                           71-75 SHELTON STREET,\nCOVENT GARDEN,\nLONDON,\nUNITED KINGDOM,\nWC2H 9JQ|    5400.00|       LONDON|
+|     10085|                                                   21 ST. HELENS AVENUE,\nTIPTON,\nENGLAND,\nDY4 7LN|    5800.00|        Other|
+|     10086|                                   HOLLAND HARPER LLP,\n26 HIGH STREET,\nBATTLE,\nENGLAND,\nTN33 0EA|    5200.00|        Other|
+|     10087|                                       121 WOODLANDS,\nHARROW,\nMIDDLESEX,\nUNITED KINGDOM,\nHA2 6EN|    3500.00|        Other|
+|     10088|                                                   24 FENNEL CRESCENT,\nCRAWLEY,\nENGLAND,\nRH11 9DP|    2900.00|        Other|
++----------+----------------------------------------------------------------------------------------------------+-----------+-------------+
+only showing top 100 rows
+
+cities ordered by city
++-------------------+
+|               city|
++-------------------+
+|           Aberdeen|
+|             Armagh|
+|             Bangor|
+|               Bath|
+|            Belfast|
+|         Birmingham|
+|           Bradford|
+|    Brighton & Hove|
+|            Bristol|
+|          Cambridge|
+|         Canterbury|
+|            Cardiff|
+|           Carlisle|
+|         Chelmsford|
+|            Chester|
+|         Chichester|
+|         Colchester|
+|           Coventry|
+|              Derby|
+|          Doncaster|
+|             Dundee|
+|        Dunfermline|
+|             Durham|
+|          Edinburgh|
+|                Ely|
+|             Exeter|
+|            Glasgow|
+|         Gloucester|
+|           Hereford|
+|          Inverness|
+| Kingston-upon-Hull|
+|          Lancaster|
+|              Leeds|
+|          Leicester|
+|          Lichfield|
+|            Lincoln|
+|            Lisburn|
+|          Liverpool|
+|             London|
+|        Londonderry|
+|         Manchester|
+|      Milton Keynes|
+|Newcastle-upon-Tyne|
+|            Newport|
+|              Newry|
+|            Norwich|
+|         Nottingham|
+|             Oxford|
+|              Perth|
+|       Peterborough|
+|           Plymouth|
+|         Portsmouth|
+|            Preston|
+|              Ripon|
+|            Salford|
+|          Salisbury|
+|          Sheffield|
+|        Southampton|
+|    Southend-on-Sea|
+|          St Albans|
+|           St Asaph|
+|          St Davids|
+|           Stirling|
+|     Stoke on Trent|
+|         Sunderland|
+|            Swansea|
+|              Truro|
+|          Wakefield|
+|              Wells|
+|        Westminster|
+|         Winchester|
+|      Wolverhampton|
+|          Worcester|
+|            Wrexham|
+|               York|
++-------------------+
+
+city_totals ordered by city
++-------------------+------------+
+|               city| total_spend|
++-------------------+------------+
+|           ABERDEEN|  1322700.00|
+|             ARMAGH|   263400.00|
+|             BANGOR|   292000.00|
+|               BATH|  1010400.00|
+|            BELFAST|  2059400.00|
+|         BIRMINGHAM|  9317900.00|
+|           BRADFORD|  2060700.00|
+|    BRIGHTON & HOVE|     7400.00|
+|            BRISTOL|  5730400.00|
+|          CAMBRIDGE|  1999200.00|
+|         CANTERBURY|   627400.00|
+|            CARDIFF|  3972600.00|
+|           CARLISLE|   521900.00|
+|         CHELMSFORD|  1290900.00|
+|            CHESTER|   981400.00|
+|         CHICHESTER|   660700.00|
+|         COLCHESTER|  1764000.00|
+|           COVENTRY|  2679000.00|
+|              DERBY|  1821700.00|
+|          DONCASTER|  1542300.00|
+|             DUNDEE|   951500.00|
+|        DUNFERMLINE|   317100.00|
+|             DURHAM|   734900.00|
+|          EDINBURGH|  5089600.00|
+|                ELY|   354000.00|
+|             EXETER|  1072100.00|
+|            GLASGOW|  6293100.00|
+|         GLOUCESTER|   891800.00|
+|           HEREFORD|   559000.00|
+|          INVERNESS|   342200.00|
+|          LANCASTER|   324700.00|
+|              LEEDS|  5167100.00|
+|          LEICESTER|  4431700.00|
+|          LICHFIELD|   419000.00|
+|            LINCOLN|   973800.00|
+|            LISBURN|   292000.00|
+|          LIVERPOOL|  4155300.00|
+|             LONDON|103042800.00|
+|        LONDONDERRY|   383700.00|
+|         MANCHESTER|  9344200.00|
+|      MILTON KEYNES|  2484200.00|
+|NEWCASTLE-UPON-TYNE|    10900.00|
+|            NEWPORT|  1047500.00|
+|              NEWRY|   535300.00|
+|            NORWICH|  2259000.00|
+|         NOTTINGHAM|  4200200.00|
+|             OXFORD|  1095200.00|
+|              Other|269287100.00|
+|              PERTH|   349500.00|
+|       PETERBOROUGH|  1701400.00|
+|           PLYMOUTH|   931900.00|
+|         PORTSMOUTH|   804000.00|
+|            PRESTON|  2047600.00|
+|              RIPON|   120100.00|
+|            SALFORD|  1040700.00|
+|          SALISBURY|   780200.00|
+|          SHEFFIELD|  3500900.00|
+|        SOUTHAMPTON|  2376600.00|
+|    SOUTHEND-ON-SEA|   495300.00|
+|          ST ALBANS|   478100.00|
+|           ST ASAPH|    34900.00|
+|          ST DAVIDS|     6300.00|
+|           STIRLING|   325600.00|
+|     STOKE ON TRENT|   302600.00|
+|         SUNDERLAND|   567900.00|
+|            SWANSEA|  1217800.00|
+|              TRURO|   419300.00|
+|          WAKEFIELD|   879600.00|
+|              WELLS|   255700.00|
+|        WESTMINSTER|    50000.00|
+|         WINCHESTER|   613900.00|
+|      WOLVERHAMPTON|  1907600.00|
+|          WORCESTER|   867900.00|
+|            WREXHAM|   580800.00|
+|               YORK|  1733500.00|
++-------------------+------------+
+
+==============================================
+21:21:56.436 [main] INFO  c.e.d.app.Part17 MDC= - transformed stats customers
+21:21:56.436 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.EmptyCount
+21:21:57.464 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.RowCount
+21:21:57.693 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.ColCount
+21:21:57.693 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.DuplicateCount
+21:21:58.368 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.Summary
++-------+------------------+
+|summary|       total_spend|
++-------+------------------+
+|  count|             99032|
+|   mean|       4951.673197|
+| stddev|1500.6423977802363|
+|    min|              0.00|
+|    max|          11700.00|
+|    25%|            3900.0|
+|    50%|            5000.0|
+|    75%|            6000.0|
++-------+------------------+
+
+21:21:58.972 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.CountByValue
+21:21:59.664 [main] INFO  c.e.d.app.Part17 MDC= - transformed stats cities
+21:21:59.664 [main] INFO  c.e.d.app.Part17 MDC= - transformed stats city_totals
+21:21:59.690 [main] INFO  c.e.d.app.Part17 MDC= - Took 00:00:12.116
+Finished...
+
+BUILD SUCCESSFUL in 13s
+7 actionable tasks: 1 executed, 6 up-to-date
+9:21:59 pm: Execution finished 'run --args="Part17" --stacktrace'.

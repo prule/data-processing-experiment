@@ -23,11 +23,11 @@ case "$1" in
     ./gradlew app:run
     ;;
 
-  'run:part17')
+  'run:2')
     echo ""
     echo "Running Part17"
     echo ""
-    ./gradlew app:run --args="Part17"
+    ./gradlew app:run --args="reference-app-2"
     ;;
 
   'test')

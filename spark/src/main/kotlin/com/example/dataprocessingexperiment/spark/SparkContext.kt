@@ -8,7 +8,11 @@ import org.apache.spark.sql.SparkSession
 /**
  * Stores datasets which can be accessed by processors.
  */
-class SparkContext(val sources: Sources, val sparkSession: SparkSession, val truncate: Int = 20) {
+class SparkContext(
+    val sources: Sources,
+    val sparkSession: SparkSession,
+    val datasetOutput: DatasetOutput = DatasetOutput()
+) {
     private val data = mutableMapOf<String, Dataset<Row>>()
 
     /**
@@ -45,7 +49,7 @@ class SparkContext(val sources: Sources, val sparkSession: SparkSession, val tru
             // order by first column
             val firstColumn = dataset.columns().first()
             println("$it ordered by $firstColumn")
-            dataset.orderBy(firstColumn).show(100, truncate)
+            datasetOutput.show(dataset.orderBy(firstColumn))
         }
         println("==============================================")
     }

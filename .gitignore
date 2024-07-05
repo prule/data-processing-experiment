@@ -8,4 +8,4 @@ build
 # Ignore downloaded data
 */downloaded/*
 /notes.txt
-/data/part17/downloaded/
+/data/reference-app-2/downloaded/
