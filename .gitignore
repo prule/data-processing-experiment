@@ -9,3 +9,6 @@ build
 */downloaded/*
 /notes.txt
 /data/reference-app-2/downloaded/
+*/.ipynb_checkpoints/*
+/notebooks/part17/city-values-ref.csv
+/notebooks/part17/city-values-res.csv
