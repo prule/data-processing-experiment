@@ -55,5 +55,14 @@ class ValueContainsOneInListProcessor (
             return@UDF1 other
         }
 
+//        var calculateValue: UDF1<*, *> = UDF1<String, String> { value ->
+//            var result: String = other
+//            for (name in names) {
+//                if (value.contains("\n$name,")) {
+//                    result = name
+//                }
+//            }
+//            return@UDF1 result
+//        }
     }
 }

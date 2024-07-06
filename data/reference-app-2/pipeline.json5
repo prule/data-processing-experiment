@@ -32,7 +32,30 @@
       factCol: "address",
       dimensionTable: "cities",
       dimensionCol: "city",
-      other: "Other"
+      other: "OTHER"
+    },
+    {
+      type: "com.example.dataprocessingexperiment.app.part17.CityProcessor",
+      id: "customers.3a",
+      name: "City Name",
+      description: "Handle HULL special case",
+      factTable: "customers",
+      targetDimension: "city",
+      sourceDimension: "address",
+    },
+    {
+      type: "com.example.dataprocessingexperiment.spark.pipeline.OutputProcessor",
+      id: "customers.city.output",
+      name: "Output customers with city",
+      description: "Writes out the enriched customers",
+      table: "customers",
+      path: "./build/output/reference-app-2/transformed/city",
+      format: "csv",
+      mode: "overwrite",
+      options: {
+        "header": "true",
+      }
+      // TODO add partition capability
     },
     {
       type: "com.example.dataprocessingexperiment.spark.pipeline.AggregateSumProcessor",
@@ -43,6 +66,21 @@
       sumColumn: "total_spend",
       groupColumn: "city",
       resultTable: "city_totals",
+    },
+    {
+      type: "com.example.dataprocessingexperiment.spark.pipeline.OutputProcessor",
+      id: "customers.output",
+      name: "Output transformed customers",
+      description: "Writes out the enriched customers",
+      table: "city_totals",
+      path: "./build/output/reference-app-2/transformed/city_totals",
+      format: "csv",
+      mode: "overwrite",
+      options: {
+        "header": "true",
+      }
+      // TODO add partition capability
     }
+
   ]
 }

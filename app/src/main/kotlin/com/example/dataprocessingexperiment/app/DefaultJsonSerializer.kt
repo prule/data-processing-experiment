@@ -1,5 +1,6 @@
 package com.example.dataprocessingexperiment.app
 
+import com.example.dataprocessingexperiment.app.part17.CityProcessor
 import com.example.dataprocessingexperiment.app.part17.ValueContainsOneInListProcessor
 import com.example.dataprocessingexperiment.spark.data.types.*
 import com.example.dataprocessingexperiment.spark.pipeline.*
@@ -76,6 +77,12 @@ class DefaultJsonSerializer {
                 ValueMappingWhenProcessor::class,
                 ValueMappingWhenProcessor.serializer()
             )
+            polymorphic(
+                ProcessorDefinition::class,
+                CityProcessor::class,
+                CityProcessor.serializer()
+            )
+
         }
         return Json5 { serializersModule = pipelineModule }
     }
