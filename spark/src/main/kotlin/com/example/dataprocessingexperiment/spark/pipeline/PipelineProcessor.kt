@@ -1,10 +1,8 @@
 package com.example.dataprocessingexperiment.spark.pipeline
 
 import com.example.dataprocessingexperiment.spark.SparkContext
-import com.example.dataprocessingexperiment.tables.pipeline.ProcessorDefinition
 import com.example.dataprocessingexperiment.tables.pipeline.PipelineConfiguration
 import mu.KotlinLogging
-import kotlin.reflect.KClass
 
 class PipelineProcessor(
     private val configuration: PipelineConfiguration

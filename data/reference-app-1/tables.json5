@@ -1,15 +1,23 @@
 {
-  id: "sample1",
+  id: "reference-app-1",
   name: "Sample 1",
   description: "Sample 1 is a basic dataset configuration to demonstrate capability",
-
   sources: [
     {
       id: "transactions",
       name: "Transactions",
       description: "Transactions contains transactions from multiple bank accounts",
-      path: "sample1/transactions/",
-      type: "csv",
+      path: "reference-app-1/transactions/",
+      type: {
+        format: "csv",
+        options: {
+          quotedstring: "\"",
+          escape: "\"",
+          multiline: "true",
+          header: "true",
+          delimiter: ","
+        }
+      },
       table: {
         name: "transactions",
         description: "account transactions",
@@ -17,7 +25,9 @@
         trim: true,
         columns: [
           {
-            names: ["date"],
+            names: [
+              "date"
+            ],
             alias: "date",
             description: "date of transaction",
             type: {
@@ -30,7 +40,9 @@
             required: true
           },
           {
-            names: ["account"],
+            names: [
+              "account"
+            ],
             alias: "account",
             description: "account",
             type: {
@@ -39,7 +51,9 @@
             required: true
           },
           {
-            names: ["description"],
+            names: [
+              "description"
+            ],
             alias: "description",
             description: "description",
             type: {
@@ -48,7 +62,9 @@
             trim: true
           },
           {
-            names: ["location"],
+            names: [
+              "location"
+            ],
             alias: "location",
             description: "location",
             type: {
@@ -56,7 +72,9 @@
             }
           },
           {
-            names: ["amount"],
+            names: [
+              "amount"
+            ],
             alias: "amount",
             description: "amount can be a positive (credit) or negative (debit) number representing dollars and cents",
             type: {
@@ -69,31 +87,41 @@
         ]
       }
     },
-
-//    "Official Code State",
-//    "Official Name State",
-//    "Year",
-//    "Official Code Local Government Area",
-//    "Iso 3166-3 Area Code",
-//    "Official Name Local Government Area",
-//    "Type",
-//    "Long Official Name Local Government Area",
+    //    "Official Code State",
+    //    "Official Name State",
+    //    "Year",
+    //    "Official Code Local Government Area",
+    //    "Iso 3166-3 Area Code",
+    //    "Official Name Local Government Area",
+    //    "Type",
+    //    "Long Official Name Local Government Area",
 
     {
       id: "lga-1",
       name: "lga-1",
       description: "lga-1",
-      path: "sample1/lgas/1",
-      type: "csv",
+      path: "reference-app-1/lgas/1",
+      type: {
+        format: "csv",
+        options: {
+          quotedstring: "\"",
+          escape: "\"",
+          multiline: "true",
+          header: "true",
+          delimiter: ";"
+        }
+      },
       table: {
         name: "lga-1",
         description: "",
         deduplicate: true,
-        delimiter: ";",
         // with multiple column names we can now us the same column definitions for each of the LGA tables
         columns: [
           {
-            names: ["Code State","Official Code State"],
+            names: [
+              "Code State",
+              "Official Code State"
+            ],
             alias: "level_1_code",
             description: "",
             type: {
@@ -102,7 +130,10 @@
             required: true
           },
           {
-            names: ["Name State","Official Name State"],
+            names: [
+              "Name State",
+              "Official Name State"
+            ],
             alias: "level_1_name",
             description: "",
             type: {
@@ -111,7 +142,10 @@
             required: true
           },
           {
-            names: ["Code Local Government Area", "Official Code Local Government Area"],
+            names: [
+              "Code Local Government Area",
+              "Official Code Local Government Area"
+            ],
             alias: "level_2_code",
             description: "",
             type: {
@@ -120,7 +154,10 @@
             required: true
           },
           {
-            names: ["Name Local Government Area", "Official Name Local Government Area"],
+            names: [
+              "Name Local Government Area",
+              "Official Name Local Government Area"
+            ],
             alias: "level_2_name",
             description: "",
             type: {
@@ -131,29 +168,39 @@
         ]
       }
     },
-
-//    "Official Name State",
-//    "Year",
-//    "Official Code Local Government Area",
-//    "Official Code State",
-//    "Iso 3166-3 Area Code",
-//    "Official Name Local Government Area",
+    //    "Official Name State",
+    //    "Year",
+    //    "Official Code Local Government Area",
+    //    "Official Code State",
+    //    "Iso 3166-3 Area Code",
+    //    "Official Name Local Government Area",
 
     {
       id: "lga-2",
       name: "lga-2",
       description: "lga-2",
-      path: "sample1/lgas/2",
-      type: "csv",
+      path: "reference-app-1/lgas/2",
+      type: {
+        format: "csv",
+        options: {
+          quotedstring: "\"",
+          escape: "\"",
+          multiline: "true",
+          header: "true",
+          delimiter: ";"
+        }
+      },
       table: {
         name: "lga-2",
         description: "",
         deduplicate: true,
-        delimiter: ";",
         // with multiple column names we can now us the same column definitions for each of the LGA tables
         columns: [
           {
-            names: ["Code State","Official Code State"],
+            names: [
+              "Code State",
+              "Official Code State"
+            ],
             alias: "level_1_code",
             description: "",
             type: {
@@ -162,7 +209,10 @@
             required: true
           },
           {
-            names: ["Name State","Official Name State"],
+            names: [
+              "Name State",
+              "Official Name State"
+            ],
             alias: "level_1_name",
             description: "",
             type: {
@@ -171,7 +221,10 @@
             required: true
           },
           {
-            names: ["Code Local Government Area", "Official Code Local Government Area"],
+            names: [
+              "Code Local Government Area",
+              "Official Code Local Government Area"
+            ],
             alias: "level_2_code",
             description: "",
             type: {
@@ -180,7 +233,10 @@
             required: true
           },
           {
-            names: ["Name Local Government Area", "Official Name Local Government Area"],
+            names: [
+              "Name Local Government Area",
+              "Official Name Local Government Area"
+            ],
             alias: "level_2_name",
             description: "",
             type: {
@@ -191,7 +247,6 @@
         ]
       }
     },
-
     //    "Official Name State",
     //    "Official Code Local Government Area",
     //    "Official Code State",
@@ -202,17 +257,28 @@
       id: "lga-3",
       name: "lga-3",
       description: "lga-3",
-      path: "sample1/lgas/3",
-      type: "csv",
+      path: "reference-app-1/lgas/3",
+      type: {
+        format: "csv",
+        options: {
+          quotedstring: "\"",
+          escape: "\"",
+          multiline: "true",
+          header: "true",
+          delimiter: ";"
+        }
+      },
       table: {
         name: "lga-3",
         description: "",
         deduplicate: true,
-        delimiter: ";",
         // with multiple column names we can now us the same column definitions for each of the LGA tables
         columns: [
           {
-            names: ["Code State","Official Code State"],
+            names: [
+              "Code State",
+              "Official Code State"
+            ],
             alias: "level_1_code",
             description: "",
             type: {
@@ -221,7 +287,10 @@
             required: true
           },
           {
-            names: ["Name State","Official Name State"],
+            names: [
+              "Name State",
+              "Official Name State"
+            ],
             alias: "level_1_name",
             description: "",
             type: {
@@ -230,7 +299,10 @@
             required: true
           },
           {
-            names: ["Code Local Government Area", "Official Code Local Government Area"],
+            names: [
+              "Code Local Government Area",
+              "Official Code Local Government Area"
+            ],
             alias: "level_2_code",
             description: "",
             type: {
@@ -239,7 +311,10 @@
             required: true
           },
           {
-            names: ["Name Local Government Area", "Official Name Local Government Area"],
+            names: [
+              "Name Local Government Area",
+              "Official Name Local Government Area"
+            ],
             alias: "level_2_name",
             description: "",
             type: {
@@ -249,21 +324,31 @@
           }
         ]
       }
-    }
-,
+    },
     {
       id: "mappings",
       name: "Mappings",
       description: "Value mappings for all tables",
-      path: "sample1/value_mappings",
-      type: "csv",
+      path: "reference-app-1/value_mappings",
+      type: {
+        format: "csv",
+        options: {
+          quotedstring: "\"",
+          escape: "\"",
+          multiline: "true",
+          header: "true",
+          delimiter: ","
+        }
+      },
       table: {
         name: "mappings",
         description: "",
         deduplicate: true,
         columns: [
           {
-            names: ["table"],
+            names: [
+              "table"
+            ],
             alias: "table",
             description: "",
             type: {
@@ -272,7 +357,9 @@
             required: true
           },
           {
-            names: ["column"],
+            names: [
+              "column"
+            ],
             alias: "column",
             description: "",
             type: {
@@ -281,7 +368,9 @@
             required: true
           },
           {
-            names: ["from"],
+            names: [
+              "from"
+            ],
             alias: "from",
             description: "Value to replace",
             type: {
@@ -290,7 +379,9 @@
             required: true
           },
           {
-            names: ["to"],
+            names: [
+              "to"
+            ],
             alias: "to",
             description: "Replacement value",
             type: {
@@ -301,8 +392,5 @@
         ]
       }
     }
-
   ],
-
-
 }

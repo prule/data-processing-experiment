@@ -1,6 +1,6 @@
-Data Processing Experiment - Part 16
+Data Processing Experiment - Part 17
 ---
-- Sampling data to reduce the dataset size
+- Applying a real world example to improve the framework
 
 ---
 
@@ -8,208 +8,178 @@ Data Processing Experiment - Part 16
 >
 > - [Github repository for this project](https://github.com/prule/data-processing-experiment/)
 > - [Pull requests for each part](https://github.com/prule/data-processing-experiment/pulls?q=is%3Apr+is%3Aclosed)
-> - [Branch for part-16](https://github.com/prule/data-processing-experiment/tree/part-16)
+> - [Branch for part-17](https://github.com/prule/data-processing-experiment/tree/part-17)
 
 ---
 
 ## Introduction
 
-Stratified sampling is a way to reduce a dataset while keeping the distribution of certain characteristics similar to the original.
+https://github.com/davidasboth/solve-any-data-analysis-problem/blob/main/chapter-2/Chapter%202%20sample%20solution.ipynb
 
-For example, if we have a very large dataset we may want to make it smaller to make processing and experimenting with it easier.
+Cities
+- countries_to_remove = ["England", "Scotland", "Wales", "Northern Ireland"]
+- cities["city"] = cities["city"].str.replace("*", "", regex=False)
+- cities["city"] = cities["city"].str.upper()
 
-* We could take a random sample, but this will may mean the distribution of the data will not match the original.
-    * Perhaps the original data was skewed toward a certain age group and gender in which case random sampling may change the shape of the data
+assign city in address table
 
-With stratified sampling, the aim is to keep the proportions similar to the original.
+for city in cities["city"].values:
+customers.loc[customers["address_clean"].str.contains(f"\n{city},"), "city"] = city
+- nulls get assigned to other
+customers["city"].fillna("OTHER", inplace=True)
 
-The wikipedia page has a good example which I try to recreate below.
+fix hull
+customers.loc[customers["address_clean"].str.contains("\nHULL,"), "city"] = "HULL"
 
-* https://en.wikipedia.org/wiki/Stratified_sampling
-* https://spark.apache.org/docs/3.5.1/mllib-statistics.html#stratified-sampling
+sum spend, grouped by city
 
-----
 
-View this code as a notebook [here](https://colab.research.google.com/drive/1W1s9iJ37FxdowZNp2Qm6bxPHuw6XBsuK?usp=sharing).
-
-----
 
 ## Details
 
-Lets have a look at the raw data:
-```
-# Load the data
-raw = load("file:/tmp/data/sample4/large/")
-raw.count()
+- count nulls - should be covered by EmptyCount
+- shape - covered by row count and col count
+- describe - covered by summary
 
-180,000
+I noticed 25 occurrences of these:
+24/06/02 14:26:24 INFO FileScanRDD: Reading File path: file:///Users/paulrule/IdeaProjects/data-processing-experiment-2/data/part17/downloaded/addresses.csv, range: 0-7407373, partition values: [empty row]
+
+Without persist in DataFrameBuilder.raw:
+24/06/02 14:26:44 INFO Part17: Took 00:00:31.119
+
+With persist in DataFrameBuilder.raw:
+24/06/02 14:30:34 INFO Part17: Took 00:00:12.896
+
+DataFrame.persist() The persist method is used to persist or cache a Spark DataFrame or Dataset in memory. This can improve performance for iterative operations or when the same data needs to be accessed multiple times.
+
+The persist method takes an optional argument storageLevel that specifies the storage level for persisting the data. For example, persisted_df = df.persist(StorageLevel.MEMORY_AND_DISK_SER) would persist the data in memory and on disk in serialized format.
+
+You should use persist() in Apache Spark when you need to cache or persist a Spark DataFrame or Dataset in memory or on disk for better performance in the following scenarios:
+Iterative Operations: If you are performing multiple operations on the same DataFrame or Dataset, it can be beneficial to persist the data in memory or on disk to avoid recomputing it for each operation. This can significantly improve performance, especially for complex operations or large datasets.
+Reusing Data: If you need to reuse the same DataFrame or Dataset multiple times in your application, persisting it can avoid recomputing or re-loading the data from the original source (e.g., file, database) each time.
+Shared Data: If multiple tasks or operations need to access the same DataFrame or Dataset, persisting it can avoid redundant computations and improve overall performance.
+Long-running or Exploratory Analysis: In long-running or exploratory data analysis tasks, where you might need to access the same data multiple times, persisting the data can significantly reduce the overall execution time.
+Shuffle Operations: Operations that involve shuffling data across partitions, such as join, repartition, or groupBy, can benefit from persisting the input DataFrame or Dataset, as it can avoid recomputing the shuffle step multiple times.
+However, it's important to note that persisting data in memory or on disk comes with a cost of increased memory or disk usage. Therefore, you should carefully evaluate the trade-off between performance gain and resource consumption when deciding to persist data. It's generally recommended to unpersist the data when it's no longer needed to free up resources.
+Additionally, you should choose the appropriate storage level (StorageLevel) based on your use case and available resources. For example, MEMORY_AND_DISK can be used when the data doesn't fit entirely in memory, or DISK_ONLY can be used when you have limited memory but sufficient disk space.
 
 
-# Show distribution of data by sex and status
-rawProportions = raw.groupBy("sex","status").count() \
-.withColumn("proportion", col('count')/raw.count()) \
-.withColumn("label", concat(col('sex'), lit("|"), col('status'))) \
-.orderBy("sex","status")
-rawProportions.show()
 
-+------+---------+-----+----------+----------------+
-|   sex|   status|count|proportion|           label|
-+------+---------+-----+----------+----------------+
-|Female|Full-time| 9000|      0.05|Female|Full-time|
-|Female|Part-time|63000|      0.35|Female|Part-time|
-|  Male|Full-time|90000|       0.5|  Male|Full-time|
-|  Male|Part-time|18000|       0.1|  Male|Part-time|
-+------+---------+-----+----------+----------------+
-```
-Graphing it as a pie chart might be a good way to visualise it - clicking the + next to the table lets you choose how to display the data shown.
-```
-values = rawProportions.toPandas()
-values.plot(kind='pie', y='proportion', labels=values['label'])
-```
-
-### Transform the data
-
-I'm not sure how to sample the data by multiple columns, so to make it simple I'll add a column which is the concatenation of sex and status. Then I can just sample by that column.
+with this:
 
 ```
-transformed = raw.withColumn( \
-  'sample_by', \
-  concat( \
-    col("sex"), \
-    lit("|"), \
-    col("status") \
-  ) \
-)
+    val raw: Dataset<Row> by lazy {
+        sparkSession.read()
+            .format(sourceDefinition.type)
+//            .option("quotedstring","\"")
+//            .option("escape","\"")
+//            .option("multiline", true)
+            .option("header", true) // headers are always required at this point
+            .option("delimiter", sourceDefinition.table.delimiter)
+            .load(rootPath + sourceDefinition.path)
+            .alias(sourceDefinition.name)
+    }
 ```
+for addresses:
 
-### Calculate how to scale each stratum
-
-If we have 180 rows and we want to reduce that to 40 we need to sample 40/180 = approx 22%.
-
-And we want to take equal proportions of each segment (in this example) so the sample proportions will match the original data.
-
-```
-fractions = transformed.select("sample_by") \
-.distinct() \
-.withColumn("fraction", lit(.22)) \
-.rdd.collectAsMap()
-```
-results in
-
-```
-{
-'Male|Full-time':0.22,
-'Male|Part-time':0.22,
-'Female|Full-time':0.22,
-'Female|Part-time':0.22
-}
-```
-Perform the sampling
-
-```
-sample = transformed.stat.sampleBy( \
-col="sample_by", \
-fractions=fractions, \
-seed=12 \
-)
-
-sample.count()
-
-39631
-```
-We have approximately 40,000 rows in our sample.
-
-Look at the proportions for the sample
-
-```
-sampledProportions = sample \
-.groupBy("sex","status") \
-.count() \
-.withColumn("proportion", (col('count')/sample.count()).cast(DecimalType(10,2))) \
-.orderBy("sex","status")
+key,column,discriminator,value
+EmptyCount,company_id,"",4
+EmptyCount,address,"",267387
+EmptyCount,total_spend,"",466316
+EmptyPercentage,"","",52
+row count,"","",467439
+column count,"","",3
+duplicate row count,"","",254162
+Summary,total_spend,count,1123
+Summary,total_spend,mean,4945.6419868791
+Summary,total_spend,stddev,1527.4680871493963
+Summary,total_spend,min,NR DAVENTRY
+Summary,total_spend,max,STAINES
+Summary,total_spend,25%,4000.0
+Summary,total_spend,50%,4900.0
+Summary,total_spend,75%,5900.0
 
 
-+------+---------+-----+----------+
-|   sex|   status|count|proportion|
-+------+---------+-----+----------+
-|Female|Full-time| 1907|      0.05|
-|Female|Part-time|13904|      0.35|
-|  Male|Full-time|19911|      0.50|
-|  Male|Part-time| 3909|      0.10|
-+------+---------+-----+----------+
-```
-From the wikipedia page, I expected:
+with
+.option("multiline", true)
 
-* 5% (2 individuals) should be female, full-time.
-* 35% (14 individuals) should be female, part-time.
-* 50% (20 individuals) should be male, full-time.
-* 10% (4 individuals) should be male, part-time.
+key,column,discriminator,value
+EmptyCount,company_id,"",0
+EmptyCount,address,"",983
+EmptyCount,total_spend,"",27
+EmptyPercentage,"","",0
+row count,"","",100021
+column count,"","",3
+duplicate row count,"","",2
+Summary,total_spend,count,99994
+Summary,total_spend,mean,4951.649098945937
+Summary,total_spend,stddev,1500.9995471720408
+Summary,total_spend,min,0
+Summary,total_spend,max,9900
+Summary,total_spend,25%,3900.0
+Summary,total_spend,50%,5000.0
+Summary,total_spend,75%,6000.0
 
-So this is spot on! We have the same proportions across the combinations of sex and status but a much smaller dataset at 40,000 rows instead of 180,000.
+with
+.option("escape","\"")
 
-But wait, with simple random sampling I get the same result:
-
-```
-raw.sample(fraction=0.22, seed=12).groupBy("sex","status") \
-  .count() \
-  .withColumn("proportion", (col('count')/sample.count()).cast(DecimalType(10,2))) \
-  .orderBy("sex","status") \
-  .show()
-
-+------+---------+-----+----------+
-|   sex|   status|count|proportion|
-+------+---------+-----+----------+
-|Female|Full-time| 1907|      0.05|
-|Female|Part-time|13904|      0.35|
-|  Male|Full-time|19911|      0.50|
-|  Male|Part-time| 3909|      0.10|
-+------+---------+-----+----------+
-```
-It's exactly the same! No point in all that complexity in this example. Perhaps if we wanted to CHANGE the proportions (use unequal fractions) then we could do it that way. (Perhaps for manufacturing some sample data?)
-
-----
-
-If we use a small dataset we can see the proportions are close to expected but not quite exact - that is, the bigger the dataset the more accurate the proportions will be.
-
-```
-small = load("file:/tmp/data/sample4/small/")
-small.groupBy("sex","status") \
-  .count() \
-  .withColumn("proportion", (col('count')/small.count()).cast(DecimalType(10,2))) \
-  .orderBy("sex","status") \
-  .show()
-
-+------+---------+-----+----------+
-|   sex|   status|count|proportion|
-+------+---------+-----+----------+
-|Female|Full-time|    9|      0.05|
-|Female|Part-time|   63|      0.35|
-|  Male|Full-time|   90|      0.50|
-|  Male|Part-time|   18|      0.10|
-+------+---------+-----+----------+
+key,column,discriminator,value
+EmptyCount,company_id,"",0
+EmptyCount,address,"",968
+EmptyCount,total_spend,"",0
+EmptyPercentage,"","",0
+row count,"","",100000
+column count,"","",3
+duplicate row count,"","",0
+Summary,total_spend,count,100000
+Summary,total_spend,mean,4951.662
+Summary,total_spend,stddev,1500.9838664295094
+Summary,total_spend,min,0
+Summary,total_spend,max,9900
+Summary,total_spend,25%,3900.0
+Summary,total_spend,50%,5000.0
+Summary,total_spend,75%,6000.0
 
 
-smallSample = small.sample(fraction=0.22, seed=12)
+with
+.option("quotedstring","\"")
 
-smallSample.groupBy("sex","status") \
-  .count() \
-  .withColumn("proportion", (col('count')/smallSample.count()).cast(DecimalType(10,2))) \
-  .orderBy("sex","status") \
-  .show()
+key,column,discriminator,value
+EmptyCount,company_id,"",0
+EmptyCount,address,"",968
+EmptyCount,total_spend,"",0
+EmptyPercentage,"","",0
+row count,"","",100000
+column count,"","",3
+duplicate row count,"","",0
+Summary,total_spend,count,100000
+Summary,total_spend,mean,4951.662
+Summary,total_spend,stddev,1500.9838664295094
+Summary,total_spend,min,0
+Summary,total_spend,max,9900
+Summary,total_spend,25%,3900.0
+Summary,total_spend,50%,5000.0
+Summary,total_spend,75%,6000.0
 
-+------+---------+-----+----------+
-|   sex|   status|count|proportion|
-+------+---------+-----+----------+
-|Female|Full-time|    1|      0.02|
-|Female|Part-time|   14|      0.32|
-|  Male|Full-time|   24|      0.55|
-|  Male|Part-time|    5|      0.11|
-+------+---------+-----+----------+
-```
-Close, but not as close as when the dataset was bigger.
+total spend max is still wrong
+we need trim specified for that column
+then we look at the valid dataset statistics and we see the max is now correct - so it must have been whitespace that was interfering.
 
----
+- perhaps we should apply trimming to the raw dataset
 
-[Notebook](notebooks/part-16-colab-stratified-sampling/Stratified_sampling_with_spark.ipynb)
-
-![Full screenshot](notebooks/part-16-colab-stratified-sampling/Stratified_sampling_with_spark.png)
+key,column,discriminator,value
+EmptyCount,company_id,"",0
+EmptyCount,address,"",968
+EmptyCount,total_spend,"",0
+EmptyPercentage,"","",0
+row count,"","",100000
+column count,"","",3
+duplicate row count,"","",0
+Summary,total_spend,count,100000
+Summary,total_spend,mean,4951.662000
+Summary,total_spend,stddev,1500.983866429508
+Summary,total_spend,min,0.00
+Summary,total_spend,max,11700.00
+Summary,total_spend,25%,3900.0
+Summary,total_spend,50%,5000.0
+Summary,total_spend,75%,6000.0

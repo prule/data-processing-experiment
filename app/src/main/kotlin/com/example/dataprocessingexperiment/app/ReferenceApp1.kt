@@ -2,17 +2,14 @@ package com.example.dataprocessingexperiment.app
 
 import com.example.dataprocessingexperiment.spark.SparkContext
 import com.example.dataprocessingexperiment.spark.data.DataFrameBuilder
-import com.example.dataprocessingexperiment.spark.data.types.*
 import com.example.dataprocessingexperiment.spark.pipeline.*
-import com.example.dataprocessingexperiment.spark.statistics.*
+import com.example.dataprocessingexperiment.spark.statistics.StatisticRepository
+import com.example.dataprocessingexperiment.spark.statistics.StatisticsRunner
 import com.example.dataprocessingexperiment.spark.statistics.collectors.SparkCollector
-import com.example.dataprocessingexperiment.tables.ColumnType
 import com.example.dataprocessingexperiment.tables.Sources
-import com.example.dataprocessingexperiment.tables.pipeline.*
-import com.example.dataprocessingexperiment.tables.statistics.StatisticDefinition
+import com.example.dataprocessingexperiment.tables.pipeline.ProcessorDefinition
 import com.example.dataprocessingexperiment.tables.statistics.Statistics
 import com.example.dataprocessingexperiment.tables.statistics.StatisticsConfiguration
-import io.github.xn32.json5k.Json5
 import io.github.xn32.json5k.decodeFromStream
 import kotlinx.serialization.modules.SerializersModule
 import org.apache.spark.SparkConf
@@ -25,8 +22,9 @@ import java.io.File
  * Reference implementation to demonstrate and exercise current capabilities.
  */
 
-class App {
+class ReferenceApp1 {
     private val displayRows = 100
+    private val dataBase = "../data/reference-app-1"
 
     fun go() {
         // spark setup
@@ -34,45 +32,21 @@ class App {
         val sparkSession = SparkSession.builder().config(config).orCreate
 
         // clean up the output directory
-        val outputPath = "./build/out/sample1/statements/statistics"
+        val outputPath = "./build/output/reference-app-1/statements/statistics"
         File(outputPath).deleteRecursively()
 
         // load configuration
+        val defaultJsonSerializer = DefaultJsonSerializer()
 
-        val tablesModule = SerializersModule {
-            polymorphic(ColumnType::class, BooleanType::class, BooleanType.serializer())
-            polymorphic(ColumnType::class, StringType::class, StringType.serializer())
-            polymorphic(ColumnType::class, DateType::class, DateType.serializer())
-            polymorphic(ColumnType::class, IntegerType::class, IntegerType.serializer())
-            polymorphic(ColumnType::class, DecimalType::class, DecimalType.serializer())
-            polymorphic(ColumnType::class, NoOpType::class, NoOpType.serializer())
-        }
-        val tablesJson = Json5 { serializersModule = tablesModule }
-
-        val sources = tablesJson.decodeFromStream<Sources>(
-            this::class.java.getResourceAsStream("/sample1.tables.json5")!!
+        val sources = defaultJsonSerializer.tableModule().decodeFromStream<Sources>(
+            File("$dataBase/tables.json5").inputStream()
         )
 
-        val statisticsModule = SerializersModule {
-            polymorphic(StatisticDefinition::class, Bounds::class, Bounds.serializer())
-            polymorphic(StatisticDefinition::class, ColCount::class, ColCount.serializer())
-            polymorphic(StatisticDefinition::class, CountByMonth::class, CountByMonth.serializer())
-            polymorphic(StatisticDefinition::class, CountByValue::class, CountByValue.serializer())
-            polymorphic(StatisticDefinition::class, DuplicateCount::class, DuplicateCount.serializer())
-            polymorphic(StatisticDefinition::class, Maximum::class, Maximum.serializer())
-            polymorphic(StatisticDefinition::class, Minimum::class, Minimum.serializer())
-            polymorphic(StatisticDefinition::class, RowCount::class, RowCount.serializer())
-            polymorphic(StatisticDefinition::class, EmptyCount::class, EmptyCount.serializer())
-            polymorphic(StatisticDefinition::class, Summary::class, Summary.serializer())
-        }
-
-        val statisticsJson = Json5 { serializersModule = statisticsModule }
-
-        val statisticConfiguration = statisticsJson.decodeFromStream<StatisticsConfiguration>(
-            this::class.java.getResourceAsStream("/sample1.statistics.json5")!!
+        val statisticConfiguration = defaultJsonSerializer.statisticsModule().decodeFromStream<StatisticsConfiguration>(
+            File("$dataBase/statistics.json5").inputStream()
         )
 
-        val context = SparkContext(sources)
+        val context = SparkContext(sources, sparkSession)
 
         // run
         // load each table
@@ -163,7 +137,7 @@ class App {
             )
 
             val pipelineConfiguration = pipelineConfigurationRepository.load(
-                File("./src/main/resources/sample1.pipeline.json5").inputStream()
+                File("$dataBase/pipeline.json5").inputStream()
             )
 
             PipelineProcessor(pipelineConfiguration).process(context)
@@ -215,10 +189,18 @@ class App {
     }
 }
 
-fun main() {
+fun main(args: Array<String>) {
     println("Starting...")
 
-    App().go()
-
+    if(args.isEmpty()) {
+        ReferenceApp1().go()
+    } else {
+        val command = args[0]
+        when (command) {
+            "reference-app-1" -> ReferenceApp1().go()
+            "reference-app-2" -> ReferenceApp2().go()
+            else -> println("Unknown command $command")
+        }
+    }
     println("Finished...")
 }

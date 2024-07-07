@@ -20,7 +20,6 @@ data class TableDefinition(
     val name: String,
     val description: String,
     val deduplicate: Boolean = false,
-    val delimiter: String = ",",
     val columns: List<ColumnDefinition>,
     val trim: Boolean? = false,
 ) {

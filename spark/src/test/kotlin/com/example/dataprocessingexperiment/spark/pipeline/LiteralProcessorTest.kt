@@ -31,7 +31,7 @@ class LiteralProcessorTest {
             )
         )
 
-        val context = SparkContext(Sources("test", "test", "test", listOf()))
+        val context = SparkContext(Sources("test", "test", "test", listOf()), sparkSession)
         context.set("dataFrame1", dataframe1)
 
         LiteralProcessor(//            "com.example.dataprocessingexperiment.tables.pipeline.LiteralTask",

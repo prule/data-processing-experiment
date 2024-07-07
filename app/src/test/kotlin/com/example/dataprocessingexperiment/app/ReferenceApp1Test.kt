@@ -4,10 +4,9 @@
 package com.example.dataprocessingexperiment.app
 
 import kotlin.test.Test
-import kotlin.test.assertNotNull
 
-class AppTest {
+class ReferenceApp1Test {
     @Test fun appHasAGreeting() {
-        App()
+        ReferenceApp1()
     }
 }

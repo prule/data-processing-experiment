@@ -2,8 +2,10 @@ package com.example.dataprocessingexperiment.spark.data
 
 import com.example.dataprocessingexperiment.spark.data.types.*
 import com.example.dataprocessingexperiment.tables.ColumnDefinition
+import com.example.dataprocessingexperiment.tables.DefaultCsvSourceType
 import com.example.dataprocessingexperiment.tables.SourceDefinition
 import com.example.dataprocessingexperiment.tables.TableDefinition
+import io.kotest.data.headers
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldBe
 import mu.KotlinLogging
@@ -31,14 +33,13 @@ class DataFrameBuilderTypeTest {
             "test1",
             "test1",
             "test csv file",
-            "../data/sample1/types",
-            "csv",
+            "../data/reference-app-1/types",
+            DefaultCsvSourceType().get(),
             // table structure
             TableDefinition(
                 "test1",
                 "test csv file",
                 false,
-                ",",
                 listOf(
                     ColumnDefinition(listOf("boolean"), "boolean", "boolean", false, type = BooleanType()),
                     ColumnDefinition(listOf("date"), "date", "date", false, type = DateType(listOf("d/M/yyyy", "yyyy-MM-dd"))),
@@ -84,6 +85,43 @@ class DataFrameBuilderTypeTest {
             |   true|2020-12-31| 100.12|      6|any value|
             +-------+----------+-------+-------+---------+
          */
+    }
+
+
+    @Test
+    fun `data frame should build without headers`() {
+
+        logger.warn("Starting")
+        // spark setup
+        val config = SparkConf().setAppName("spike").setMaster("local")
+        val sparkSession = SparkSession.builder().config(config).orCreate
+
+        // define our input source
+        val sourceDefinition = SourceDefinition(
+            "test1",
+            "test1",
+            "test csv file",
+            "../data/reference-app-1/types",
+            DefaultCsvSourceType(header = false).get(),
+            // table structure
+            TableDefinition(
+                "test1",
+                "test csv file",
+                false,
+                listOf(
+                    ColumnDefinition(listOf("_c0"), "boolean", "boolean", false, type = BooleanType()),
+                    ColumnDefinition(listOf("_c1"), "date", "date", false, type = DateType(listOf("d/M/yyyy", "yyyy-MM-dd"))),
+                    ColumnDefinition(listOf("_c2"), "decimal", "decimal", false, type = DecimalType(10,2)),
+                    ColumnDefinition(listOf("_c3"), "integer", "integer", false, type = IntegerType()),
+                    ColumnDefinition(listOf("_c4"), "string", "string", false, type = StringType()),
+                )
+            ),
+        )
+
+        // build the dataframe
+        val dataFrameBuilder = DataFrameBuilder(sparkSession, sourceDefinition)
+        dataFrameBuilder.raw().show()
+        dataFrameBuilder.selected().show()
     }
 
 }

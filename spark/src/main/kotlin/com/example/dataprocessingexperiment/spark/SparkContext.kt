@@ -3,14 +3,28 @@ package com.example.dataprocessingexperiment.spark
 import com.example.dataprocessingexperiment.tables.Sources
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
+import org.apache.spark.sql.SparkSession
 
-class SparkContext(val sources: Sources) {
+/**
+ * Stores datasets which can be accessed by processors.
+ */
+class SparkContext(
+    val sources: Sources,
+    val sparkSession: SparkSession,
+    val datasetOutput: DatasetOutput = DatasetOutput()
+) {
     private val data = mutableMapOf<String, Dataset<Row>>()
 
+    /**
+     * Add or update a dataset in the context
+     */
     fun set(id: String, dataset: Dataset<Row>) {
         data.put(id, dataset)
     }
 
+    /**
+     * Get a dataset from the context
+     */
     fun get(id: String): Dataset<Row> {
         if (contains(id)) {
             return data[id]!!
@@ -35,7 +49,7 @@ class SparkContext(val sources: Sources) {
             // order by first column
             val firstColumn = dataset.columns().first()
             println("$it ordered by $firstColumn")
-            dataset.orderBy(firstColumn).show(100, 9)
+            datasetOutput.show(dataset.orderBy(firstColumn))
         }
         println("==============================================")
     }

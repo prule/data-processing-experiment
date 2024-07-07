@@ -68,7 +68,7 @@ class ValueMappingJoinProcessorTest {
         )
 
         // build context
-        val context = SparkContext(Sources("test", "test", "test", listOf()))
+        val context = SparkContext(Sources("test", "test", "test", listOf()), sparkSession)
         context.set("mappings", mappings)
         context.set(tableName, transactions)
 

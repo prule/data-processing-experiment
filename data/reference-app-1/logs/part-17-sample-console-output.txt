@@ -1,0 +1,943 @@
+10:23:08 am: Executing 'run --stacktrace'...
+
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :spark:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :tables:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :tables:compileKotlin UP-TO-DATE
+> Task :tables:compileJava NO-SOURCE
+> Task :tables:processResources NO-SOURCE
+> Task :tables:classes UP-TO-DATE
+> Task :tables:jar UP-TO-DATE
+> Task :spark:compileKotlin UP-TO-DATE
+> Task :spark:compileJava NO-SOURCE
+> Task :spark:processResources NO-SOURCE
+> Task :spark:classes UP-TO-DATE
+> Task :spark:jar UP-TO-DATE
+> Task :app:compileKotlin UP-TO-DATE
+> Task :app:compileJava NO-SOURCE
+> Task :app:processResources UP-TO-DATE
+> Task :app:classes UP-TO-DATE
+
+> Task :app:run
+Starting...
+10:23:09.258 [main] WARN  org.apache.spark.util.Utils MDC= - Your hostname, Pauls-MacBook-Air.local resolves to a loopback address: 127.0.0.1; using 10.27.20.64 instead (on interface en0)
+10:23:09.260 [main] WARN  org.apache.spark.util.Utils MDC= - Set SPARK_LOCAL_IP if you need to bind to another address
+10:23:09.385 [main] WARN  o.a.hadoop.util.NativeCodeLoader MDC= - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+SLF4J: Class path contains multiple SLF4J providers.
+SLF4J: Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@484970b0]
+SLF4J: Found provider [org.apache.logging.slf4j.SLF4JServiceProvider@4470f8a6]
+SLF4J: See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual provider is of type [ch.qos.logback.classic.spi.LogbackServiceProvider@484970b0]
+
+Raw dataset
+
+root
+ |-- date: string (nullable = true)
+ |-- account: string (nullable = true)
+ |-- description: string (nullable = true)
+ |-- amount: string (nullable = true)
+ |-- location: string (nullable = true)
+ |-- comment: string (nullable = true)
+
++----------+-------+-----------+-------+----------+----------+
+|      date|account|description| amount|  location|   comment|
++----------+-------+-----------+-------+----------+----------+
+|      NULL|      x|     tennis|   0.03|      NULL|   no date|
+| 2020-0...|      1|     tennis|  35.00|  Banana  |      NULL|
+| 2020-0...|      2|     petrol| 150.45|Central...|      NULL|
+|01-03-2020|      1|     burger|  15.47|Greater...|alterna...|
+|03-03-2020|      1|     tennis|  35.03| Maroondah|alterna...|
+|04-03-2020|      2|     petrol| 150.47|      NULL|alterna...|
+|05-03-2020|      2|     petrol|  50.47|   Burwood|      NULL|
+|05-03-2020|      2|     petrol|  50.48|  Berrigan|      NULL|
+|2020-01...|      1|  burgers  |  15.45|  Gympie  |      NULL|
+|2020-01-02|      1|     movie |  20.00|  South...|      NULL|
+|2020-01-04|      2|     petrol| 150.45|   Cent...|      NULL|
+|2020-02-01|      1|     burger|  15.46|  Yarrabah|      NULL|
+|2020-02-02|      1|     movies|  20.01|Barcaldine|      NULL|
+|2020-02-03|      1|     tennis|  35.01| Maroondah|      NULL|
+|2020-02-04|      2|     petrol| 150.46|Gannawarra|      NULL|
+|2020-02-04|      2|  electr...| 300.47|   Hepburn|      NULL|
+|2020-12-01|       |     tennis|   0.04|      NULL| blank ...|
+|2020-12-01|      x|     petrol|      x|      NULL| invali...|
+|2020-13-01|      x|     burger|   0.01|unknown...| invali...|
+|invalid...|      x|     petrol|   0.02|          |invalid...|
+|         x|      x|          x|      x|      NULL| row wi...|
+|         x|      x|          x|      x|      NULL| row wi...|
++----------+-------+-----------+-------+----------+----------+
+
+row count = 22
+10:23:12.269 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.EmptyCount
+10:23:12.698 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.RowCount
+10:23:12.729 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.ColCount
+10:23:12.729 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.DuplicateCount
+10:23:12.984 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.CountByMonth
+10:23:13.171 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.CountByValue
+10:23:13.290 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.Bounds
+10:23:13.400 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.Summary
++-------+-----------------+-----------+
+|summary|           amount|description|
++-------+-----------------+-----------+
+|  count|               22|         22|
+|   mean|62.88315789473684|       NULL|
+| stddev|80.27425538964889|       NULL|
+|    min|             0.01|     petrol|
+|    max|                x|          x|
+|    25%|            15.45|       NULL|
+|    50%|             35.0|       NULL|
+|    75%|           150.45|       NULL|
++-------+-----------------+-----------+
+
+
+RAW Statistics
+
+root
+ |-- key: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- discriminator: string (nullable = true)
+ |-- value: string (nullable = true)
+
++----------+----------+-------------+----------+
+|       key|    column|discriminator|     value|
++----------+----------+-------------+----------+
+|CountBy...|      date|         NULL|        10|
+|CountBy...|      date|      2020-01|         5|
+|CountBy...|      date|      2020-02|         5|
+|CountBy...|      date|      2020-12|         2|
+|CountBy...|   account|         NULL|         1|
+|CountBy...|   account|            1|         8|
+|CountBy...|   account|            2|         7|
+|CountBy...|   account|            x|         6|
+|EmptyCount|      date|         NULL|         1|
+|EmptyCount|   account|         NULL|         1|
+|EmptyCount|descrip...|         NULL|         0|
+|EmptyCount|    amount|         NULL|         0|
+|EmptyCount|  location|         NULL|         7|
+|EmptyCount|   comment|         NULL|        12|
+|EmptyPe...|      NULL|         NULL|        15|
+|   Summary|    amount|        count|        22|
+|   Summary|    amount|         mean|62.8831...|
+|   Summary|    amount|       stddev|80.2742...|
+|   Summary|    amount|          min|      0.01|
+|   Summary|    amount|          max|         x|
+|   Summary|    amount|          25%|     15.45|
+|   Summary|    amount|          50%|      35.0|
+|   Summary|    amount|          75%|    150.45|
+|   Summary|descrip...|        count|        22|
+|   Summary|descrip...|         mean|      NULL|
+|   Summary|descrip...|       stddev|      NULL|
+|   Summary|descrip...|          min|    petrol|
+|   Summary|descrip...|          max|         x|
+|   Summary|descrip...|          25%|      NULL|
+|   Summary|descrip...|          50%|      NULL|
+|   Summary|descrip...|          75%|      NULL|
+|column ...|      NULL|         NULL|         6|
+|duplica...|      NULL|         NULL|         2|
+|       max|    amount|         NULL|         x|
+|       min|    amount|         NULL|      0.01|
+| row count|      NULL|         NULL|        22|
++----------+----------+-------------+----------+
+
+row count = 36
+
+SELECTED dataset
+
+root
+ |-- date: string (nullable = true)
+ |-- account: string (nullable = true)
+ |-- description: string (nullable = true)
+ |-- location: string (nullable = true)
+ |-- amount: string (nullable = true)
+
++----------+-------+-----------+----------+------+
+|      date|account|description|  location|amount|
++----------+-------+-----------+----------+------+
+|      NULL|      x|     tennis|      NULL|  0.03|
+|01-03-2020|      1|     burger|Greater...| 15.47|
+|03-03-2020|      1|     tennis| Maroondah| 35.03|
+|04-03-2020|      2|     petrol|      NULL|150.47|
+|05-03-2020|      2|     petrol|   Burwood| 50.47|
+|05-03-2020|      2|     petrol|  Berrigan| 50.48|
+|2020-01-01|      1|    burgers|    Gympie| 15.45|
+|2020-01-02|      1|      movie|Souther...| 20.00|
+|2020-01-03|      1|     tennis|    Banana| 35.00|
+|2020-01-04|      2|     petrol|Central...|150.45|
+|2020-01-04|      2|     petrol|Central...|150.45|
+|2020-02-01|      1|     burger|  Yarrabah| 15.46|
+|2020-02-02|      1|     movies|Barcaldine| 20.01|
+|2020-02-03|      1|     tennis| Maroondah| 35.01|
+|2020-02-04|      2|     petrol|Gannawarra|150.46|
+|2020-02-04|      2| electri...|   Hepburn|300.47|
+|2020-12-01|       |     tennis|      NULL|  0.04|
+|2020-12-01|      x|     petrol|      NULL|     x|
+|2020-13-01|      x|     burger|unknown...|  0.01|
+|invalid...|      x|     petrol|          |  0.02|
+|         x|      x|          x|      NULL|     x|
+|         x|      x|          x|      NULL|     x|
++----------+-------+-----------+----------+------+
+
+row count = 22
+
+Typed dataset
+
+root
+ |-- date: date (nullable = true)
+ |-- account: string (nullable = true)
+ |-- description: string (nullable = true)
+ |-- location: string (nullable = true)
+ |-- amount: decimal(10,2) (nullable = true)
+
++----------+-------+-----------+----------+------+
+|      date|account|description|  location|amount|
++----------+-------+-----------+----------+------+
+|      NULL|      x|     burger|unknown...|  0.01|
+|      NULL|      x|     petrol|          |  0.02|
+|      NULL|      x|     tennis|      NULL|  0.03|
+|      NULL|      x|          x|      NULL|  NULL|
+|      NULL|      x|          x|      NULL|  NULL|
+|2020-01-01|      1|    burgers|    Gympie| 15.45|
+|2020-01-02|      1|      movie|Souther...| 20.00|
+|2020-01-03|      1|     tennis|    Banana| 35.00|
+|2020-01-04|      2|     petrol|Central...|150.45|
+|2020-01-04|      2|     petrol|Central...|150.45|
+|2020-02-01|      1|     burger|  Yarrabah| 15.46|
+|2020-02-02|      1|     movies|Barcaldine| 20.01|
+|2020-02-03|      1|     tennis| Maroondah| 35.01|
+|2020-02-04|      2|     petrol|Gannawarra|150.46|
+|2020-02-04|      2| electri...|   Hepburn|300.47|
+|2020-03-01|      1|     burger|Greater...| 15.47|
+|2020-03-03|      1|     tennis| Maroondah| 35.03|
+|2020-03-04|      2|     petrol|      NULL|150.47|
+|2020-03-05|      2|     petrol|   Burwood| 50.47|
+|2020-03-05|      2|     petrol|  Berrigan| 50.48|
+|2020-12-01|       |     tennis|      NULL|  0.04|
+|2020-12-01|      x|     petrol|      NULL|  NULL|
++----------+-------+-----------+----------+------+
+
+row count = 22
+
+Valid dataset
+
+root
+ |-- date: date (nullable = true)
+ |-- account: string (nullable = true)
+ |-- description: string (nullable = true)
+ |-- location: string (nullable = true)
+ |-- amount: decimal(10,2) (nullable = true)
+
++----------+-------+-----------+----------+------+
+|      date|account|description|  location|amount|
++----------+-------+-----------+----------+------+
+|2020-01-01|      1|    burgers|    Gympie| 15.45|
+|2020-01-02|      1|      movie|Souther...| 20.00|
+|2020-01-03|      1|     tennis|    Banana| 35.00|
+|2020-01-04|      2|     petrol|Central...|150.45|
+|2020-02-01|      1|     burger|  Yarrabah| 15.46|
+|2020-02-02|      1|     movies|Barcaldine| 20.01|
+|2020-02-03|      1|     tennis| Maroondah| 35.01|
+|2020-02-04|      2| electri...|   Hepburn|300.47|
+|2020-02-04|      2|     petrol|Gannawarra|150.46|
+|2020-03-01|      1|     burger|Greater...| 15.47|
+|2020-03-03|      1|     tennis| Maroondah| 35.03|
+|2020-03-04|      2|     petrol|      NULL|150.47|
+|2020-03-05|      2|     petrol|  Berrigan| 50.48|
+|2020-03-05|      2|     petrol|   Burwood| 50.47|
++----------+-------+-----------+----------+------+
+
+row count = 14
+10:23:14.726 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.EmptyCount
+10:23:15.370 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.RowCount
+10:23:15.461 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.ColCount
+10:23:15.462 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.DuplicateCount
+10:23:15.605 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.CountByMonth
+10:23:15.786 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.CountByValue
+10:23:15.953 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.Bounds
+10:23:16.130 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.Summary
++-------+-----------------+-----------+
+|summary|           amount|description|
++-------+-----------------+-----------+
+|  count|               14|         14|
+|   mean|        74.587857|       NULL|
+| stddev|83.48222530101118|       NULL|
+|    min|            15.45|     burger|
+|    max|           300.47|     tennis|
+|    25%|             20.0|       NULL|
+|    50%|            35.01|       NULL|
+|    75%|           150.45|       NULL|
++-------+-----------------+-----------+
+
+
+VALID Statistics
+
+root
+ |-- key: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- discriminator: string (nullable = true)
+ |-- value: string (nullable = true)
+
++----------+----------+-------------+----------+
+|       key|    column|discriminator|     value|
++----------+----------+-------------+----------+
+|CountBy...|      date|      2020-01|         4|
+|CountBy...|      date|      2020-02|         5|
+|CountBy...|      date|      2020-03|         5|
+|CountBy...|   account|            1|         8|
+|CountBy...|   account|            2|         6|
+|EmptyCount|      date|         NULL|         0|
+|EmptyCount|   account|         NULL|         0|
+|EmptyCount|descrip...|         NULL|         0|
+|EmptyCount|  location|         NULL|         1|
+|EmptyCount|    amount|         NULL|         0|
+|EmptyPe...|      NULL|         NULL|         1|
+|   Summary|    amount|        count|        14|
+|   Summary|    amount|         mean| 74.587857|
+|   Summary|    amount|       stddev|83.4822...|
+|   Summary|    amount|          min|     15.45|
+|   Summary|    amount|          max|    300.47|
+|   Summary|    amount|          25%|      20.0|
+|   Summary|    amount|          50%|     35.01|
+|   Summary|    amount|          75%|    150.45|
+|   Summary|descrip...|        count|        14|
+|   Summary|descrip...|         mean|      NULL|
+|   Summary|descrip...|       stddev|      NULL|
+|   Summary|descrip...|          min|    burger|
+|   Summary|descrip...|          max|    tennis|
+|   Summary|descrip...|          25%|      NULL|
+|   Summary|descrip...|          50%|      NULL|
+|   Summary|descrip...|          75%|      NULL|
+|column ...|      NULL|         NULL|         5|
+|duplica...|      NULL|         NULL|         0|
+|       max|    amount|         NULL|    300.47|
+|       min|    amount|         NULL|     15.45|
+| row count|      NULL|         NULL|        14|
++----------+----------+-------------+----------+
+
+row count = 32
+
+Raw dataset
+
+root
+ |-- Code State: string (nullable = true)
+ |-- Name State: string (nullable = true)
+ |-- Year: string (nullable = true)
+ |-- Code Local Government Area: string (nullable = true)
+ |-- Iso 3166-3 Area Code: string (nullable = true)
+ |-- Name Local Government Area: string (nullable = true)
+ |-- Type: string (nullable = true)
+ |-- Long Name Local Government Area: string (nullable = true)
+
++----------+----------+----+--------------------------+--------------------+--------------------------+----------+-------------------------------+
+|Code State|Name State|Year|Code Local Government Area|Iso 3166-3 Area Code|Name Local Government Area|      Type|Long Name Local Government Area|
++----------+----------+----+--------------------------+--------------------+--------------------------+----------+-------------------------------+
+|         1|       NSW|2021|                     10650|                 AUS|                  Berrigan|local g...|                       Berrigan|
+|        01|       NSW|2021|                     10650|                 AUS|                  Berrigan|local g...|                       Berrigan|
+|       001|    N.S.W.|2021|                     10850|                  AU|                   Blayney|local g...|                        Blayney|
+|       001|New Sou...|2021|                     11500|                 AUS|                Campbel...|local g...|                     Campbel...|
+|         1|New Sou...|2021|                     11700|                 AUS|                Central...|local g...|                     Central...|
+|         1|New Sou...|2021|                     15990|                 AUS|                Norther...|local g...|                     Norther...|
+|         1|       NSW|2021|                     11300|                 AUS|                   Burwood|local g...|                        Burwood|
+|         1|New Sou...|2021|                     11750|                 AUS|                     Cobar|local g...|                          Cobar|
+|         1|New Sou...|2021|                     14000|                 AUS|                   Hornsby|local g...|                        Hornsby|
+|         1|New Sou...|2021|                     14750|                 AUS|                    Leeton|local g...|                         Leeton|
+|         1|New Sou...|2021|                     17200|                 AUS|                    Sydney|local g...|                         Sydney|
++----------+----------+----+--------------------------+--------------------+--------------------------+----------+-------------------------------+
+
+row count = 11
+10:23:17.030 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.RowCount
+10:23:17.055 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.ColCount
+10:23:17.055 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.DuplicateCount
+
+RAW Statistics
+
+root
+ |-- key: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- discriminator: string (nullable = true)
+ |-- value: string (nullable = true)
+
++----------+------+-------------+-----+
+|       key|column|discriminator|value|
++----------+------+-------------+-----+
+|column ...|  NULL|         NULL|    8|
+|duplica...|  NULL|         NULL|    0|
+| row count|  NULL|         NULL|   11|
++----------+------+-------------+-----+
+
+row count = 3
+
+SELECTED dataset
+
+root
+ |-- level_1_code: string (nullable = true)
+ |-- level_1_name: string (nullable = true)
+ |-- level_2_code: string (nullable = true)
+ |-- level_2_name: string (nullable = true)
+
++------------+------------+------------+------------+
+|level_1_code|level_1_name|level_2_code|level_2_name|
++------------+------------+------------+------------+
+|           1|         NSW|       10650|    Berrigan|
+|          01|         NSW|       10650|    Berrigan|
+|         001|      N.S.W.|       10850|     Blayney|
+|         001|  New Sou...|       11500|  Campbel...|
+|           1|  New Sou...|       11700|  Central...|
+|           1|  New Sou...|       15990|  Norther...|
+|           1|         NSW|       11300|     Burwood|
+|           1|  New Sou...|       11750|       Cobar|
+|           1|  New Sou...|       14000|     Hornsby|
+|           1|  New Sou...|       14750|      Leeton|
+|           1|  New Sou...|       17200|      Sydney|
++------------+------------+------------+------------+
+
+row count = 11
+
+Typed dataset
+
+root
+ |-- level_1_code: string (nullable = true)
+ |-- level_1_name: string (nullable = true)
+ |-- level_2_code: string (nullable = true)
+ |-- level_2_name: string (nullable = true)
+
++------------+------------+------------+------------+
+|level_1_code|level_1_name|level_2_code|level_2_name|
++------------+------------+------------+------------+
+|           1|         NSW|       10650|    Berrigan|
+|          01|         NSW|       10650|    Berrigan|
+|         001|      N.S.W.|       10850|     Blayney|
+|         001|  New Sou...|       11500|  Campbel...|
+|           1|  New Sou...|       11700|  Central...|
+|           1|  New Sou...|       15990|  Norther...|
+|           1|         NSW|       11300|     Burwood|
+|           1|  New Sou...|       11750|       Cobar|
+|           1|  New Sou...|       14000|     Hornsby|
+|           1|  New Sou...|       14750|      Leeton|
+|           1|  New Sou...|       17200|      Sydney|
++------------+------------+------------+------------+
+
+row count = 11
+
+Valid dataset
+
+root
+ |-- level_1_code: string (nullable = true)
+ |-- level_1_name: string (nullable = true)
+ |-- level_2_code: string (nullable = true)
+ |-- level_2_name: string (nullable = true)
+
++------------+------------+------------+------------+
+|level_1_code|level_1_name|level_2_code|level_2_name|
++------------+------------+------------+------------+
+|         001|      N.S.W.|       10850|     Blayney|
+|           1|  New Sou...|       11700|  Central...|
+|         001|  New Sou...|       11500|  Campbel...|
+|          01|         NSW|       10650|    Berrigan|
+|           1|  New Sou...|       17200|      Sydney|
+|           1|         NSW|       11300|     Burwood|
+|           1|  New Sou...|       11750|       Cobar|
+|           1|  New Sou...|       15990|  Norther...|
+|           1|         NSW|       10650|    Berrigan|
+|           1|  New Sou...|       14750|      Leeton|
+|           1|  New Sou...|       14000|     Hornsby|
++------------+------------+------------+------------+
+
+row count = 11
+10:23:17.748 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.RowCount
+10:23:17.822 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.ColCount
+10:23:17.822 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.DuplicateCount
+
+VALID Statistics
+
+root
+ |-- key: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- discriminator: string (nullable = true)
+ |-- value: string (nullable = true)
+
++----------+------+-------------+-----+
+|       key|column|discriminator|value|
++----------+------+-------------+-----+
+|column ...|  NULL|         NULL|    4|
+|duplica...|  NULL|         NULL|    0|
+| row count|  NULL|         NULL|   11|
++----------+------+-------------+-----+
+
+row count = 3
+
+Raw dataset
+
+root
+ |-- Official Name State: string (nullable = true)
+ |-- Year: string (nullable = true)
+ |-- Official Code Local Government Area: string (nullable = true)
+ |-- Official Code State: string (nullable = true)
+ |-- Iso 3166-3 Area Code: string (nullable = true)
+ |-- Official Name Local Government Area: string (nullable = true)
+
++-------------------+----+-----------------------------------+-------------------+--------------------+-----------------------------------+
+|Official Name State|Year|Official Code Local Government Area|Official Code State|Iso 3166-3 Area Code|Official Name Local Government Area|
++-------------------+----+-----------------------------------+-------------------+--------------------+-----------------------------------+
+|           Victoria|2021|                              21750|                  2|                 AUS|                         Colac O...|
+|           Victoria|2021|                              22670|                  2|                 AUS|                         Greater...|
+|           Victoria|2021|                              22910|                  2|                 AUS|                            Hepburn|
+|           Victoria|2021|                              24410|                  2|                 AUS|                          Maroondah|
+|           Victoria|2021|                              24850|                  2|                 AUS|                           Mitchell|
+|           Victoria|2021|                              23350|                  2|                 AUS|                             Indigo|
+|           Victoria|2021|                              26610|                  2|                 AUS|                          Swan Hill|
+|           Victoria|2021|                              22250|                  2|                 AUS|                         Gannawarra|
+|           Victoria|2021|                              20830|                  2|                 AUS|                            Baw Baw|
+|           Victoria|2021|                              21110|                  2|                 AUS|                         Boroondara|
++-------------------+----+-----------------------------------+-------------------+--------------------+-----------------------------------+
+
+row count = 10
+10:23:18.119 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.RowCount
+10:23:18.148 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.ColCount
+10:23:18.148 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.DuplicateCount
+
+RAW Statistics
+
+root
+ |-- key: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- discriminator: string (nullable = true)
+ |-- value: string (nullable = true)
+
++----------+------+-------------+-----+
+|       key|column|discriminator|value|
++----------+------+-------------+-----+
+|column ...|  NULL|         NULL|    6|
+|duplica...|  NULL|         NULL|    0|
+| row count|  NULL|         NULL|   10|
++----------+------+-------------+-----+
+
+row count = 3
+
+SELECTED dataset
+
+root
+ |-- level_1_code: string (nullable = true)
+ |-- level_1_name: string (nullable = true)
+ |-- level_2_code: string (nullable = true)
+ |-- level_2_name: string (nullable = true)
+
++------------+------------+------------+------------+
+|level_1_code|level_1_name|level_2_code|level_2_name|
++------------+------------+------------+------------+
+|           2|    Victoria|       21750|  Colac O...|
+|           2|    Victoria|       22670|  Greater...|
+|           2|    Victoria|       22910|     Hepburn|
+|           2|    Victoria|       24410|   Maroondah|
+|           2|    Victoria|       24850|    Mitchell|
+|           2|    Victoria|       23350|      Indigo|
+|           2|    Victoria|       26610|   Swan Hill|
+|           2|    Victoria|       22250|  Gannawarra|
+|           2|    Victoria|       20830|     Baw Baw|
+|           2|    Victoria|       21110|  Boroondara|
++------------+------------+------------+------------+
+
+row count = 10
+
+Typed dataset
+
+root
+ |-- level_1_code: string (nullable = true)
+ |-- level_1_name: string (nullable = true)
+ |-- level_2_code: string (nullable = true)
+ |-- level_2_name: string (nullable = true)
+
++------------+------------+------------+------------+
+|level_1_code|level_1_name|level_2_code|level_2_name|
++------------+------------+------------+------------+
+|           2|    Victoria|       21750|  Colac O...|
+|           2|    Victoria|       22670|  Greater...|
+|           2|    Victoria|       22910|     Hepburn|
+|           2|    Victoria|       24410|   Maroondah|
+|           2|    Victoria|       24850|    Mitchell|
+|           2|    Victoria|       23350|      Indigo|
+|           2|    Victoria|       26610|   Swan Hill|
+|           2|    Victoria|       22250|  Gannawarra|
+|           2|    Victoria|       20830|     Baw Baw|
+|           2|    Victoria|       21110|  Boroondara|
++------------+------------+------------+------------+
+
+row count = 10
+
+Valid dataset
+
+root
+ |-- level_1_code: string (nullable = true)
+ |-- level_1_name: string (nullable = true)
+ |-- level_2_code: string (nullable = true)
+ |-- level_2_name: string (nullable = true)
+
++------------+------------+------------+------------+
+|level_1_code|level_1_name|level_2_code|level_2_name|
++------------+------------+------------+------------+
+|           2|    Victoria|       24410|   Maroondah|
+|           2|    Victoria|       22910|     Hepburn|
+|           2|    Victoria|       21110|  Boroondara|
+|           2|    Victoria|       22250|  Gannawarra|
+|           2|    Victoria|       21750|  Colac O...|
+|           2|    Victoria|       26610|   Swan Hill|
+|           2|    Victoria|       24850|    Mitchell|
+|           2|    Victoria|       22670|  Greater...|
+|           2|    Victoria|       23350|      Indigo|
+|           2|    Victoria|       20830|     Baw Baw|
++------------+------------+------------+------------+
+
+row count = 10
+10:23:18.586 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.RowCount
+10:23:18.634 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.ColCount
+10:23:18.634 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.DuplicateCount
+
+VALID Statistics
+
+root
+ |-- key: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- discriminator: string (nullable = true)
+ |-- value: string (nullable = true)
+
++----------+------+-------------+-----+
+|       key|column|discriminator|value|
++----------+------+-------------+-----+
+|column ...|  NULL|         NULL|    4|
+|duplica...|  NULL|         NULL|    0|
+| row count|  NULL|         NULL|   10|
++----------+------+-------------+-----+
+
+row count = 3
+
+Raw dataset
+
+root
+ |-- Official Name State: string (nullable = true)
+ |-- Official Code Local Government Area: string (nullable = true)
+ |-- Official Code State: string (nullable = true)
+ |-- Iso 3166-3 Area Code: string (nullable = true)
+ |-- Official Name Local Government Area: string (nullable = true)
+
++-------------------+-----------------------------------+-------------------+--------------------+-----------------------------------+
+|Official Name State|Official Code Local Government Area|Official Code State|Iso 3166-3 Area Code|Official Name Local Government Area|
++-------------------+-----------------------------------+-------------------+--------------------+-----------------------------------+
+|         Queensland|                              30410|                  3|                 AUS|                         Barcaldine|
+|         Queensland|                              33620|                  3|                 AUS|                             Gympie|
+|         Queensland|                              35670|                  3|                 AUS|                           Napranum|
+|         Queensland|                              36660|                  3|                 AUS|                         Souther...|
+|         Queensland|                              30370|                  3|                 AUS|                             Banana|
+|         Queensland|                              33100|                  3|                 AUS|                          Etheridge|
+|         Queensland|                              34830|                  3|                 AUS|                             Mapoon|
+|         Queensland|                              35300|                  3|                 AUS|                          Mount Isa|
+|         Queensland|                              37600|                  3|                 AUS|                           Yarrabah|
+|         Queensland|                              32270|                  3|                 AUS|                         Central...|
++-------------------+-----------------------------------+-------------------+--------------------+-----------------------------------+
+
+row count = 10
+10:23:18.943 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.RowCount
+10:23:18.966 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.ColCount
+10:23:18.967 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.DuplicateCount
+
+RAW Statistics
+
+root
+ |-- key: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- discriminator: string (nullable = true)
+ |-- value: string (nullable = true)
+
++----------+------+-------------+-----+
+|       key|column|discriminator|value|
++----------+------+-------------+-----+
+|column ...|  NULL|         NULL|    5|
+|duplica...|  NULL|         NULL|    0|
+| row count|  NULL|         NULL|   10|
++----------+------+-------------+-----+
+
+row count = 3
+
+SELECTED dataset
+
+root
+ |-- level_1_code: string (nullable = true)
+ |-- level_1_name: string (nullable = true)
+ |-- level_2_code: string (nullable = true)
+ |-- level_2_name: string (nullable = true)
+
++------------+------------+------------+------------+
+|level_1_code|level_1_name|level_2_code|level_2_name|
++------------+------------+------------+------------+
+|           3|  Queensland|       30410|  Barcaldine|
+|           3|  Queensland|       33620|      Gympie|
+|           3|  Queensland|       35670|    Napranum|
+|           3|  Queensland|       36660|  Souther...|
+|           3|  Queensland|       30370|      Banana|
+|           3|  Queensland|       33100|   Etheridge|
+|           3|  Queensland|       34830|      Mapoon|
+|           3|  Queensland|       35300|   Mount Isa|
+|           3|  Queensland|       37600|    Yarrabah|
+|           3|  Queensland|       32270|  Central...|
++------------+------------+------------+------------+
+
+row count = 10
+
+Typed dataset
+
+root
+ |-- level_1_code: string (nullable = true)
+ |-- level_1_name: string (nullable = true)
+ |-- level_2_code: string (nullable = true)
+ |-- level_2_name: string (nullable = true)
+
++------------+------------+------------+------------+
+|level_1_code|level_1_name|level_2_code|level_2_name|
++------------+------------+------------+------------+
+|           3|  Queensland|       30410|  Barcaldine|
+|           3|  Queensland|       33620|      Gympie|
+|           3|  Queensland|       35670|    Napranum|
+|           3|  Queensland|       36660|  Souther...|
+|           3|  Queensland|       30370|      Banana|
+|           3|  Queensland|       33100|   Etheridge|
+|           3|  Queensland|       34830|      Mapoon|
+|           3|  Queensland|       35300|   Mount Isa|
+|           3|  Queensland|       37600|    Yarrabah|
+|           3|  Queensland|       32270|  Central...|
++------------+------------+------------+------------+
+
+row count = 10
+
+Valid dataset
+
+root
+ |-- level_1_code: string (nullable = true)
+ |-- level_1_name: string (nullable = true)
+ |-- level_2_code: string (nullable = true)
+ |-- level_2_name: string (nullable = true)
+
++------------+------------+------------+------------+
+|level_1_code|level_1_name|level_2_code|level_2_name|
++------------+------------+------------+------------+
+|           3|  Queensland|       30370|      Banana|
+|           3|  Queensland|       35670|    Napranum|
+|           3|  Queensland|       32270|  Central...|
+|           3|  Queensland|       37600|    Yarrabah|
+|           3|  Queensland|       30410|  Barcaldine|
+|           3|  Queensland|       34830|      Mapoon|
+|           3|  Queensland|       33100|   Etheridge|
+|           3|  Queensland|       36660|  Souther...|
+|           3|  Queensland|       33620|      Gympie|
+|           3|  Queensland|       35300|   Mount Isa|
++------------+------------+------------+------------+
+
+row count = 10
+10:23:19.364 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.RowCount
+10:23:19.407 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.ColCount
+10:23:19.407 [main] INFO  c.e.d.s.statistics.StatisticsRunner MDC= - Running statistic: com.example.dataprocessingexperiment.spark.statistics.DuplicateCount
+
+VALID Statistics
+
+root
+ |-- key: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- discriminator: string (nullable = true)
+ |-- value: string (nullable = true)
+
++----------+------+-------------+-----+
+|       key|column|discriminator|value|
++----------+------+-------------+-----+
+|column ...|  NULL|         NULL|    4|
+|duplica...|  NULL|         NULL|    0|
+| row count|  NULL|         NULL|   10|
++----------+------+-------------+-----+
+
+row count = 3
+
+Raw dataset
+
+root
+ |-- table: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- from: string (nullable = true)
+ |-- to: string (nullable = true)
+
++----------+----------+-------+------+
+|     table|    column|   from|    to|
++----------+----------+-------+------+
+|transac...|descrip...|burgers|burger|
++----------+----------+-------+------+
+
+row count = 1
+
+SELECTED dataset
+
+root
+ |-- table: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- from: string (nullable = true)
+ |-- to: string (nullable = true)
+
++----------+----------+-------+------+
+|     table|    column|   from|    to|
++----------+----------+-------+------+
+|transac...|descrip...|burgers|burger|
++----------+----------+-------+------+
+
+row count = 1
+
+Typed dataset
+
+root
+ |-- table: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- from: string (nullable = true)
+ |-- to: string (nullable = true)
+
++----------+----------+-------+------+
+|     table|    column|   from|    to|
++----------+----------+-------+------+
+|transac...|descrip...|burgers|burger|
++----------+----------+-------+------+
+
+row count = 1
+
+Valid dataset
+
+root
+ |-- table: string (nullable = true)
+ |-- column: string (nullable = true)
+ |-- from: string (nullable = true)
+ |-- to: string (nullable = true)
+
++----------+----------+-------+------+
+|     table|    column|   from|    to|
++----------+----------+-------+------+
+|transac...|descrip...|burgers|burger|
++----------+----------+-------+------+
+
+row count = 1
+10:23:19.829 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting pipeline id=sample-1 name=Sample Pipeline 1
+10:23:19.829 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor ValueMappingJoinProcessor(id='t0.1', name='Value mappings', description='Update values for columns based on mappings', tables=[mappings])
+10:23:19.946 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor ValueMappingJoinProcessor(id='t0.1', name='Value mappings', description='Update values for columns based on mappings', tables=[mappings])
+10:23:19.947 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor ValueMappingWhenProcessor(id='t0.2', name='Value mappings', description='Update values for columns based on mappings', mappings='[TableMapping(tableId=transactions, deduplicate=false, columns=[ColumnMapping(columnName=description, mapping=ValueMapping(value=movie, alternatives=[movies]))]), TableMapping(tableId=lga-1, deduplicate=true, columns=[ColumnMapping(columnName=level_1_name, mapping=ValueMapping(value=New South Wales, alternatives=[NSW, N.S.W.])), ColumnMapping(columnName=level_1_code, mapping=ValueMapping(value=1, alternatives=[01, 001]))])]')
+10:23:19.951 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor ValueMappingWhenProcessor(id='t0.2', name='Value mappings', description='Update values for columns based on mappings', mappings='[TableMapping(tableId=transactions, deduplicate=false, columns=[ColumnMapping(columnName=description, mapping=ValueMapping(value=movie, alternatives=[movies]))]), TableMapping(tableId=lga-1, deduplicate=true, columns=[ColumnMapping(columnName=level_1_name, mapping=ValueMapping(value=New South Wales, alternatives=[NSW, N.S.W.])), ColumnMapping(columnName=level_1_code, mapping=ValueMapping(value=1, alternatives=[01, 001]))])]')
+10:23:19.952 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
+10:23:19.956 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor UnionProcessor(id='t1', name='Union LGAs', description='Unions LGA tables together so we have one dataframe with all LGAs', destination='lgas', tables=[lga-1, lga-2, lga-3])
+10:23:19.956 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
+10:23:19.957 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor LiteralProcessor(id='t2', name='Transaction type', description='Adds a literal column to the transactions table', table='transactions', columns={type=TRANSACTION})
+10:23:19.959 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
+10:23:19.962 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor JoinProcessor(id='t3', name='Denormalize transactions', description='Joins LGAs to transactions in order to add the level 1 LGA', table1='transactions', table2='lgas', destination='transactionsWithLGAs', joinType='left', on={location=level_2_name}, columns=[level_1_name])
+10:23:19.964 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Starting processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/reference-app-1/transactions', format='csv', mode='overwrite', options={header=true})
+10:23:20.318 [main] INFO  c.e.d.s.pipeline.PipelineProcessor MDC= - Finished processor OutputProcessor(id='t4', name='Output transactions', description='Writes out the denormalized transactions', table='transactionsWithLGAs', path='./build/output/reference-app-1/transactions', format='csv', mode='overwrite', options={header=true})
+==============================================
+Context
+transactions ordered by date
++----------+-------+-----------+-----------------+------+-----------+
+|      date|account|description|         location|amount|       type|
++----------+-------+-----------+-----------------+------+-----------+
+|2020-01-01|      1|     burger|           Gympie| 15.45|TRANSACTION|
+|2020-01-02|      1|      movie|   Southern Downs| 20.00|TRANSACTION|
+|2020-01-03|      1|     tennis|           Banana| 35.00|TRANSACTION|
+|2020-01-04|      2|     petrol|Central Highlands|150.45|TRANSACTION|
+|2020-02-01|      1|     burger|         Yarrabah| 15.46|TRANSACTION|
+|2020-02-02|      1|      movie|       Barcaldine| 20.01|TRANSACTION|
+|2020-02-03|      1|     tennis|        Maroondah| 35.01|TRANSACTION|
+|2020-02-04|      2|electricity|          Hepburn|300.47|TRANSACTION|
+|2020-02-04|      2|     petrol|       Gannawarra|150.46|TRANSACTION|
+|2020-03-01|      1|     burger|Greater Dandenong| 15.47|TRANSACTION|
++----------+-------+-----------+-----------------+------+-----------+
+only showing top 10 rows
+
+lga-1 ordered by level_1_code
++------------+---------------+------------+----------------+
+|level_1_code|   level_1_name|level_2_code|    level_2_name|
++------------+---------------+------------+----------------+
+|           1|New South Wales|       11700| Central Darling|
+|           1|New South Wales|       11500|    Campbelltown|
+|           1|New South Wales|       17200|          Sydney|
+|           1|New South Wales|       11750|           Cobar|
+|           1|New South Wales|       15990|Northern Beaches|
+|           1|New South Wales|       10650|        Berrigan|
+|           1|New South Wales|       11300|         Burwood|
+|           1|New South Wales|       14750|          Leeton|
+|           1|New South Wales|       10850|         Blayney|
+|           1|New South Wales|       14000|         Hornsby|
++------------+---------------+------------+----------------+
+
+lga-2 ordered by level_1_code
++------------+------------+------------+-----------------+
+|level_1_code|level_1_name|level_2_code|     level_2_name|
++------------+------------+------------+-----------------+
+|           2|    Victoria|       24410|        Maroondah|
+|           2|    Victoria|       22910|          Hepburn|
+|           2|    Victoria|       21110|       Boroondara|
+|           2|    Victoria|       22250|       Gannawarra|
+|           2|    Victoria|       21750|      Colac Otway|
+|           2|    Victoria|       26610|        Swan Hill|
+|           2|    Victoria|       24850|         Mitchell|
+|           2|    Victoria|       22670|Greater Dandenong|
+|           2|    Victoria|       23350|           Indigo|
+|           2|    Victoria|       20830|          Baw Baw|
++------------+------------+------------+-----------------+
+
+lga-3 ordered by level_1_code
++------------+------------+------------+-----------------+
+|level_1_code|level_1_name|level_2_code|     level_2_name|
++------------+------------+------------+-----------------+
+|           3|  Queensland|       30370|           Banana|
+|           3|  Queensland|       35670|         Napranum|
+|           3|  Queensland|       32270|Central Highlands|
+|           3|  Queensland|       37600|         Yarrabah|
+|           3|  Queensland|       30410|       Barcaldine|
+|           3|  Queensland|       34830|           Mapoon|
+|           3|  Queensland|       33100|        Etheridge|
+|           3|  Queensland|       36660|   Southern Downs|
+|           3|  Queensland|       33620|           Gympie|
+|           3|  Queensland|       35300|        Mount Isa|
++------------+------------+------------+-----------------+
+
+mappings ordered by table
++------------+-----------+-------+------+
+|       table|     column|   from|    to|
++------------+-----------+-------+------+
+|transactions|description|burgers|burger|
++------------+-----------+-------+------+
+
+lgas ordered by level_1_code
++------------+---------------+------------+----------------+
+|level_1_code|   level_1_name|level_2_code|    level_2_name|
++------------+---------------+------------+----------------+
+|           1|New South Wales|       11700| Central Darling|
+|           1|New South Wales|       11500|    Campbelltown|
+|           1|New South Wales|       17200|          Sydney|
+|           1|New South Wales|       11750|           Cobar|
+|           1|New South Wales|       15990|Northern Beaches|
+|           1|New South Wales|       10650|        Berrigan|
+|           1|New South Wales|       11300|         Burwood|
+|           1|New South Wales|       14750|          Leeton|
+|           1|New South Wales|       10850|         Blayney|
+|           1|New South Wales|       14000|         Hornsby|
++------------+---------------+------------+----------------+
+only showing top 10 rows
+
+transactionsWithLGAs ordered by date
++----------+-------+-----------+-----------------+------+-----------+------------+
+|      date|account|description|         location|amount|       type|level_1_name|
++----------+-------+-----------+-----------------+------+-----------+------------+
+|2020-01-01|      1|     burger|           Gympie| 15.45|TRANSACTION|  Queensland|
+|2020-01-02|      1|      movie|   Southern Downs| 20.00|TRANSACTION|  Queensland|
+|2020-01-03|      1|     tennis|           Banana| 35.00|TRANSACTION|  Queensland|
+|2020-01-04|      2|     petrol|Central Highlands|150.45|TRANSACTION|  Queensland|
+|2020-02-01|      1|     burger|         Yarrabah| 15.46|TRANSACTION|  Queensland|
+|2020-02-02|      1|      movie|       Barcaldine| 20.01|TRANSACTION|  Queensland|
+|2020-02-03|      1|     tennis|        Maroondah| 35.01|TRANSACTION|    Victoria|
+|2020-02-04|      2|electricity|          Hepburn|300.47|TRANSACTION|    Victoria|
+|2020-02-04|      2|     petrol|       Gannawarra|150.46|TRANSACTION|    Victoria|
+|2020-03-01|      1|     burger|Greater Dandenong| 15.47|TRANSACTION|    Victoria|
++----------+-------+-----------+-----------------+------+-----------+------------+
+only showing top 10 rows
+
+==============================================
+Finished...
+
+BUILD SUCCESSFUL in 12s
+7 actionable tasks: 1 executed, 6 up-to-date
+10:23:21 am: Execution finished 'run --stacktrace'.

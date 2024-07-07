@@ -19,17 +19,20 @@ class DataFrameBuilder(
     private val sourceDefinition: SourceDefinition,
     private val rootPath: String = ""
 ) {
+    val raw: Dataset<Row> by lazy { raw() }
 
     /**
      * Loads the raw dataset containing all columns as strings.
      */
-    val raw: Dataset<Row> by lazy {
-        sparkSession.read()
-            .format(sourceDefinition.type)
-            .option("header", true) // headers are always required at this point
-            .option("delimiter", sourceDefinition.table.delimiter)
+    fun raw(): Dataset<Row> {
+        val df = sparkSession.read()
+            .format(sourceDefinition.type.format)
+            .options(sourceDefinition.type.options)
             .load(rootPath + sourceDefinition.path)
             .alias(sourceDefinition.name)
+
+        // post process if needed
+        return SourceTypes.get(sourceDefinition.type.format)(sourceDefinition, df)
     }
 
     /**

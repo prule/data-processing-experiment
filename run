@@ -16,11 +16,18 @@ case "$1" in
     ./gradlew clean
     ;;
 
-  'run')
+  'run:1')
     echo ""
     echo "Running application"
     echo ""
     ./gradlew app:run
+    ;;
+
+  'run:2')
+    echo ""
+    echo "Running reference-app-2"
+    echo ""
+    ./gradlew app:run --args="reference-app-2"
     ;;
 
   'test')
@@ -63,15 +70,29 @@ case "$1" in
     echo ""
     ;;
 
-  'data:download')
+  'data:download:1')
     echo ""
     echo "Downloading data"
-    mkdir -p ./data/sample1/downloaded/aus-lga-mapping
-    curl "https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/georef-australia-local-government-area@public/exports/csv?lang=en&timezone=Australia%2FSydney&use_labels=true&delimiter=%3B" \
-    -o "./data/sample1/downloaded/aus-lga-mapping/georef-australia-local-government-area.csv"
+    mkdir -p ./data/reference-app-1/downloaded/aus-lga-mapping
+    curl "" \
+    -o "./data/reference-app-1/downloaded/aus-lga-mapping/georef-australia-local-government-area.csv"
     echo ""
     echo ""
     ;;
+
+  'data:download:2')
+    echo ""
+    echo "Downloading data"
+    mkdir -p ./data/reference-app-2/downloaded
+#https://github.com/davidasboth/solve-any-data-analysis-problem/blob/a2612923f23c15dcefbb482a5806861faed0ae51/chapter-2/data/addresses.csv
+    curl "https://raw.githubusercontent.com/davidasboth/solve-any-data-analysis-problem/a2612923f23c15dcefbb482a5806861faed0ae51/chapter-2/data/addresses.csv" \
+    -o "./data/reference-app-2/downloaded/addresses.csv"
+    curl "https://raw.githubusercontent.com/davidasboth/solve-any-data-analysis-problem/a2612923f23c15dcefbb482a5806861faed0ae51/chapter-2/data/cities.csv" \
+    -o "./data/reference-app-2/downloaded/cities.csv"
+    echo ""
+    echo ""
+    ;;
+
 
   *)
     echo -e ""
@@ -87,8 +108,9 @@ case "$1" in
     echo "$(tput setaf 3)    run                                        $(tput sgr0)      Run the application"
     echo "$(tput setaf 3)    test                                       $(tput sgr0)      Run tests"
     echo "$(tput setaf 3)    doc                                        $(tput sgr0)      Generate Dokka documentation and open in browser"
-    echo "$(tput setaf 3)    grade:upgrade <version>                    $(tput sgr0)      Upgrade gradle"
+    echo "$(tput setaf 3)    gradle:upgrade <version>                   $(tput sgr0)      Upgrade gradle"
     echo "$(tput setaf 3)    report:test:open                           $(tput sgr0)      Open junit test reports for all modules"
-    echo "$(tput setaf 3)    data:download                              $(tput sgr0)      Download external data to ./data"
+    echo "$(tput setaf 3)    data:download:1                            $(tput sgr0)      Download external data to ./data for reference-app-1"
+    echo "$(tput setaf 3)    data:download:2                            $(tput sgr0)      Download external data to ./data for reference-app-2"
 
 esac
