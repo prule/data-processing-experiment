@@ -29,10 +29,10 @@ I'm going to split the work into "parts" - simple progressions, each one buildin
 * [Part 8](https://paulr70.substack.com/p/data-processing-experiment-part-8) - It's time to add the capability to define a pipeline of tasks - so I can union tables, add literal columns, join tables and output tables to files. Polymorphic serialization was useful here!
 * [Part 9](https://paulr70.substack.com/p/data-processing-experiment-part-9) - I add capabilities to apply some simple data cleaning tasks.
 * [Part 10](https://paulr70.substack.com/p/data-processing-experiment-part-10) - I refactor to clean up and use more polymorphic serialization to simplify and reduce code.
-* [Part 11](https://paulr70.substack.com/p/data-processing-experiment-part-11)
-* [Part 12](https://paulr70.substack.com/p/data-processing-experiment-part-12)
-* [Part 13](https://paulr70.substack.com/p/data-processing-experiment-part-13)
-* [Part 14](https://paulr70.substack.com/p/databricks-with-spark-partitioning)
-* [Part 15](https://paulr70.substack.com/p/sampling-data-with-spark)
-* [Part 16](https://paulr70.substack.com/p/stratified-data-sampling-with-spark)
-* [Part 17](https://paulr70.substack.com/p/data-processing-experiment-part-17)
+* [Part 11](https://paulr70.substack.com/p/data-processing-experiment-part-11) - The one where I try out DataBricks Community Edition to do something similar to the Kotlin codebase.
+* [Part 12](https://paulr70.substack.com/p/data-processing-experiment-part-12) - The one where I try out Google Colab notebooks to do something similar to the Kotlin codebase.
+* [Part 13](https://paulr70.substack.com/p/data-processing-experiment-part-13) - The one where I try out using Pandas to manipulate data
+* [Part 14](https://paulr70.substack.com/p/databricks-with-spark-partitioning) - Databricks with spark partitioning
+* [Part 15](https://paulr70.substack.com/p/sampling-data-with-spark) - Sampling data with Spark
+* [Part 16](https://paulr70.substack.com/p/stratified-data-sampling-with-spark) - Stratified data sampling with Spark
+* [Part 17](https://paulr70.substack.com/p/data-processing-experiment-part-17) - Applying the framework to real world examples - [Solve any data analysis problem](https://www.manning.com/books/solve-any-data-analysis-problem) - [Chapter 2](https://github.com/davidasboth/solve-any-data-analysis-problem/blob/main/chapter-2/Chapter%202%20sample%20solution.ipynb)
