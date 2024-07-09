@@ -67,7 +67,12 @@ class SparkJoinTest : StringSpec({
             // if we don't tell it to use col="id" we get
             // org.apache.spark.sql.AnalysisException: [COLUMN_ALREADY_EXISTS] The column `id` already exists. Consider to choose another name or rename the existing column.
             val table = table1.join(table2)
-            table.show()
+            // need to write to invoke the sql join and experience the error
+            table.write()
+                .option("header", "true")
+                .format("csv")
+                .mode("overwrite")
+                .save("./build/output/temp")
         }
 
     }
