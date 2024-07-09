@@ -44,6 +44,7 @@ class SparkJoinTest : StringSpec({
         table.show()
 
         // it knows not to duplicate the "id" column
+        // there are two columns named "desc" though, so it would seem best to rename them before joining
 
 //        +---+---------+-------+--------+---------------+
 //        | id|firstname|   desc|lastname|           desc|
@@ -84,6 +85,7 @@ class SparkJoinTest : StringSpec({
         table.show()
 
         // we get both "id" and "id2" columns here
+        // there are two columns named "desc" though, so it would seem best to rename them before joining
 
 //        +---+---------+-------+---+--------+---------------+
 //        | id|firstname|   desc|id2|lastname|           desc|
