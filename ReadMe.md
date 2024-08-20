@@ -1,3 +1,8 @@
+> View the branch "latest" for the latest version of this project. https://github.com/prule/data-processing-experiment/tree/latest
+ 
+> See part17 for how it is applied to a real world
+problem. https://github.com/prule/data-processing-experiment/tree/part-17
+
 ## Overview
 
 Data processing is on my radar at the moment, and taking a leaf from [John Cricket](https://www.linkedin.com/in/johncrickett/) what better way to get some "practice and experience" in Kotlin, Spark, Data Processing, Design, and Documentation than to build something...
